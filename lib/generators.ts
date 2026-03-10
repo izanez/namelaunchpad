@@ -1,0 +1,1248 @@
+export type GeneratorType =
+  | "username"
+  | "roblox"
+  | "fortnite"
+  | "fantasy"
+  | "clan";
+
+export type GeneratorDirectoryEntry = {
+  slug: string;
+  title: string;
+  description: string;
+  exampleNames: string[];
+  category: string;
+};
+
+export type GeneratorCategorySlug =
+  | "gaming"
+  | "social-media"
+  | "fantasy"
+  | "anime"
+  | "funny"
+  | "streamer"
+  | "hacker";
+
+export type GeneratorCategory = {
+  slug: GeneratorCategorySlug;
+  title: string;
+  description: string;
+};
+
+export const generatorCategories: GeneratorCategory[] = [
+  {
+    slug: "gaming",
+    title: "Gaming",
+    description: "Generators for gamertags, competitive usernames, clan names, and game-specific identities.",
+  },
+  {
+    slug: "social-media",
+    title: "Social Media",
+    description: "Generators for usernames used on Discord, TikTok, Instagram, Reddit, X, and other platforms.",
+  },
+  {
+    slug: "fantasy",
+    title: "Fantasy",
+    description: "Generators for RPG names, guilds, magical aliases, and fantasy-inspired characters.",
+  },
+  {
+    slug: "anime",
+    title: "Anime",
+    description: "Generators for anime-inspired usernames, fandom handles, and character-style identities.",
+  },
+  {
+    slug: "funny",
+    title: "Funny",
+    description: "Generators for playful, silly, meme-friendly, and lighthearted usernames.",
+  },
+  {
+    slug: "streamer",
+    title: "Streamer",
+    description: "Generators for Twitch, YouTube, VTuber, and creator-facing streaming brands.",
+  },
+  {
+    slug: "hacker",
+    title: "Hacker",
+    description: "Generators for cyber, glitch, terminal, and hacker-style username ideas.",
+  },
+];
+
+export const generatorDatabase: GeneratorDirectoryEntry[] = [
+  {
+    slug: "fortnite-name-generator",
+    title: "Fortnite Name Generator",
+    description: "Generate cool Fortnite usernames and gamertags with battle-ready ideas.",
+    exampleNames: ["StormSniper", "VictoryVortex", "LootPhantom", "BattleNova", "ShieldBreaker"],
+    category: "gaming",
+  },
+  {
+    slug: "minecraft-name-generator",
+    title: "Minecraft Name Generator",
+    description: "Create Minecraft usernames inspired by blocks, survival, PvP, and building.",
+    exampleNames: ["BlockCrafter", "CreeperNova", "RedstoneRider", "DiamondWolf", "PixelMiner"],
+    category: "gaming",
+  },
+  {
+    slug: "roblox-username-generator",
+    title: "Roblox Username Generator",
+    description: "Generate safe and playful Roblox usernames for obbies, roleplay, and building games.",
+    exampleNames: ["BlockyWarrior", "PixelBuilder", "NoobDestroyer", "ObbyMaster", "CubeChampion"],
+    category: "gaming",
+  },
+  {
+    slug: "valorant-name-generator",
+    title: "Valorant Name Generator",
+    description: "Generate tactical Valorant usernames for ranked, teams, and clips.",
+    exampleNames: ["SpikeViper", "ClutchNova", "PhantomAim", "ValorRush", "SovaStrike"],
+    category: "gaming",
+  },
+  {
+    slug: "discord-username-generator",
+    title: "Discord Username Generator",
+    description: "Create clean Discord usernames for gaming servers, communities, and group chats.",
+    exampleNames: ["GuildNova", "ChatGhost", "PulseRider", "ServerWolf", "EchoKnight"],
+    category: "social",
+  },
+  {
+    slug: "steam-gamertag-generator",
+    title: "Steam Gamertag Generator",
+    description: "Generate stylish Steam gamertags for PC players and profile branding.",
+    exampleNames: ["SteamRogue", "PixelForge", "CyberLibrary", "ValveKnight", "NovaDeck"],
+    category: "gaming",
+  },
+  {
+    slug: "clan-name-generator",
+    title: "Clan Name Generator",
+    description: "Generate powerful clan names for squads, communities, and esports teams.",
+    exampleNames: ["Iron Legion", "Shadow Syndicate", "Crimson Wolves", "Night Raiders", "Void Brotherhood"],
+    category: "team",
+  },
+  {
+    slug: "fantasy-name-generator",
+    title: "Fantasy Name Generator",
+    description: "Create fantasy names for RPG characters, guilds, and magical worlds.",
+    exampleNames: ["Shadowbane", "DragonSlayerX", "Stormwarden", "Nightfang", "FrostKnight"],
+    category: "fantasy",
+  },
+  {
+    slug: "anime-username-generator",
+    title: "Anime Username Generator",
+    description: "Generate anime-inspired usernames with stylish, dramatic, and character-like energy.",
+    exampleNames: ["OtakuNova", "KitsuneBlade", "ShinobiPulse", "SakuraGhost", "RamenKnight"],
+    category: "fandom",
+  },
+  {
+    slug: "twitch-username-generator",
+    title: "Twitch Username Generator",
+    description: "Generate Twitch usernames for streamers, live channels, and creator brands.",
+    exampleNames: ["LiveNova", "ChatVortex", "ClipWolf", "StreamKnight", "RaidPhantom"],
+    category: "streaming",
+  },
+  {
+    slug: "youtube-username-generator",
+    title: "YouTube Username Generator",
+    description: "Generate YouTube channel usernames for gaming, creator, and content brands.",
+    exampleNames: ["ClipNova", "CreatorWolf", "ChannelRider", "ViralGhost", "StudioKnight"],
+    category: "streaming",
+  },
+  {
+    slug: "tiktok-username-generator",
+    title: "TikTok Username Generator",
+    description: "Generate short and catchy TikTok usernames for creators and trend pages.",
+    exampleNames: ["TrendNova", "LoopWolf", "ClipGhost", "VibeRider", "ShortsKnight"],
+    category: "social",
+  },
+  {
+    slug: "instagram-username-generator",
+    title: "Instagram Username Generator",
+    description: "Create stylish Instagram usernames for creators, gamers, and aesthetic profiles.",
+    exampleNames: ["NovaFrame", "PixelMuse", "GlowGhost", "AuraRider", "InstaKnight"],
+    category: "social",
+  },
+  {
+    slug: "x-username-generator",
+    title: "X Username Generator",
+    description: "Generate short usernames for X profiles, gaming brands, and creators.",
+    exampleNames: ["ByteNova", "PulseTag", "GhostFeed", "TrendWolf", "EchoX"],
+    category: "social",
+  },
+  {
+    slug: "reddit-username-generator",
+    title: "Reddit Username Generator",
+    description: "Generate Reddit usernames for communities, meme accounts, and niche interests.",
+    exampleNames: ["ThreadNova", "SubWolf", "KarmaGhost", "PixelThread", "VaultRider"],
+    category: "social",
+  },
+  {
+    slug: "xbox-gamertag-generator",
+    title: "Xbox Gamertag Generator",
+    description: "Generate Xbox gamertags for console players, squads, and competitive profiles.",
+    exampleNames: ["NovaUnlocked", "HaloGhost", "ForgeWolf", "AchievementRider", "PixelPad"],
+    category: "gaming",
+  },
+  {
+    slug: "playstation-name-generator",
+    title: "PlayStation Name Generator",
+    description: "Generate PlayStation usernames and tags for PS players and creators.",
+    exampleNames: ["DualNova", "PadGhost", "ConsoleWolf", "TrophyKnight", "PixelShock"],
+    category: "gaming",
+  },
+  {
+    slug: "nintendo-username-generator",
+    title: "Nintendo Username Generator",
+    description: "Generate Nintendo-friendly usernames for Switch players and fan communities.",
+    exampleNames: ["MushroomNova", "JoyWolf", "PixelPlumber", "KartGhost", "HyruleKnight"],
+    category: "gaming",
+  },
+  {
+    slug: "cod-name-generator",
+    title: "Call of Duty Name Generator",
+    description: "Generate tactical and aggressive Call of Duty usernames for multiplayer and Warzone.",
+    exampleNames: ["WarzoneNova", "TacticalGhost", "LoadoutWolf", "RapidShot", "SniperLock"],
+    category: "gaming",
+  },
+  {
+    slug: "apex-name-generator",
+    title: "Apex Name Generator",
+    description: "Generate Apex Legends usernames with fast-paced and squad-ready style.",
+    exampleNames: ["DropNova", "LegendGhost", "RingRunner", "ApexWolf", "LootDash"],
+    category: "gaming",
+  },
+  {
+    slug: "overwatch-name-generator",
+    title: "Overwatch Name Generator",
+    description: "Generate Overwatch usernames for heroes, support mains, and comp teams.",
+    exampleNames: ["PayloadNova", "BlinkWolf", "HeroGhost", "UltKnight", "PulseHealer"],
+    category: "gaming",
+  },
+  {
+    slug: "league-of-legends-name-generator",
+    title: "League of Legends Name Generator",
+    description: "Generate LoL usernames for ranked players, mains, and team identities.",
+    exampleNames: ["SummonerNova", "RiftWolf", "BaronGhost", "LaneKnight", "RuneRush"],
+    category: "gaming",
+  },
+  {
+    slug: "dota-name-generator",
+    title: "Dota Name Generator",
+    description: "Generate Dota usernames for carries, mids, supports, and stack play.",
+    exampleNames: ["AncientNova", "RoshanWolf", "LaneGhost", "WardKnight", "AegisRush"],
+    category: "gaming",
+  },
+  {
+    slug: "cs2-name-generator",
+    title: "CS2 Name Generator",
+    description: "Generate Counter-Strike style usernames for comp matches and team play.",
+    exampleNames: ["ClutchGhost", "AwpNova", "RushBWolf", "PixelCrosshair", "FragKnight"],
+    category: "gaming",
+  },
+  {
+    slug: "pubg-name-generator",
+    title: "PUBG Name Generator",
+    description: "Generate PUBG usernames for battle royale squads and solo grinders.",
+    exampleNames: ["ZoneGhost", "DropKnight", "ChickenNova", "LootWolf", "CrateRider"],
+    category: "gaming",
+  },
+  {
+    slug: "free-fire-name-generator",
+    title: "Free Fire Name Generator",
+    description: "Generate Free Fire usernames with fast, stylish, mobile-friendly name ideas.",
+    exampleNames: ["FireNova", "MobileGhost", "RushWolf", "TapKnight", "ZoneByte"],
+    category: "gaming",
+  },
+  {
+    slug: "ffxiv-name-generator",
+    title: "FFXIV Name Generator",
+    description: "Generate Final Fantasy XIV style names for characters, guilds, and roleplay.",
+    exampleNames: ["EorzeaNova", "CrystalWolf", "AetherKnight", "LalafellGhost", "RaidRider"],
+    category: "fantasy",
+  },
+  {
+    slug: "wow-name-generator",
+    title: "WoW Name Generator",
+    description: "Generate World of Warcraft names for guilds, raids, and class mains.",
+    exampleNames: ["AzerothNova", "RaidWolf", "MythicGhost", "FrostKnight", "ManaRider"],
+    category: "fantasy",
+  },
+  {
+    slug: "elden-ring-name-generator",
+    title: "Elden Ring Name Generator",
+    description: "Generate dark fantasy names for Elden Ring characters and builds.",
+    exampleNames: ["RuneWarden", "TarnishedWolf", "ErdtreeGhost", "BladeNova", "AshKnight"],
+    category: "fantasy",
+  },
+  {
+    slug: "dnd-name-generator",
+    title: "D&D Name Generator",
+    description: "Generate names for Dungeons & Dragons characters, parties, and campaigns.",
+    exampleNames: ["ElderRogue", "MysticNova", "DiceWolf", "ArcaneGhost", "QuestKnight"],
+    category: "fantasy",
+  },
+  {
+    slug: "pokemon-username-generator",
+    title: "Pokemon Username Generator",
+    description: "Generate Pokemon-inspired usernames for trainers, collectors, and fans.",
+    exampleNames: ["PikaNova", "TrainerWolf", "PixelMon", "GhostBadge", "EliteKnight"],
+    category: "fandom",
+  },
+  {
+    slug: "dragon-ball-username-generator",
+    title: "Dragon Ball Username Generator",
+    description: "Generate Dragon Ball inspired usernames with anime and power-up energy.",
+    exampleNames: ["SaiyanNova", "KameWolf", "UltraGhost", "KiRider", "CapsuleKnight"],
+    category: "fandom",
+  },
+  {
+    slug: "naruto-username-generator",
+    title: "Naruto Username Generator",
+    description: "Generate ninja-themed usernames inspired by Naruto style and anime energy.",
+    exampleNames: ["LeafNova", "ShinobiWolf", "ShadowJutsu", "KageGhost", "KunaiKnight"],
+    category: "fandom",
+  },
+  {
+    slug: "one-piece-username-generator",
+    title: "One Piece Username Generator",
+    description: "Generate pirate-themed usernames inspired by One Piece adventures.",
+    exampleNames: ["GrandNova", "PirateWolf", "MugiwaraGhost", "OceanRider", "BountyKnight"],
+    category: "fandom",
+  },
+  {
+    slug: "kpop-username-generator",
+    title: "K-Pop Username Generator",
+    description: "Generate stylish K-pop inspired usernames for fan accounts and creators.",
+    exampleNames: ["SeoulNova", "StageWolf", "BiasGhost", "NeonAura", "IdolKnight"],
+    category: "fandom",
+  },
+  {
+    slug: "cute-username-generator",
+    title: "Cute Username Generator",
+    description: "Generate cute usernames for social media, gaming profiles, and aesthetic pages.",
+    exampleNames: ["HoneyNova", "CloudyWolf", "PeachGhost", "BunnyRider", "SoftKnight"],
+    category: "style",
+  },
+  {
+    slug: "dark-username-generator",
+    title: "Dark Username Generator",
+    description: "Generate dark usernames with shadow, void, and gothic inspired naming styles.",
+    exampleNames: ["VoidNova", "CryptWolf", "AbyssGhost", "NightRider", "DreadKnight"],
+    category: "style",
+  },
+  {
+    slug: "cool-username-generator",
+    title: "Cool Username Generator",
+    description: "Generate cool usernames for gaming, streaming, and social media branding.",
+    exampleNames: ["NovaStrike", "CyberWolf", "GhostByte", "TurboRider", "PulseKnight"],
+    category: "style",
+  },
+  {
+    slug: "funny-username-generator",
+    title: "Funny Username Generator",
+    description: "Generate funny usernames for memes, gaming accounts, and community profiles.",
+    exampleNames: ["WaffleNova", "BananaWolf", "DerpGhost", "NoodleRider", "PickleKnight"],
+    category: "style",
+  },
+  {
+    slug: "aesthetic-username-generator",
+    title: "Aesthetic Username Generator",
+    description: "Generate aesthetic usernames with soft, dreamy, and stylish vibes.",
+    exampleNames: ["LunaGlow", "CloudMuse", "AuraNova", "VelvetGhost", "IrisWave"],
+    category: "style",
+  },
+  {
+    slug: "hacker-username-generator",
+    title: "Hacker Username Generator",
+    description: "Generate hacker-style usernames with cyber, glitch, and terminal-inspired energy.",
+    exampleNames: ["ZeroHex", "ByteGhost", "KernelNova", "NullWolf", "CipherNode"],
+    category: "style",
+  },
+  {
+    slug: "streamer-name-generator",
+    title: "Streamer Name Generator",
+    description: "Generate streamer names for live channels, gaming creators, and content brands.",
+    exampleNames: ["LiveRider", "ClipNova", "RaidWolf", "PrimeGhost", "HypeKnight"],
+    category: "streaming",
+  },
+  {
+    slug: "vtuber-name-generator",
+    title: "VTuber Name Generator",
+    description: "Generate VTuber-style names for virtual creators and anime-inspired channels.",
+    exampleNames: ["NeoKitsune", "AuraNova", "StarGhost", "PixelMuse", "VTubeKnight"],
+    category: "streaming",
+  },
+  {
+    slug: "esports-team-name-generator",
+    title: "Esports Team Name Generator",
+    description: "Generate esports team names for organizations, squads, and amateur rosters.",
+    exampleNames: ["Nova Legion", "Phantom Core", "Crimson Circuit", "Echo Vanguard", "Storm Dynasty"],
+    category: "team",
+  },
+  {
+    slug: "guild-name-generator",
+    title: "Guild Name Generator",
+    description: "Generate guild names for RPG groups, MMO rosters, and online communities.",
+    exampleNames: ["Silver Covenant", "Rune Vanguard", "Shadow Order", "Stormkeepers", "Moonbound Circle"],
+    category: "team",
+  },
+  {
+    slug: "duo-name-generator",
+    title: "Duo Name Generator",
+    description: "Generate duo names for gaming partners, creators, and friends.",
+    exampleNames: ["Nova & Ghost", "Pixel Pair", "Shadow Sync", "Twin Vortex", "Turbo Duo"],
+    category: "team",
+  },
+  {
+    slug: "squad-name-generator",
+    title: "Squad Name Generator",
+    description: "Generate squad names for shooters, battle royale teams, and gaming groups.",
+    exampleNames: ["Night Unit", "Storm Pack", "Echo Squad", "Crimson Rush", "Void Crew"],
+    category: "team",
+  },
+  {
+    slug: "pet-name-generator",
+    title: "Pet Name Generator",
+    description: "Generate cute pet names for in-game companions, mascots, and avatars.",
+    exampleNames: ["PixelPaw", "NovaFluff", "GhostBean", "WolfyByte", "SparkTail"],
+    category: "fun",
+  },
+  {
+    slug: "guild-tag-generator",
+    title: "Guild Tag Generator",
+    description: "Generate short guild tags and prefixes for online groups and clans.",
+    exampleNames: ["NVA", "EKO", "VLD", "RNE", "GST"],
+    category: "team",
+  },
+  {
+    slug: "username-ideas-generator",
+    title: "Username Ideas Generator",
+    description: "Generate broad username ideas for games, social media, and creator branding.",
+    exampleNames: ["NovaEcho", "PixelStrike", "GhostStorm", "TurboWolf", "KnightByte"],
+    category: "style",
+  },
+  {
+    slug: "gamer-tag-generator",
+    title: "Gamer Tag Generator",
+    description: "Generate cross-platform gamertags for console, PC, Discord, and creator use.",
+    exampleNames: ["ShadowNova", "CyberWolf", "PixelGhost", "VoidRider", "NovaKnight"],
+    category: "gaming",
+  },
+  {
+    slug: "social-media-username-generator",
+    title: "Social Media Username Generator",
+    description: "Generate usernames for TikTok, Instagram, X, Discord, and creator profiles.",
+    exampleNames: ["TrendNova", "AuraWolf", "ClipGhost", "SocialRider", "EchoHandle"],
+    category: "social",
+  },
+  {
+    slug: "fps-name-generator",
+    title: "FPS Name Generator",
+    description: "Generate sharp FPS usernames for comp shooters, montages, and ranked profiles.",
+    exampleNames: ["QuickScope", "CrosshairNova", "RushGhost", "FragWolf", "SnapKnight"],
+    category: "gaming",
+  },
+  {
+    slug: "survival-game-name-generator",
+    title: "Survival Game Name Generator",
+    description: "Generate survival game usernames for crafting, hardcore, and exploration players.",
+    exampleNames: ["WildernessNova", "StoneWolf", "AshGhost", "RaidRider", "CraftKnight"],
+    category: "gaming",
+  },
+];
+
+export const generatorSlugs = generatorDatabase.map((entry) => entry.slug);
+
+export function getGeneratorEntry(slug: string) {
+  return generatorDatabase.find((entry) => entry.slug === slug);
+}
+
+export function getGeneratorCategory(slug: GeneratorCategorySlug) {
+  return generatorCategories.find((category) => category.slug === slug);
+}
+
+export function getEntryCategorySlugs(entry: GeneratorDirectoryEntry): GeneratorCategorySlug[] {
+  const matches = new Set<GeneratorCategorySlug>();
+  const combined = `${entry.slug} ${entry.title} ${entry.category}`.toLowerCase();
+
+  if (
+    entry.category === "gaming" ||
+    entry.category === "team" ||
+    combined.includes("gamertag") ||
+    combined.includes("fortnite") ||
+    combined.includes("minecraft") ||
+    combined.includes("valorant") ||
+    combined.includes("steam") ||
+    combined.includes("xbox") ||
+    combined.includes("playstation") ||
+    combined.includes("nintendo") ||
+    combined.includes("apex") ||
+    combined.includes("overwatch") ||
+    combined.includes("league") ||
+    combined.includes("dota") ||
+    combined.includes("cs2") ||
+    combined.includes("pubg") ||
+    combined.includes("free fire") ||
+    combined.includes("fps") ||
+    combined.includes("survival game")
+  ) {
+    matches.add("gaming");
+  }
+
+  if (
+    entry.category === "social" ||
+    combined.includes("discord") ||
+    combined.includes("instagram") ||
+    combined.includes("reddit") ||
+    combined.includes("social media") ||
+    combined.includes("tiktok") ||
+    combined.includes("x username")
+  ) {
+    matches.add("social-media");
+  }
+
+  if (entry.category === "fantasy" || combined.includes("fantasy") || combined.includes("guild") || combined.includes("d&d")) {
+    matches.add("fantasy");
+  }
+
+  if (
+    combined.includes("anime") ||
+    combined.includes("naruto") ||
+    combined.includes("dragon ball") ||
+    combined.includes("one piece") ||
+    combined.includes("pokemon") ||
+    combined.includes("k-pop") ||
+    combined.includes("vtuber")
+  ) {
+    matches.add("anime");
+  }
+
+  if (combined.includes("funny") || combined.includes("pet") || combined.includes("duo")) {
+    matches.add("funny");
+  }
+
+  if (
+    entry.category === "streaming" ||
+    combined.includes("twitch") ||
+    combined.includes("youtube") ||
+    combined.includes("streamer") ||
+    combined.includes("vtuber")
+  ) {
+    matches.add("streamer");
+  }
+
+  if (combined.includes("hacker")) {
+    matches.add("hacker");
+  }
+
+  return Array.from(matches);
+}
+
+export function getGeneratorsByCategory(slug: GeneratorCategorySlug): GeneratorDirectoryEntry[] {
+  return generatorDatabase.filter((entry) => getEntryCategorySlugs(entry).includes(slug));
+}
+
+const relatedGeneratorFallbacks: Record<string, string[]> = {
+  "fortnite-name-generator": [
+    "gamer-tag-generator",
+    "clan-name-generator",
+    "streamer-name-generator",
+    "twitch-username-generator",
+    "cool-username-generator",
+  ],
+  "roblox-username-generator": [
+    "minecraft-name-generator",
+    "discord-username-generator",
+    "cute-username-generator",
+    "gamer-tag-generator",
+    "anime-username-generator",
+  ],
+  "minecraft-name-generator": [
+    "roblox-username-generator",
+    "fantasy-name-generator",
+    "survival-game-name-generator",
+    "discord-username-generator",
+    "gamer-tag-generator",
+  ],
+  "valorant-name-generator": [
+    "fps-name-generator",
+    "twitch-username-generator",
+    "clan-name-generator",
+    "cool-username-generator",
+    "gamer-tag-generator",
+  ],
+  "discord-username-generator": [
+    "twitch-username-generator",
+    "streamer-name-generator",
+    "clan-name-generator",
+    "social-media-username-generator",
+    "cool-username-generator",
+  ],
+};
+
+export function getRelatedGenerators(slug: string, amount = 5): GeneratorDirectoryEntry[] {
+  const current = getGeneratorEntry(slug);
+  if (!current) return [];
+
+  const fallbackSlugs = relatedGeneratorFallbacks[slug] ?? [];
+  const fallbackEntries = fallbackSlugs
+    .map((relatedSlug) => getGeneratorEntry(relatedSlug))
+    .filter((entry): entry is GeneratorDirectoryEntry => entry !== undefined)
+    .filter((entry) => entry.slug !== slug);
+
+  const categoryEntries = generatorDatabase.filter(
+    (entry) => entry.slug !== slug && entry.category === current.category && !fallbackSlugs.includes(entry.slug)
+  );
+
+  const mixedEntries = generatorDatabase.filter(
+    (entry) =>
+      entry.slug !== slug &&
+      entry.category !== current.category &&
+      !fallbackSlugs.includes(entry.slug) &&
+      !categoryEntries.some((categoryEntry) => categoryEntry.slug === entry.slug)
+  );
+
+  return [...fallbackEntries, ...categoryEntries, ...mixedEntries].slice(0, amount);
+}
+
+export type UsernameStyle =
+  | "cool"
+  | "funny"
+  | "dark"
+  | "aesthetic"
+  | "fantasy"
+  | "hacker"
+  | "streamer";
+
+const prefixes = [
+  "Shadow",
+  "Cyber",
+  "Nova",
+  "Ghost",
+  "Pixel",
+  "Void",
+  "Storm",
+  "Dark",
+  "Neon",
+  "Alpha",
+  "Omega",
+  "Hyper",
+  "Turbo",
+  "Blaze",
+  "Frost",
+  "Crimson",
+  "Iron",
+  "Silent",
+  "Rapid",
+  "Night",
+  "Phantom",
+  "Titan",
+  "Aero",
+  "Solar",
+  "Lunar",
+  "Quantum",
+  "Viral",
+  "Savage",
+  "Fatal",
+  "Arc",
+  "Zero",
+  "Prime",
+  "Steel",
+  "Venom",
+  "Obsidian",
+  "Inferno",
+  "Thunder",
+  "Mystic",
+  "Rune",
+  "Drift",
+  "Pulse",
+  "Nova",
+  "Vortex",
+  "Echo",
+  "Glitch",
+  "Spectral",
+  "Rogue",
+  "Astral",
+  "Chrome",
+  "Velocity",
+  "Warden",
+];
+
+const suffixes = [
+  "Strike",
+  "Slayer",
+  "Knight",
+  "Hunter",
+  "Rider",
+  "Phantom",
+  "Sniper",
+  "Lord",
+  "Wolf",
+  "Storm",
+  "Pulse",
+  "Echo",
+  "Rush",
+  "Drift",
+  "Rogue",
+  "Byte",
+  "Blade",
+  "Vortex",
+  "Shadow",
+  "Ghost",
+  "Fang",
+  "Core",
+  "Nova",
+  "Breaker",
+  "Warden",
+  "Reaper",
+  "Ranger",
+  "Havoc",
+  "Blitz",
+  "Cipher",
+  "Mancer",
+  "Master",
+  "Sentinel",
+  "Legend",
+  "Assassin",
+  "Raider",
+  "Champion",
+  "Operator",
+  "Crusher",
+  "Samurai",
+  "Titan",
+  "Spark",
+  "Glitch",
+  "Shade",
+  "Caster",
+  "Seeker",
+  "Specter",
+  "Guardian",
+  "Claw",
+  "Fury",
+];
+
+const robloxWords = [
+  "Block",
+  "Craft",
+  "Pixel",
+  "Tycoon",
+  "Quest",
+  "Build",
+  "Tower",
+  "Realm",
+];
+
+const fortniteWords = [
+  "Victory",
+  "Drop",
+  "Zone",
+  "Squad",
+  "Edit",
+  "Crank",
+  "Sniper",
+  "Loot",
+];
+
+const fortnitePrefixes = [
+  "Storm",
+  "Victory",
+  "Loot",
+  "Battle",
+  "Shield",
+  "Turbo",
+  "Rapid",
+  "Tactical",
+  "Drop",
+  "Zone",
+];
+
+const fortniteCore = [
+  "Sniper",
+  "Vortex",
+  "Phantom",
+  "Nova",
+  "Breaker",
+  "Builder",
+  "Rusher",
+  "Ranger",
+  "Hunter",
+  "Raider",
+];
+
+const fortniteSuffixes = [
+  "X",
+  "GG",
+  "Rush",
+  "Edit",
+  "Shot",
+  "Drop",
+  "Zone",
+  "King",
+  "Ace",
+  "Pro",
+];
+
+const fantasyWords = [
+  "Dragon",
+  "Raven",
+  "Arcane",
+  "Rune",
+  "Elder",
+  "Mystic",
+  "Ember",
+  "Warden",
+];
+
+const fantasyPrefixes = [
+  "Shadow",
+  "Dragon",
+  "Storm",
+  "Night",
+  "Frost",
+  "Iron",
+  "Rune",
+  "Blood",
+  "Moon",
+  "Dawn",
+];
+
+const fantasySuffixes = [
+  "bane",
+  "slayer",
+  "warden",
+  "fang",
+  "knight",
+  "blade",
+  "seer",
+  "weaver",
+  "caller",
+  "born",
+];
+
+const clanWords = [
+  "Legion",
+  "Guard",
+  "Dynasty",
+  "Order",
+  "Syndicate",
+  "Collective",
+  "Vanguard",
+  "Faction",
+];
+
+const robloxPrefixes = [
+  "Blocky",
+  "Pixel",
+  "Noob",
+  "Obby",
+  "Cube",
+  "Crafty",
+  "Brick",
+  "Mega",
+  "Happy",
+  "Turbo",
+];
+
+const robloxCoreWords = [
+  "Warrior",
+  "Builder",
+  "Destroyer",
+  "Master",
+  "Champion",
+  "Runner",
+  "Jumper",
+  "Crafter",
+  "Explorer",
+  "Hero",
+];
+
+const robloxSuffixes = [
+  "Kid",
+  "Playz",
+  "Quest",
+  "Fun",
+  "Star",
+  "Buddy",
+  "Spark",
+  "Pro",
+  "Legend",
+  "Gamer",
+];
+
+const offensiveBlocklist = [
+  "kill",
+  "hate",
+  "nazi",
+  "sex",
+  "slur",
+  "drug",
+  "suicide",
+  "terror",
+  "racist",
+  "abuse",
+];
+
+const styleProfiles: Record<
+  UsernameStyle,
+  { core: string[]; prefix: string[]; suffix: string[]; numberRate: number }
+> = {
+  cool: {
+    core: [
+      "Nova",
+      "Cyber",
+      "Phantom",
+      "Pixel",
+      "Vortex",
+      "Turbo",
+      "Pulse",
+      "Blitz",
+      "Chrome",
+      "Velocity",
+      "Arcade",
+      "Drift",
+      "Echo",
+      "Savage",
+      "Nitro",
+      "Reactor",
+    ],
+    prefix: ["Shadow", "Neon", "Hyper", "Omega", "Aero", "Frost", "Prime", "Rapid", "Solar", "Quantum"],
+    suffix: ["Wolf", "Knight", "Rider", "Strike", "Drift", "Storm", "Blaze", "Legend", "Breaker", "Core"],
+    numberRate: 0.32,
+  },
+  funny: {
+    core: ["Meme", "Waffle", "Noodle", "Banana", "Goblin", "Pickle", "Derp", "Giggle", "Biscuit", "Muffin", "Taco", "Toaster"],
+    prefix: ["Sir", "Captain", "Bouncy", "Sneaky", "Loopy", "Chunky", "Wobbly", "Goofy", "Captain", "Tiny"],
+    suffix: ["Pants", "Face", "Nugget", "Wizard", "Chimp", "Potato", "Toast", "Boi", "Pickles", "McGee"],
+    numberRate: 0.25,
+  },
+  dark: {
+    core: ["Abyss", "Reaper", "Night", "Venom", "Obsidian", "Grim", "Nocturne", "Dread", "Crypt", "Shade", "Ruin", "Hollow"],
+    prefix: ["Shadow", "Void", "Black", "Crypt", "Silent", "Blood", "Dark", "Night", "Phantom", "Obsidian"],
+    suffix: ["Fang", "Ruin", "Wraith", "Rogue", "Hex", "Hunter", "Reaper", "Shade", "Lord", "Claw"],
+    numberRate: 0.2,
+  },
+  aesthetic: {
+    core: ["Luna", "Velvet", "Halo", "Iris", "Opal", "Aura", "Cloud", "Echo", "Blush", "Satin", "Muse", "Pearl"],
+    prefix: ["Neo", "Soft", "Pastel", "Astral", "Moon", "Dream", "Velvet", "Glimmer", "Cotton", "Rose"],
+    suffix: ["Glow", "Bloom", "Wave", "Muse", "Mist", "Vibe", "Dusk", "Dawn", "Skies", "Aura"],
+    numberRate: 0.12,
+  },
+  fantasy: {
+    core: ["Dragon", "Arcane", "Rune", "Elder", "Myth", "Phoenix", "Titan", "Warden", "Ember", "Griffin", "Mystic", "Paladin"],
+    prefix: ["Iron", "Storm", "Silver", "Eternal", "Ancient", "Crimson", "Rune", "Shadow", "Moon", "Dawn"],
+    suffix: ["Blade", "Mage", "King", "Raven", "Oracle", "Knight", "Warden", "Seer", "Slayer", "Caller"],
+    numberRate: 0.18,
+  },
+  hacker: {
+    core: ["Cipher", "Null", "Root", "Glitch", "Hex", "Kernel", "Ghost", "Proxy", "Byte", "Socket", "Packet", "Daemon"],
+    prefix: ["Zero", "Byte", "Cyber", "Dark", "Silent", "Quantum", "Root", "Null", "Ghost", "Binary"],
+    suffix: ["Script", "Inject", "Node", "Bit", "Shell", "Trace", "Hack", "Code", "Cipher", "Stack"],
+    numberRate: 0.45,
+  },
+  streamer: {
+    core: ["Live", "Clip", "Hype", "Chat", "Prime", "Epic", "Focus", "Raid", "Cast", "Stage", "Channel", "Creator"],
+    prefix: ["Pro", "Ultra", "Neon", "GG", "Turbo", "Real", "Live", "Prime", "Top", "Next"],
+    suffix: ["TV", "Plays", "Live", "GG", "Stream", "Arena", "HQ", "Clips", "Show", "Zone"],
+    numberRate: 0.4,
+  },
+};
+
+function randomFrom<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function withNumber(name: string) {
+  return Math.random() > 0.55 ? `${name}${Math.floor(10 + Math.random() * 890)}` : name;
+}
+
+function sanitizeToken(token: string) {
+  return token.replace(/[^a-zA-Z0-9]/g, "");
+}
+
+function clampLength(length: number) {
+  return Math.min(20, Math.max(6, Math.round(length)));
+}
+
+function toPascal(value: string) {
+  if (!value) return "";
+  return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+}
+
+function applyHackerTransform(value: string) {
+  return value
+    .replace(/a/gi, "@")
+    .replace(/e/gi, "3")
+    .replace(/i/gi, "1")
+    .replace(/o/gi, "0")
+    .replace(/s/gi, "5");
+}
+
+function uniqueMerge(...lists: string[][]) {
+  return Array.from(new Set(lists.flat()));
+}
+
+function generateNumberToken() {
+  const roll = Math.random();
+  if (roll < 0.15) return String(Math.floor(1 + Math.random() * 9));
+  if (roll < 0.45) return String(Math.floor(10 + Math.random() * 90));
+  if (roll < 0.85) return String(Math.floor(100 + Math.random() * 900));
+  return String(Math.floor(1000 + Math.random() * 9000));
+}
+
+function capitalizeFirst(value: string) {
+  if (!value) return "";
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+function buildPatternCandidate({
+  prefixesPool,
+  corePool,
+  suffixesPool,
+  keywordPool,
+  numberRate,
+}: {
+  prefixesPool: string[];
+  corePool: string[];
+  suffixesPool: string[];
+  keywordPool: string[];
+  numberRate: number;
+}) {
+  const prefix = randomFrom(prefixesPool);
+  const core = randomFrom(corePool);
+  const keyword = keywordPool.length > 0 && Math.random() > 0.4 ? randomFrom(keywordPool) : core;
+  const suffix = randomFrom(suffixesPool);
+  const number = generateNumberToken();
+  const includeNumber = Math.random() < numberRate;
+
+  const structures = [
+    `${prefix}${keyword}`,
+    `${core}${suffix}`,
+    `${prefix}${core}${includeNumber ? number : ""}`,
+    `${prefix}${core}${suffix}`,
+    `${keyword}${suffix}${includeNumber ? number : ""}`,
+    `${core}${includeNumber ? number : ""}`,
+  ];
+
+  return capitalizeFirst(randomFrom(structures));
+}
+
+function fitCandidateLength(candidate: string, targetLength: number, fallbackPool: string[]) {
+  const minLength = Math.max(6, targetLength - 3);
+  const maxLength = targetLength + 3;
+  if (candidate.length >= minLength && candidate.length <= maxLength) return candidate;
+
+  if (candidate.length < minLength) {
+    let grown = candidate;
+    while (grown.length < minLength) {
+      grown += randomFrom(fallbackPool);
+    }
+    if (grown.length > maxLength) return null;
+    return grown;
+  }
+
+  return null;
+}
+
+export function generateUsernames({
+  keywords,
+  length,
+  style,
+  amount = 20,
+}: {
+  keywords: string[];
+  length: number;
+  style: UsernameStyle;
+  amount?: number;
+}): string[] {
+  const safeAmount = Math.max(1, amount);
+  const targetLength = clampLength(length);
+  const profile = styleProfiles[style];
+  const normalizedKeywords = keywords.map((k) => toPascal(sanitizeToken(k))).filter(Boolean);
+  const prefixesPool = uniqueMerge(prefixes, profile.prefix);
+  const corePool = uniqueMerge(profile.core, normalizedKeywords);
+  const suffixesPool = uniqueMerge(suffixes, profile.suffix);
+  const output = new Set<string>();
+  let attempts = 0;
+  const maxAttempts = safeAmount * 150;
+
+  while (output.size < safeAmount && attempts < maxAttempts) {
+    attempts += 1;
+    let candidate = buildPatternCandidate({
+      prefixesPool,
+      corePool,
+      suffixesPool,
+      keywordPool: normalizedKeywords,
+      numberRate: profile.numberRate,
+    });
+
+    if (style === "hacker" && Math.random() > 0.3) {
+      candidate = applyHackerTransform(candidate);
+    }
+
+    const fitted = fitCandidateLength(candidate, targetLength, suffixesPool);
+    if (!fitted) continue;
+
+    if (/^[A-Za-z0-9@]+$/.test(fitted)) {
+      output.add(fitted);
+    }
+  }
+
+  while (output.size < safeAmount) {
+    let fallback = `${randomFrom(prefixesPool)}${randomFrom(corePool)}${generateNumberToken()}`;
+    if (style === "hacker") fallback = applyHackerTransform(fallback);
+    output.add(fallback.slice(0, targetLength + 3));
+  }
+
+  return Array.from(output);
+}
+
+export function generateFortniteNames({ keyword = "", amount = 30 }: { keyword?: string; amount?: number }): string[] {
+  const safeAmount = Math.max(1, amount);
+  const safeKeyword = toPascal(sanitizeToken(keyword));
+  const output = new Set<string>();
+  let attempts = 0;
+  const maxAttempts = safeAmount * 120;
+
+  while (output.size < safeAmount && attempts < maxAttempts) {
+    attempts += 1;
+    const prefix = randomFrom(fortnitePrefixes);
+    const core = randomFrom(fortniteCore);
+    const suffix = randomFrom(fortniteSuffixes);
+    const number = generateNumberToken();
+    const includeKeyword = Boolean(safeKeyword) && Math.random() > 0.45;
+    const includeNumber = Math.random() > 0.62;
+    const withKeyword = includeKeyword ? safeKeyword : core;
+
+    const structures = [
+      `${prefix}${withKeyword}`,
+      `${withKeyword}${suffix}`,
+      `${prefix}${withKeyword}${includeNumber ? number : ""}`,
+      `${prefix}${core}${suffix}`,
+      `${core}${includeNumber ? number : ""}`,
+    ];
+
+    const candidate = randomFrom(structures);
+    if (/^[A-Za-z0-9]+$/.test(candidate) && candidate.length >= 6 && candidate.length <= 18) {
+      output.add(candidate);
+    }
+  }
+
+  while (output.size < safeAmount) {
+    output.add(`${randomFrom(fortnitePrefixes)}${randomFrom(fortniteCore)}${Math.floor(10 + Math.random() * 90)}`);
+  }
+
+  return Array.from(output);
+}
+
+function containsBlockedTerm(value: string) {
+  const lower = value.toLowerCase();
+  return offensiveBlocklist.some((term) => lower.includes(term));
+}
+
+export function generateRobloxNames({ keyword = "", amount = 30 }: { keyword?: string; amount?: number }): string[] {
+  const safeAmount = Math.max(1, amount);
+  const safeKeyword = toPascal(sanitizeToken(keyword));
+  const output = new Set<string>();
+  let attempts = 0;
+  const maxAttempts = safeAmount * 150;
+
+  while (output.size < safeAmount && attempts < maxAttempts) {
+    attempts += 1;
+    const prefix = randomFrom(robloxPrefixes);
+    const core = randomFrom(robloxCoreWords);
+    const suffix = randomFrom(robloxSuffixes);
+    const includeKeyword = Boolean(safeKeyword) && Math.random() > 0.5;
+    const includeNumber = Math.random() > 0.7;
+    const number = Math.floor(10 + Math.random() * 90);
+    const token = includeKeyword ? safeKeyword : core;
+
+    const structures = [
+      `${prefix}${token}`,
+      `${token}${suffix}`,
+      `${prefix}${core}${includeNumber ? number : ""}`,
+      `${prefix}${suffix}${includeNumber ? number : ""}`,
+      `${token}${includeNumber ? number : ""}`,
+    ];
+
+    const candidate = randomFrom(structures);
+    if (candidate.length < 6 || candidate.length > 18) continue;
+    if (!/^[A-Za-z0-9]+$/.test(candidate)) continue;
+    if (containsBlockedTerm(candidate)) continue;
+    output.add(candidate);
+  }
+
+  while (output.size < safeAmount) {
+    const fallback = `${randomFrom(robloxPrefixes)}${randomFrom(robloxCoreWords)}${Math.floor(10 + Math.random() * 90)}`;
+    if (!containsBlockedTerm(fallback)) output.add(fallback);
+  }
+
+  return Array.from(output);
+}
+
+export function generateFantasyNames({ keyword = "", amount = 30 }: { keyword?: string; amount?: number }): string[] {
+  const safeAmount = Math.max(1, amount);
+  const safeKeyword = toPascal(sanitizeToken(keyword));
+  const output = new Set<string>();
+  let attempts = 0;
+  const maxAttempts = safeAmount * 120;
+
+  while (output.size < safeAmount && attempts < maxAttempts) {
+    attempts += 1;
+    const prefix = randomFrom(fantasyPrefixes);
+    const suffix = randomFrom(fantasySuffixes);
+    const altCore = randomFrom(fantasyWords);
+    const includeKeyword = Boolean(safeKeyword) && Math.random() > 0.45;
+    const core = includeKeyword ? safeKeyword : altCore;
+    const includeX = Math.random() > 0.83;
+    const includeNumber = Math.random() > 0.7;
+    const number = Math.floor(10 + Math.random() * 90);
+
+    const structures = [
+      `${prefix}${toPascal(suffix)}`,
+      `${prefix}${toPascal(suffix)}${includeX ? "X" : ""}`,
+      `${core}${toPascal(suffix)}`,
+      `${prefix}${core}`,
+      `${prefix}${toPascal(suffix)}${includeNumber ? number : ""}`,
+    ];
+
+    const candidate = randomFrom(structures);
+    if (!/^[A-Za-z0-9]+$/.test(candidate)) continue;
+    if (candidate.length < 6 || candidate.length > 18) continue;
+    output.add(candidate);
+  }
+
+  while (output.size < safeAmount) {
+    const fallback = `${randomFrom(fantasyPrefixes)}${toPascal(randomFrom(fantasySuffixes))}`;
+    output.add(fallback);
+  }
+
+  return Array.from(output);
+}
+
+export function generateTags(type: GeneratorType, seed = "", amount = 8): string[] {
+  const trimmed = seed.trim().replace(/\s+/g, "");
+  const pool = new Set<string>();
+
+  while (pool.size < amount) {
+    const pre = randomFrom(prefixes);
+    const suf = randomFrom(suffixes);
+    const seedPart = trimmed ? `${trimmed}${Math.random() > 0.5 ? "_" : ""}` : "";
+
+    let candidate = "";
+    if (type === "username") {
+      candidate = withNumber(`${seedPart}${pre}${suf}`);
+    }
+    if (type === "roblox") {
+      candidate = withNumber(`${seedPart}${randomFrom(robloxWords)}${suf}`);
+    }
+    if (type === "fortnite") {
+      candidate = withNumber(`${seedPart}${pre}${randomFrom(fortniteWords)}`);
+    }
+    if (type === "fantasy") {
+      candidate = withNumber(`${seedPart}${randomFrom(fantasyWords)}${randomFrom(suffixes)}`);
+    }
+    if (type === "clan") {
+      candidate = withNumber(`${pre}${randomFrom(clanWords)}`);
+    }
+
+    pool.add(candidate);
+  }
+
+  return Array.from(pool);
+}
