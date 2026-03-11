@@ -18,6 +18,7 @@ import { incrementDailyGeneratedCount } from "@/lib/live-counter";
 import { trackGeneratorUsage } from "@/lib/generator-stats";
 import { trackRecentGeneratedUsernames } from "@/lib/recent-generated-usernames";
 import { trackGeneratedUsernames } from "@/lib/trending-usernames";
+import { buildUnverifiedAvailability, type AvailabilityRecord } from "@/lib/username-availability";
 
 const styleOptions: UsernameStyle[] = [
   "cool",
@@ -99,12 +100,9 @@ function parseKeywords(input: string) {
     .slice(0, 6);
 }
 
-type AvailabilityStatus = "Available" | "Possibly taken" | "Unavailable";
-type Platform = "Twitch" | "TikTok" | "Instagram" | "Discord" | "YouTube";
+type Platform = keyof AvailabilityRecord;
 
-const platforms: Platform[] = ["Twitch", "TikTok", "Instagram", "Discord", "YouTube"];
-
-type AvailabilityRecord = Record<Platform, AvailabilityStatus>;
+const platforms: Platform[] = ["Twitch", "TikTok", "Instagram"];
 
 const trendingSeeds = [
   "ShadowNova",
@@ -123,24 +121,6 @@ const trendingSeeds = [
   "HyperEcho",
   "VortexRush",
 ];
-
-function randomAvailability(): AvailabilityStatus {
-  const roll = Math.random();
-  if (roll < 0.42) return "Available";
-  if (roll < 0.8) return "Possibly taken";
-  return "Unavailable";
-}
-
-function buildAvailability(names: string[]): Record<string, AvailabilityRecord> {
-  const entries = names.map((name) => {
-    const status = platforms.reduce(
-      (acc, platform) => ({ ...acc, [platform]: randomAvailability() }),
-      {} as AvailabilityRecord
-    );
-    return [name, status] as const;
-  });
-  return Object.fromEntries(entries);
-}
 
 function pickTrendingNames(currentResults: string[]) {
   const combined = Array.from(new Set([...currentResults, ...trendingSeeds]));
@@ -340,6 +320,7 @@ export function UsernameEngine({
   const [availability, setAvailability] = useState<Record<string, AvailabilityRecord>>({});
   const [trending, setTrending] = useState<string[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
   const [isLengthFinding, setIsLengthFinding] = useState(false);
   const [isMassGenerating, setIsMassGenerating] = useState(false);
   const storageKey = useMemo(() => "namelaunchpad:favorites:username-engine", []);
@@ -417,7 +398,7 @@ export function UsernameEngine({
         setResults(nextResults);
         setAvailability((current) => ({
           ...(mode === "append" ? current : {}),
-          ...buildAvailability(names),
+          ...buildUnverifiedAvailability(names),
         }));
         setTrending(pickTrendingNames(nextResults));
       });
@@ -491,7 +472,7 @@ export function UsernameEngine({
     setResults(initial);
     setLengthFinderResults(initialLengthFinder);
     setMassResults(initialMass);
-    setAvailability(buildAvailability(initial));
+    setAvailability(buildUnverifiedAvailability(initial));
     setTrending(pickTrendingNames(initial));
     const cached = window.localStorage.getItem(storageKey);
     if (!cached) return;
@@ -526,7 +507,7 @@ export function UsernameEngine({
       amount: 20,
     });
     setResults(names);
-    setAvailability(buildAvailability(names));
+    setAvailability(buildUnverifiedAvailability(names));
     setTrending(pickTrendingNames(names));
   }, [effectiveLengthRange.max, effectiveLengthRange.min, effectiveStyle, searchParams, selectedCategory.keywords]);
 
@@ -543,7 +524,44 @@ export function UsernameEngine({
   }, [results]);
 
   const checkAvailability = useCallback(() => {
-    setAvailability(buildAvailability(results));
+    if (results.length === 0) return;
+
+    setIsCheckingAvailability(true);
+
+    void fetch("/api/check-username-availability", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        usernames: results.slice(0, 20),
+      }),
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error("Availability check failed.");
+        }
+
+        const data = (await response.json()) as {
+          availability?: Record<string, AvailabilityRecord>;
+        };
+
+        if (data.availability) {
+          setAvailability((current) => ({
+            ...current,
+            ...data.availability,
+          }));
+          setToast("Availability updated.");
+          window.setTimeout(() => setToast(null), 1800);
+        }
+      })
+      .catch(() => {
+        setToast("Availability check could not be completed.");
+        window.setTimeout(() => setToast(null), 1800);
+      })
+      .finally(() => {
+        setIsCheckingAvailability(false);
+      });
   }, [results]);
 
   const onCopy = useCallback(async (value: string) => {
@@ -793,10 +811,10 @@ export function UsernameEngine({
                 <Button
                   variant="ghost"
                   onClick={checkAvailability}
-                  disabled={isGenerating}
+                  disabled={isGenerating || isCheckingAvailability}
                   className="w-full md:w-auto"
                 >
-                  Check Availability
+                  {isCheckingAvailability ? "Checking..." : "Check Availability"}
                 </Button>
                 <Button onClick={generateMore} disabled={isGenerating} className="w-full md:w-auto">
                   {isGenerating ? "Generating More..." : "Generate More"}
