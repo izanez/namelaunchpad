@@ -14,6 +14,36 @@ function formatGeneratorName(slug: string) {
     .replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
+function getHeatLevel(count: number, maxCount: number) {
+  if (maxCount <= 0 || count <= 0) {
+    return {
+      label: "Low usage",
+      className: "border-white/10 bg-white/5 text-slate-300",
+    };
+  }
+
+  const ratio = count / maxCount;
+
+  if (ratio >= 0.67) {
+    return {
+      label: "Most used",
+      className: "border-rose-300/35 bg-rose-500/15 text-rose-100",
+    };
+  }
+
+  if (ratio >= 0.34) {
+    return {
+      label: "Medium used",
+      className: "border-amber-300/35 bg-amber-500/15 text-amber-100",
+    };
+  }
+
+  return {
+    label: "Low usage",
+    className: "border-cyan-300/30 bg-cyan-300/10 text-cyan-100",
+  };
+}
+
 export function StatsDashboard() {
   const [stats, setStats] = useState(() => getGeneratorStatsSnapshot());
 
@@ -27,6 +57,8 @@ export function StatsDashboard() {
     window.addEventListener(GENERATOR_STATS_EVENT, handleUpdate);
     return () => window.removeEventListener(GENERATOR_STATS_EVENT, handleUpdate);
   }, []);
+
+  const maxUsageCount = stats.generatorUsage[0]?.count ?? 0;
 
   return (
     <section className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6">
@@ -108,6 +140,55 @@ export function StatsDashboard() {
             </div>
           </Card>
         </div>
+
+        <Card className="p-6 md:p-8">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h2 className="text-2xl font-black text-white">Generator Popularity Heatmap</h2>
+              <p className="mt-2 text-sm text-slate-400">
+                Dynamic usage view of the most used, medium used, and low usage generators in this browser.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2 text-[11px] font-semibold uppercase tracking-wide">
+              <span className="rounded-full border border-rose-300/35 bg-rose-500/15 px-3 py-1 text-rose-100">
+                Most used
+              </span>
+              <span className="rounded-full border border-amber-300/35 bg-amber-500/15 px-3 py-1 text-amber-100">
+                Medium used
+              </span>
+              <span className="rounded-full border border-cyan-300/30 bg-cyan-300/10 px-3 py-1 text-cyan-100">
+                Low usage
+              </span>
+            </div>
+          </div>
+
+          {stats.generatorUsage.length === 0 ? (
+            <p className="mt-5 text-sm text-slate-400">No generator usage tracked yet.</p>
+          ) : (
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {stats.generatorUsage.map((entry) => {
+                const heat = getHeatLevel(entry.count, maxUsageCount);
+
+                return (
+                  <div
+                    key={`heat-${entry.slug}`}
+                    className={`rounded-xl2 border px-4 py-4 transition ${heat.className}`}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="text-sm font-semibold">{formatGeneratorName(entry.slug)}</p>
+                        <p className="mt-2 text-[11px] uppercase tracking-wide opacity-80">{heat.label}</p>
+                      </div>
+                      <span className="rounded-full border border-current/20 bg-black/10 px-2 py-0.5 text-[11px] font-semibold">
+                        {entry.count}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </Card>
       </div>
     </section>
   );
