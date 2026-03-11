@@ -58,6 +58,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
+  verification: siteConfig.googleSiteVerification
+    ? {
+        google: siteConfig.googleSiteVerification,
+      }
+    : undefined,
   twitter: {
     card: "summary_large_image",
     title: siteConfig.defaultTitle,
