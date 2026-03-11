@@ -2,10 +2,12 @@
 
 import { startTransition, useEffect, useMemo, useState } from "react";
 import { AdSlot } from "@/components/ads/ad-slot";
+import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { LoadingGrid } from "@/components/generator/loading-grid";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { generateRobloxNames } from "@/lib/generators";
+import { trackGeneratorUsage } from "@/lib/generator-stats";
 
 const examples = ["BlockyWarrior", "PixelBuilder", "NoobDestroyer", "ObbyMaster", "CubeChampion"];
 
@@ -15,13 +17,15 @@ export function RobloxEngine() {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [copied, setCopied] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
-  const storageKey = useMemo(() => "gamertagforge:favorites:roblox-engine", []);
+  const storageKey = useMemo(() => "namelaunchpad:favorites:roblox-engine", []);
 
   const onGenerate = () => {
     setIsGenerating(true);
     window.setTimeout(() => {
       startTransition(() => {
-        setResults(generateRobloxNames({ keyword, amount: 30 }));
+        const next = generateRobloxNames({ keyword, amount: 30 });
+        setResults(next);
+        trackGeneratorUsage("roblox-username-generator", next.length);
       });
       setIsGenerating(false);
     }, 120);
@@ -66,6 +70,13 @@ export function RobloxEngine() {
       <div className="grid gap-7 xl:grid-cols-[minmax(0,1fr)_300px]">
         <Card className="overflow-hidden border-cyan-300/25 p-0">
           <div className="bg-gradient-to-r from-cyan-500/25 via-blue-500/20 to-emerald-400/20 p-6 md:p-8">
+            <Breadcrumbs
+              items={[
+                { label: "Home", href: "/" },
+                { label: "Generators", href: "/all-generators" },
+                { label: "Roblox Username Generator" },
+              ]}
+            />
             <h1 className="text-3xl font-black text-white md:text-4xl">Roblox Username Generator</h1>
             <p className="mt-2 max-w-3xl text-slate-200">
               Create kid-friendly Roblox usernames with playful block-style words. All suggestions are filtered to avoid
@@ -145,3 +156,4 @@ export function RobloxEngine() {
     </section>
   );
 }
+

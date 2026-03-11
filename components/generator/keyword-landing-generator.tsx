@@ -4,8 +4,11 @@ import { startTransition, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { AdSlot } from "@/components/ads/ad-slot";
 import { LoadingGrid } from "@/components/generator/loading-grid";
+import { Breadcrumbs } from "@/components/layout/breadcrumbs";
+import { RelatedGenerators } from "@/components/seo/related-generators";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { trackGeneratorUsage } from "@/lib/generator-stats";
 import { getRelatedGenerators, type GeneratorDirectoryEntry } from "@/lib/generators";
 
 function randomFrom<T>(items: T[]): T {
@@ -126,7 +129,7 @@ export function KeywordLandingGenerator({ page }: KeywordLandingGeneratorProps) 
   const [favorites, setFavorites] = useState<string[]>([]);
   const [copied, setCopied] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
-  const storageKey = useMemo(() => `gamertagforge:landing:${page.slug}:favorites`, [page.slug]);
+  const storageKey = useMemo(() => `namelaunchpad:landing:${page.slug}:favorites`, [page.slug]);
   const seoContent = useMemo(() => buildSeoContent(page), [page]);
   const exampleGallery = useMemo(() => buildExampleGallery(page), [page]);
   const internalLinks = useMemo(
@@ -157,6 +160,7 @@ export function KeywordLandingGenerator({ page }: KeywordLandingGeneratorProps) 
       startTransition(() => {
         setResults(next);
       });
+      trackGeneratorUsage(page.slug, next.length);
       setIsGenerating(false);
     }, 120);
   };
@@ -178,13 +182,21 @@ export function KeywordLandingGenerator({ page }: KeywordLandingGeneratorProps) 
   };
 
   return (
-    <section className="generator-shell mx-auto w-full max-w-6xl animate-fadeUp px-4 py-10 md:px-6">
-      <AdSlot slot="top-banner" className="mb-7" />
+    <>
+      <section className="generator-shell mx-auto w-full max-w-6xl animate-fadeUp px-4 py-10 md:px-6">
+        <AdSlot slot="top-banner" className="mb-7" />
 
-      <div className="grid gap-7 xl:grid-cols-[minmax(0,1fr)_300px]">
-        <div className="space-y-7">
+        <div className="grid gap-7 xl:grid-cols-[minmax(0,1fr)_300px]">
+          <div className="space-y-7">
           <Card className="overflow-hidden p-0">
             <div className="bg-gradient-to-r from-cyan-500/20 via-blue-500/16 to-purple-500/16 p-6 md:p-8">
+              <Breadcrumbs
+                items={[
+                  { label: "Home", href: "/" },
+                  { label: "Generators", href: "/all-generators" },
+                  { label: page.title },
+                ]}
+              />
               <h1 className="text-3xl font-black text-white md:text-4xl">{page.title}</h1>
               <p className="mt-3 max-w-3xl text-slate-200">{page.description}</p>
               <div className="mt-4 flex flex-wrap gap-2">
@@ -279,32 +291,35 @@ export function KeywordLandingGenerator({ page }: KeywordLandingGeneratorProps) 
             </div>
           </Card>
 
-          <Card className="p-6 md:p-8">
-            <h2 className="text-2xl font-black text-white">Explore More Generators</h2>
-            <p className="mt-2 text-sm leading-7 text-slate-300">
-              Internal links help users compare naming styles across platforms and help search engines discover related
-              pages across the site.
-            </p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {internalLinks
-                .filter((link) => link.href !== getGeneratorPath(page.slug))
-                .map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className="rounded-full border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-100 transition hover:border-cyan-300/70 hover:text-cyan-200"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-            </div>
-          </Card>
-        </div>
+            <Card className="p-6 md:p-8">
+              <h2 className="text-2xl font-black text-white">Related Generators</h2>
+              <p className="mt-2 text-sm leading-7 text-slate-300">
+                Internal links help users compare naming styles across platforms and help search engines discover related
+                pages across the site.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {internalLinks
+                  .filter((link) => link.href !== getGeneratorPath(page.slug))
+                  .map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className="rounded-full border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-100 transition hover:border-cyan-300/70 hover:text-cyan-200"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+              </div>
+            </Card>
+          </div>
 
-        <div className="xl:sticky xl:top-24 xl:self-start">
-          <AdSlot slot="sidebar" />
+          <div className="xl:sticky xl:top-24 xl:self-start">
+            <AdSlot slot="sidebar" />
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+      <RelatedGenerators currentSlug={page.slug} />
+    </>
   );
 }
+

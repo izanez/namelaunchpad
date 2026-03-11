@@ -3,7 +3,10 @@ import { Card } from "@/components/ui/card";
 
 export const metadata: Metadata = {
   title: "Privacy & Terms",
-  description: "Read the privacy policy and terms for using GamertagForge.",
+  description: "Read the privacy policy and terms for using NameLaunchpad.",
+  alternates: {
+    canonical: "/privacy-terms",
+  },
 };
 
 export default function PrivacyTermsPage() {
@@ -13,7 +16,7 @@ export default function PrivacyTermsPage() {
         <div>
           <h1 className="text-3xl font-black text-white">Privacy Policy</h1>
           <p className="mt-3 text-slate-300">
-            GamertagForge does not require account registration. Favorite names are stored locally in your browser and
+            NameLaunchpad does not require account registration. Favorite names are stored locally in your browser and
             are not transmitted to a backend service.
           </p>
         </div>
@@ -28,3 +31,4 @@ export default function PrivacyTermsPage() {
     </section>
   );
 }
+

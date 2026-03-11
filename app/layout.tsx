@@ -1,39 +1,67 @@
 import type { Metadata } from "next";
+import { Rajdhani, Space_Grotesk } from "next/font/google";
 import "./globals.css";
+import { AdSenseScript } from "@/components/ads/adsense-script";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import type { ReactNode } from "react";
+import { absoluteUrl, siteConfig } from "@/app/metadata";
+
+const bodyFont = Rajdhani({
+  subsets: ["latin"],
+  variable: "--font-body",
+  display: "swap",
+  weight: ["400", "500", "600", "700"],
+});
+
+const displayFont = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-display",
+  display: "swap",
+  weight: ["500", "700"],
+});
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://gamertagforge.com"),
+  metadataBase: new URL(siteConfig.url),
   title: {
-    default: "GamertagForge | Premium Username & Gamer Tag Generator",
-    template: "%s | GamertagForge",
+    default: siteConfig.defaultTitle,
+    template: `%s | ${siteConfig.name}`,
   },
-  description:
-    "Generate unique gamer tags and usernames for Roblox, Fortnite, fantasy RPGs, and clan identities with GamertagForge.",
+  description: siteConfig.description,
   keywords: [
-    "gamertag generator",
+    "NameLaunchpad",
     "username generator",
+    "AI username generator",
+    "gamer tag generator",
+    "name generators",
     "fortnite name generator",
     "roblox username generator",
     "clan name generator",
-    "fantasy name generator",
+    "social media usernames",
   ],
   openGraph: {
-    title: "GamertagForge",
-    description: "Create unique gamer tags for games, streaming, and social media.",
+    title: siteConfig.defaultTitle,
+    description: siteConfig.description,
     type: "website",
-    url: "https://gamertagforge.com",
-    siteName: "GamertagForge",
+    url: absoluteUrl("/"),
+    siteName: siteConfig.name,
+    images: [
+      {
+        url: absoluteUrl("/opengraph-image"),
+        width: 1200,
+        height: 630,
+        alt: "NameLaunchpad social preview",
+      },
+    ],
   },
   alternates: {
     canonical: "/",
   },
   twitter: {
     card: "summary_large_image",
-    title: "GamertagForge",
-    description: "Create unique gamer tags for games, streaming, and social media.",
+    title: siteConfig.defaultTitle,
+    description: siteConfig.description,
+    images: [absoluteUrl("/twitter-image")],
   },
   robots: { index: true, follow: true },
 };
@@ -41,7 +69,8 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="en">
-      <body className="relative">
+      <body className={`${bodyFont.variable} ${displayFont.variable} relative`}>
+        <AdSenseScript />
         <div className="noise-overlay" />
         <Navbar />
         <main>{children}</main>

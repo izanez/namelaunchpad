@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Logo } from "@/components/layout/logo";
 
 const links = [
   { href: "/generators/fortnite-name-generator", label: "Generators" },
@@ -14,10 +15,7 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-40 border-b border-white/10 bg-slate-950/55 backdrop-blur-xl">
       <nav className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-3 md:px-6">
-        <Link href="/" className="text-lg font-extrabold tracking-wide text-white">
-          Gamer<span className="text-cyan-300">tag</span>
-          <span className="text-purple-400">Forge</span>
-        </Link>
+        <Logo />
         <div className="hidden items-center gap-5 md:flex">
           {links.map((link) => (
             <Link

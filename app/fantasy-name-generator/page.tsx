@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { FantasyEngine } from "@/components/generator/fantasy-engine";
+import { RelatedGenerators } from "@/components/seo/related-generators";
 import { SeoContent } from "@/components/seo/seo-content";
 import { JsonLd } from "@/components/seo/json-ld";
-import { createGeneratorSchema } from "@/lib/seo";
+import { absoluteUrl } from "@/app/metadata";
+import { createBreadcrumbSchema, createGeneratorSchema } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Fantasy Name Generator",
@@ -25,9 +27,15 @@ export default function FantasyGenerator() {
         data={createGeneratorSchema({
           title: "Fantasy Name Generator",
           description: "Generate fantasy RPG names with magical prefixes and suffixes for heroes, guilds, and classes.",
-          url: "https://gamertagforge.com/fantasy-name-generator",
+          url: absoluteUrl("/fantasy-name-generator"),
           category: "UtilitiesApplication",
         })}
+      />
+      <JsonLd
+        data={createBreadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Fantasy Name Generator", path: "/fantasy-name-generator" },
+        ])}
       />
       <FantasyEngine />
       <SeoContent
@@ -47,9 +55,12 @@ export default function FantasyGenerator() {
           { href: "/clan-name-generator", label: "Clan Name Generator" },
           { href: "/username-generator", label: "Username Generator" },
           { href: "/minecraft-name-generator", label: "Minecraft Name Generator" },
-          { href: "/gamer-tag-generator", label: "Gamer Tag Generator" },
+          { href: "/gamer-tag-generator", label: "NameLaunchpad" },
         ]}
       />
+      <RelatedGenerators currentSlug="fantasy-name-generator" />
     </>
   );
 }
+
+

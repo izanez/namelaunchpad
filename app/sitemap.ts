@@ -1,27 +1,45 @@
 import type { MetadataRoute } from "next";
-import { generatorCategories, generatorSlugs } from "@/lib/generators";
+import { generatorCategories, generatorDatabase, generatorSlugs } from "@/lib/generators";
+import { programmaticSeoSlugs } from "@/lib/programmatic-seo-pages";
+
+const directGeneratorPageSlugs = new Set([
+  "username-generator",
+  "gamer-tag-generator",
+  "fortnite-name-generator",
+  "roblox-username-generator",
+  "minecraft-name-generator",
+  "twitch-username-generator",
+  "valorant-name-generator",
+  "fantasy-name-generator",
+  "clan-name-generator",
+  "anime-username-generator",
+  "og-username-finder",
+]);
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = "https://gamertagforge.com";
+  const base = "https://www.namelaunchpad.com";
   const staticRoutes = [
     "",
-    "/gamer-tag-generator",
-    "/username-generator",
-    "/roblox-username-generator",
-    "/fortnite-name-generator",
-    "/minecraft-name-generator",
-    "/twitch-username-generator",
-    "/valorant-name-generator",
-    "/discord-name-generator",
-    "/fantasy-name-generator",
-    "/clan-name-generator",
     "/about",
     "/privacy-terms",
+    "/top-usernames",
+    "/top-generators",
+    "/username-ideas",
+    "/stats",
+    "/search",
+    "/all-generators",
   ];
+
+  const directGeneratorRoutes = generatorDatabase
+    .map((entry) => `/${entry.slug}`)
+    .filter((route) => directGeneratorPageSlugs.has(route.slice(1)));
 
   const generatorRoutes = generatorSlugs.map((slug) => `/generators/${slug}`);
   const categoryRoutes = generatorCategories.map((category) => `/category/${category.slug}`);
-  const allRoutes = Array.from(new Set([...staticRoutes, ...generatorRoutes, ...categoryRoutes]));
+  const seoRoutes = programmaticSeoSlugs.map((slug) => `/${slug}`);
+  const allRoutes = Array.from(
+    new Set([...staticRoutes, ...directGeneratorRoutes, ...generatorRoutes, ...categoryRoutes, ...seoRoutes])
+  );
 
   return allRoutes.map((route) => ({
     url: `${base}${route}`,
@@ -30,3 +48,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: route === "" ? 1 : 0.8,
   }));
 }
+
+

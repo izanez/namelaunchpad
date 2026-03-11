@@ -1,5 +1,5 @@
-export const LIVE_COUNTER_STORAGE_KEY = "gamertagforge:daily-generated-count";
-export const LIVE_COUNTER_EVENT = "gamertagforge:counter-updated";
+export const LIVE_COUNTER_STORAGE_KEY = "namelaunchpad:daily-generated-count";
+export const LIVE_COUNTER_EVENT = "namelaunchpad:counter-updated";
 export const LIVE_COUNTER_BASE = 154328;
 
 type StoredCounter = {
@@ -55,3 +55,4 @@ export function incrementDailyGeneratedCount(amount: number) {
   window.dispatchEvent(new CustomEvent(LIVE_COUNTER_EVENT, { detail: next.count }));
   return next.count;
 }
+

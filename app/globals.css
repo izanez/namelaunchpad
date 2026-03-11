@@ -27,11 +27,18 @@ body {
     radial-gradient(circle at 80% 10%, rgba(168, 85, 247, 0.24), transparent 35%),
     radial-gradient(circle at 50% 85%, rgba(34, 211, 238, 0.12), transparent 35%),
     linear-gradient(160deg, var(--bg-start), var(--bg-end));
-  font-family:
-    "Segoe UI", "Exo 2", "Rajdhani", system-ui, -apple-system, sans-serif;
+  font-family: var(--font-body), system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+.font-display {
+  font-family: var(--font-display), var(--font-body), system-ui, sans-serif;
 }
 
 a {
@@ -56,4 +63,20 @@ a {
 
 .generator-shell {
   view-transition-name: generator-shell;
+}
+
+.content-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 1000px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }

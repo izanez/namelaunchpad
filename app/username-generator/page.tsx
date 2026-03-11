@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { UsernameEngine } from "@/components/generator/username-engine";
+import { RelatedGenerators } from "@/components/seo/related-generators";
 import { SeoContent } from "@/components/seo/seo-content";
 import { JsonLd } from "@/components/seo/json-ld";
-import { createGeneratorSchema } from "@/lib/seo";
+import { absoluteUrl } from "@/app/metadata";
+import { createBreadcrumbSchema, createGeneratorSchema } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Username Generator - Cool Usernames for Gaming and Social Media",
@@ -25,14 +28,22 @@ export default function UsernameGenerator() {
         data={createGeneratorSchema({
           title: "Username Generator",
           description: "Generate cool usernames for gaming, streaming, and social media profiles.",
-          url: "https://gamertagforge.com/username-generator",
+          url: absoluteUrl("/username-generator"),
           category: "UtilitiesApplication",
         })}
       />
-      <UsernameEngine />
+      <JsonLd
+        data={createBreadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Username Generator", path: "/username-generator" },
+        ])}
+      />
+      <Suspense fallback={null}>
+        <UsernameEngine generatorKey="username-generator" breadcrumbTitle="Username Generator" />
+      </Suspense>
       <SeoContent
         title="Username Generator Ideas and Tips"
-        intro="GamertagForge helps users generate memorable usernames with different styles, availability signals, and share tools. This page is designed for gamers, streamers, creators, and anyone who needs a clean, readable username."
+        intro="NameLaunchpad helps users generate memorable usernames with different styles, availability signals, and share tools. This page is designed for gamers, streamers, creators, and anyone who needs a clean, readable username."
         sections={[
           {
             heading: "Why Use a Username Generator",
@@ -44,12 +55,15 @@ export default function UsernameGenerator() {
           },
         ]}
         internalLinks={[
-          { href: "/gamer-tag-generator", label: "Gamer Tag Generator" },
+          { href: "/gamer-tag-generator", label: "NameLaunchpad" },
           { href: "/fortnite-name-generator", label: "Fortnite Name Generator" },
           { href: "/roblox-username-generator", label: "Roblox Username Generator" },
           { href: "/discord-name-generator", label: "Discord Name Generator" },
         ]}
       />
+      <RelatedGenerators currentSlug="username-generator" />
     </>
   );
 }
+
+

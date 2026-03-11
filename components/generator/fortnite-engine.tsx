@@ -2,10 +2,12 @@
 
 import { startTransition, useEffect, useMemo, useState } from "react";
 import { AdSlot } from "@/components/ads/ad-slot";
+import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { LoadingGrid } from "@/components/generator/loading-grid";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { generateFortniteNames } from "@/lib/generators";
+import { trackGeneratorUsage } from "@/lib/generator-stats";
 
 const featuredExamples = ["StormSniper", "VictoryVortex", "LootPhantom", "BattleNova", "ShieldBreaker"];
 
@@ -15,13 +17,15 @@ export function FortniteEngine() {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [copied, setCopied] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
-  const storageKey = useMemo(() => "gamertagforge:favorites:fortnite-engine", []);
+  const storageKey = useMemo(() => "namelaunchpad:favorites:fortnite-engine", []);
 
   const onGenerate = () => {
     setIsGenerating(true);
     window.setTimeout(() => {
       startTransition(() => {
-        setResults(generateFortniteNames({ keyword, amount: 30 }));
+        const next = generateFortniteNames({ keyword, amount: 30 });
+        setResults(next);
+        trackGeneratorUsage("fortnite-name-generator", next.length);
       });
       setIsGenerating(false);
     }, 120);
@@ -66,6 +70,13 @@ export function FortniteEngine() {
       <div className="grid gap-7 xl:grid-cols-[minmax(0,1fr)_300px]">
         <Card className="overflow-hidden border-blue-300/25 p-0">
           <div className="bg-gradient-to-r from-blue-600/30 via-sky-400/20 to-amber-300/20 p-6 md:p-8">
+            <Breadcrumbs
+              items={[
+                { label: "Home", href: "/" },
+                { label: "Generators", href: "/all-generators" },
+                { label: "Fortnite Name Generator" },
+              ]}
+            />
             <h1 className="text-3xl font-black text-white md:text-4xl">Fortnite Name Generator</h1>
             <p className="mt-2 max-w-3xl text-slate-200">
               Generate 30 Fortnite-style gamertags per click with battle-ready words, fast pacing, and victory vibes.
@@ -144,3 +155,4 @@ export function FortniteEngine() {
     </section>
   );
 }
+

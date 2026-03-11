@@ -32,7 +32,7 @@ export const generatorCategories: GeneratorCategory[] = [
   {
     slug: "gaming",
     title: "Gaming",
-    description: "Generators for gamertags, competitive usernames, clan names, and game-specific identities.",
+    description: "Generators for gaming usernames, competitive aliases, clan names, and game-specific identities.",
   },
   {
     slug: "social-media",
@@ -70,7 +70,7 @@ export const generatorDatabase: GeneratorDirectoryEntry[] = [
   {
     slug: "fortnite-name-generator",
     title: "Fortnite Name Generator",
-    description: "Generate cool Fortnite usernames and gamertags with battle-ready ideas.",
+    description: "Generate cool Fortnite usernames and battle-ready name ideas.",
     exampleNames: ["StormSniper", "VictoryVortex", "LootPhantom", "BattleNova", "ShieldBreaker"],
     category: "gaming",
   },
@@ -104,8 +104,8 @@ export const generatorDatabase: GeneratorDirectoryEntry[] = [
   },
   {
     slug: "steam-gamertag-generator",
-    title: "Steam Gamertag Generator",
-    description: "Generate stylish Steam gamertags for PC players and profile branding.",
+    title: "Steam Username Generator",
+    description: "Generate stylish Steam usernames for PC players and profile branding.",
     exampleNames: ["SteamRogue", "PixelForge", "CyberLibrary", "ValveKnight", "NovaDeck"],
     category: "gaming",
   },
@@ -129,6 +129,13 @@ export const generatorDatabase: GeneratorDirectoryEntry[] = [
     description: "Generate anime-inspired usernames with stylish, dramatic, and character-like energy.",
     exampleNames: ["OtakuNova", "KitsuneBlade", "ShinobiPulse", "SakuraGhost", "RamenKnight"],
     category: "fandom",
+  },
+  {
+    slug: "og-username-finder",
+    title: "OG Username Finder",
+    description: "Generate rare short usernames with 4 to 5 characters for clean, original gamer tags.",
+    exampleNames: ["Nova", "Zyro", "Xeno", "Vyre", "Kiro"],
+    category: "style",
   },
   {
     slug: "twitch-username-generator",
@@ -174,8 +181,8 @@ export const generatorDatabase: GeneratorDirectoryEntry[] = [
   },
   {
     slug: "xbox-gamertag-generator",
-    title: "Xbox Gamertag Generator",
-    description: "Generate Xbox gamertags for console players, squads, and competitive profiles.",
+    title: "Xbox Username Generator",
+    description: "Generate Xbox usernames for console players, squads, and competitive profiles.",
     exampleNames: ["NovaUnlocked", "HaloGhost", "ForgeWolf", "AchievementRider", "PixelPad"],
     category: "gaming",
   },
@@ -419,8 +426,8 @@ export const generatorDatabase: GeneratorDirectoryEntry[] = [
   },
   {
     slug: "gamer-tag-generator",
-    title: "Gamer Tag Generator",
-    description: "Generate cross-platform gamertags for console, PC, Discord, and creator use.",
+    title: "NameLaunchpad",
+    description: "Generate cross-platform username ideas for console, PC, Discord, and creator use.",
     exampleNames: ["ShadowNova", "CyberWolf", "PixelGhost", "VoidRider", "NovaKnight"],
     category: "gaming",
   },
@@ -445,7 +452,496 @@ export const generatorDatabase: GeneratorDirectoryEntry[] = [
     exampleNames: ["WildernessNova", "StoneWolf", "AshGhost", "RaidRider", "CraftKnight"],
     category: "gaming",
   },
+  ...buildAutoExpandedGenerators(),
 ];
+
+function buildAutoExpandedGenerators(): GeneratorDirectoryEntry[] {
+  const existingSlugs = new Set([
+    "fortnite-name-generator",
+    "minecraft-name-generator",
+    "roblox-username-generator",
+    "valorant-name-generator",
+    "discord-username-generator",
+    "steam-gamertag-generator",
+    "clan-name-generator",
+    "fantasy-name-generator",
+    "anime-username-generator",
+    "og-username-finder",
+    "twitch-username-generator",
+    "youtube-username-generator",
+    "tiktok-username-generator",
+    "instagram-username-generator",
+    "x-username-generator",
+    "reddit-username-generator",
+    "xbox-gamertag-generator",
+    "playstation-name-generator",
+    "nintendo-username-generator",
+    "cod-name-generator",
+    "apex-name-generator",
+    "overwatch-name-generator",
+    "league-of-legends-name-generator",
+    "dota-name-generator",
+    "cs2-name-generator",
+    "pubg-name-generator",
+    "free-fire-name-generator",
+    "ffxiv-name-generator",
+    "wow-name-generator",
+    "elden-ring-name-generator",
+    "dnd-name-generator",
+    "pokemon-username-generator",
+    "dragon-ball-username-generator",
+    "naruto-username-generator",
+    "one-piece-username-generator",
+    "kpop-username-generator",
+    "cute-username-generator",
+    "dark-username-generator",
+    "cool-username-generator",
+    "funny-username-generator",
+    "aesthetic-username-generator",
+    "hacker-username-generator",
+    "streamer-name-generator",
+    "vtuber-name-generator",
+    "esports-team-name-generator",
+    "guild-name-generator",
+    "duo-name-generator",
+    "squad-name-generator",
+    "pet-name-generator",
+    "guild-tag-generator",
+    "username-ideas-generator",
+    "gamer-tag-generator",
+    "social-media-username-generator",
+    "fps-name-generator",
+    "survival-game-name-generator",
+  ]);
+
+  const targets: Array<{
+    slug: string;
+    label: string;
+    category: string;
+    seed: string;
+    variants: Array<{
+      slugSuffix: string;
+      titleSuffix: string;
+      descriptionNoun: string;
+    }>;
+  }> = [
+    {
+      slug: "minecraft",
+      label: "Minecraft",
+      category: "gaming",
+      seed: "Block",
+      variants: [
+        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
+        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
+        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
+        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
+      ],
+    },
+    {
+      slug: "valorant",
+      label: "Valorant",
+      category: "gaming",
+      seed: "Clutch",
+      variants: [
+        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
+        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
+        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
+        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
+      ],
+    },
+    {
+      slug: "apex",
+      label: "Apex",
+      category: "gaming",
+      seed: "Legend",
+      variants: [
+        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
+        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
+        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
+        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
+      ],
+    },
+    {
+      slug: "cod",
+      label: "Call of Duty",
+      category: "gaming",
+      seed: "Tactical",
+      variants: [
+        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
+        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
+        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
+        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
+      ],
+    },
+    {
+      slug: "steam",
+      label: "Steam",
+      category: "gaming",
+      seed: "Valve",
+      variants: [
+        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
+        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
+        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
+        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
+      ],
+    },
+    {
+      slug: "psn",
+      label: "PSN",
+      category: "gaming",
+      seed: "Dual",
+      variants: [
+        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
+        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
+        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
+        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
+      ],
+    },
+    {
+      slug: "xbox",
+      label: "Xbox",
+      category: "gaming",
+      seed: "Halo",
+      variants: [
+        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
+        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
+        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
+      ],
+    },
+    {
+      slug: "twitch",
+      label: "Twitch",
+      category: "streaming",
+      seed: "Live",
+      variants: [
+        { slugSuffix: "streamer-name-generator", titleSuffix: "Streamer Name Generator", descriptionNoun: "streamer names" },
+        { slugSuffix: "gaming-name-generator", titleSuffix: "Gaming Name Generator", descriptionNoun: "gaming names" },
+        { slugSuffix: "handle-generator", titleSuffix: "Handle Generator", descriptionNoun: "handles" },
+        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+      ],
+    },
+    {
+      slug: "youtube",
+      label: "YouTube",
+      category: "streaming",
+      seed: "Clip",
+      variants: [
+        { slugSuffix: "streamer-name-generator", titleSuffix: "Streamer Name Generator", descriptionNoun: "streamer names" },
+        { slugSuffix: "gaming-name-generator", titleSuffix: "Gaming Name Generator", descriptionNoun: "gaming names" },
+        { slugSuffix: "handle-generator", titleSuffix: "Handle Generator", descriptionNoun: "handles" },
+        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+      ],
+    },
+    {
+      slug: "discord",
+      label: "Discord",
+      category: "social",
+      seed: "Echo",
+      variants: [
+        { slugSuffix: "streamer-name-generator", titleSuffix: "Streamer Name Generator", descriptionNoun: "streamer names" },
+        { slugSuffix: "gaming-name-generator", titleSuffix: "Gaming Name Generator", descriptionNoun: "gaming names" },
+        { slugSuffix: "handle-generator", titleSuffix: "Handle Generator", descriptionNoun: "handles" },
+        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+      ],
+    },
+    {
+      slug: "tiktok",
+      label: "TikTok",
+      category: "social",
+      seed: "Trend",
+      variants: [
+        { slugSuffix: "streamer-name-generator", titleSuffix: "Streamer Name Generator", descriptionNoun: "streamer names" },
+        { slugSuffix: "gaming-name-generator", titleSuffix: "Gaming Name Generator", descriptionNoun: "gaming names" },
+        { slugSuffix: "handle-generator", titleSuffix: "Handle Generator", descriptionNoun: "handles" },
+        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+      ],
+    },
+    {
+      slug: "instagram",
+      label: "Instagram",
+      category: "social",
+      seed: "Aura",
+      variants: [
+        { slugSuffix: "streamer-name-generator", titleSuffix: "Streamer Name Generator", descriptionNoun: "streamer names" },
+        { slugSuffix: "gaming-name-generator", titleSuffix: "Gaming Name Generator", descriptionNoun: "gaming names" },
+        { slugSuffix: "handle-generator", titleSuffix: "Handle Generator", descriptionNoun: "handles" },
+        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+      ],
+    },
+    {
+      slug: "reddit",
+      label: "Reddit",
+      category: "social",
+      seed: "Thread",
+      variants: [
+        { slugSuffix: "streamer-name-generator", titleSuffix: "Streamer Name Generator", descriptionNoun: "streamer names" },
+        { slugSuffix: "gaming-name-generator", titleSuffix: "Gaming Name Generator", descriptionNoun: "gaming names" },
+        { slugSuffix: "handle-generator", titleSuffix: "Handle Generator", descriptionNoun: "handles" },
+        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+      ],
+    },
+    {
+      slug: "kick",
+      label: "Kick",
+      category: "streaming",
+      seed: "Prime",
+      variants: [
+        { slugSuffix: "streamer-name-generator", titleSuffix: "Streamer Name Generator", descriptionNoun: "streamer names" },
+        { slugSuffix: "gaming-name-generator", titleSuffix: "Gaming Name Generator", descriptionNoun: "gaming names" },
+        { slugSuffix: "handle-generator", titleSuffix: "Handle Generator", descriptionNoun: "handles" },
+        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+      ],
+    },
+    {
+      slug: "halo",
+      label: "Halo",
+      category: "gaming",
+      seed: "Spartan",
+      variants: [
+        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
+        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
+        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
+        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
+      ],
+    },
+    {
+      slug: "rocket-league",
+      label: "Rocket League",
+      category: "gaming",
+      seed: "Boost",
+      variants: [
+        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
+        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
+        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
+        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
+      ],
+    },
+    {
+      slug: "gta",
+      label: "GTA",
+      category: "gaming",
+      seed: "Vice",
+      variants: [
+        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
+        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
+        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
+        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
+      ],
+    },
+    {
+      slug: "rainbow-six",
+      label: "Rainbow Six",
+      category: "gaming",
+      seed: "Siege",
+      variants: [
+        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
+        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
+        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
+        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
+      ],
+    },
+    {
+      slug: "destiny",
+      label: "Destiny",
+      category: "gaming",
+      seed: "Guardian",
+      variants: [
+        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
+        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
+        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
+        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
+      ],
+    },
+    {
+      slug: "battlefield",
+      label: "Battlefield",
+      category: "gaming",
+      seed: "Squad",
+      variants: [
+        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
+        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
+        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
+        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
+      ],
+    },
+    {
+      slug: "fifa",
+      label: "FIFA",
+      category: "gaming",
+      seed: "Goal",
+      variants: [
+        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
+        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
+        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
+        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
+      ],
+    },
+    {
+      slug: "ea-fc",
+      label: "EA FC",
+      category: "gaming",
+      seed: "Ultra",
+      variants: [
+        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
+        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
+        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
+        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
+      ],
+    },
+    {
+      slug: "pokemon",
+      label: "Pokemon",
+      category: "fandom",
+      seed: "Trainer",
+      variants: [
+        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
+        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
+      ],
+    },
+    {
+      slug: "naruto",
+      label: "Naruto",
+      category: "fandom",
+      seed: "Shinobi",
+      variants: [
+        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
+        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
+      ],
+    },
+    {
+      slug: "one-piece",
+      label: "One Piece",
+      category: "fandom",
+      seed: "Pirate",
+      variants: [
+        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
+        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
+      ],
+    },
+    {
+      slug: "dragon-ball",
+      label: "Dragon Ball",
+      category: "fandom",
+      seed: "Saiyan",
+      variants: [
+        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
+        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
+      ],
+    },
+    {
+      slug: "elden-ring",
+      label: "Elden Ring",
+      category: "fantasy",
+      seed: "Rune",
+      variants: [
+        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
+        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
+      ],
+    },
+    {
+      slug: "wow",
+      label: "WoW",
+      category: "fantasy",
+      seed: "Azeroth",
+      variants: [
+        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
+        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
+      ],
+    },
+    {
+      slug: "dnd",
+      label: "D&D",
+      category: "fantasy",
+      seed: "Arcane",
+      variants: [
+        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
+        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
+      ],
+    },
+  ];
+
+  const entries: GeneratorDirectoryEntry[] = [];
+
+  for (const target of targets) {
+    for (const variant of target.variants) {
+      const slug = `${target.slug}-${variant.slugSuffix}`;
+      if (existingSlugs.has(slug)) continue;
+      existingSlugs.add(slug);
+
+      entries.push({
+        slug,
+        title: `${target.label} ${variant.titleSuffix}`,
+        description: `Generate ${target.label} ${variant.descriptionNoun} for gaming, creator profiles, communities, and themed identities.`,
+        exampleNames: buildExpandedExamples(target.seed, target.label),
+        category: target.category,
+      });
+    }
+  }
+
+  return entries.slice(0, 200);
+}
+
+function buildExpandedExamples(seed: string, label: string) {
+  const shortLabel = label.replace(/[^A-Za-z0-9]/g, "").slice(0, 8) || "Nova";
+  return [
+    `${seed}Nova`,
+    `${shortLabel}Wolf`,
+    `${seed}Ghost`,
+    `${shortLabel}Knight`,
+    `${seed}Rider`,
+  ];
+}
 
 export const generatorSlugs = generatorDatabase.map((entry) => entry.slug);
 
@@ -603,12 +1099,15 @@ export function getRelatedGenerators(slug: string, amount = 5): GeneratorDirecto
 
 export type UsernameStyle =
   | "cool"
-  | "funny"
-  | "dark"
   | "aesthetic"
+  | "dark"
+  | "funny"
   | "fantasy"
   | "hacker"
+  | "anime"
   | "streamer";
+
+export type UsernameLengthFilter = "short" | "medium" | "long";
 
 const prefixes = [
   "Shadow",
@@ -815,6 +1314,39 @@ const fantasySuffixes = [
   "born",
 ];
 
+const ogShortNames = [
+  "Nova",
+  "Zyro",
+  "Xeno",
+  "Vyre",
+  "Kiro",
+  "Sora",
+  "Zeki",
+  "Nexo",
+  "Aero",
+  "Kyro",
+  "Raze",
+  "Vexo",
+  "Taro",
+  "Nyro",
+  "Kova",
+  "Luvo",
+  "Zaro",
+  "Varo",
+  "Xyro",
+  "Kyzen",
+  "Drex",
+  "Nyx",
+  "Rivo",
+  "Zeph",
+  "Aven",
+  "Koda",
+  "Vexa",
+  "Zuno",
+  "Rynx",
+  "Tyro",
+];
+
 const clanWords = [
   "Legion",
   "Guard",
@@ -935,6 +1467,12 @@ const styleProfiles: Record<
     suffix: ["Script", "Inject", "Node", "Bit", "Shell", "Trace", "Hack", "Code", "Cipher", "Stack"],
     numberRate: 0.45,
   },
+  anime: {
+    core: ["Kitsune", "Shinobi", "Sakura", "Otaku", "Ronin", "Senpai", "Neko", "Yokai", "Kage", "Kami", "Akira", "Hikari"],
+    prefix: ["Neo", "Shadow", "Crimson", "Lunar", "Ghost", "Silver", "Storm", "Nova", "Tokyo", "Spirit"],
+    suffix: ["Chan", "Kun", "Blade", "Pulse", "Soul", "Wave", "Fang", "Aura", "X", "Sensei"],
+    numberRate: 0.22,
+  },
   streamer: {
     core: ["Live", "Clip", "Hype", "Chat", "Prime", "Epic", "Focus", "Raid", "Cast", "Stage", "Channel", "Creator"],
     prefix: ["Pro", "Ultra", "Neon", "GG", "Turbo", "Real", "Live", "Prime", "Top", "Next"],
@@ -953,6 +1491,13 @@ function withNumber(name: string) {
 
 function sanitizeToken(token: string) {
   return token.replace(/[^a-zA-Z0-9]/g, "");
+}
+
+function splitNameTokens(value: string) {
+  return value
+    .split(/(?=[A-Z])|[^a-zA-Z0-9]+/)
+    .map((token) => toPascal(sanitizeToken(token)))
+    .filter(Boolean);
 }
 
 function clampLength(length: number) {
@@ -1022,9 +1567,21 @@ function buildPatternCandidate({
   return capitalizeFirst(randomFrom(structures));
 }
 
-function fitCandidateLength(candidate: string, targetLength: number, fallbackPool: string[]) {
-  const minLength = Math.max(6, targetLength - 3);
-  const maxLength = targetLength + 3;
+function normalizeLengthRange(length: number, minLength?: number, maxLength?: number) {
+  if (typeof minLength === "number" && typeof maxLength === "number") {
+    const safeMin = Math.max(4, Math.min(15, Math.round(minLength)));
+    const safeMax = Math.max(safeMin, Math.min(15, Math.round(maxLength)));
+    return { minLength: safeMin, maxLength: safeMax };
+  }
+
+  const targetLength = clampLength(length);
+  return {
+    minLength: Math.max(6, targetLength - 3),
+    maxLength: targetLength + 3,
+  };
+}
+
+function fitCandidateLength(candidate: string, minLength: number, maxLength: number, fallbackPool: string[]) {
   if (candidate.length >= minLength && candidate.length <= maxLength) return candidate;
 
   if (candidate.length < minLength) {
@@ -1044,14 +1601,18 @@ export function generateUsernames({
   length,
   style,
   amount = 20,
+  minLength,
+  maxLength,
 }: {
   keywords: string[];
   length: number;
   style: UsernameStyle;
   amount?: number;
+  minLength?: number;
+  maxLength?: number;
 }): string[] {
   const safeAmount = Math.max(1, amount);
-  const targetLength = clampLength(length);
+  const range = normalizeLengthRange(length, minLength, maxLength);
   const profile = styleProfiles[style];
   const normalizedKeywords = keywords.map((k) => toPascal(sanitizeToken(k))).filter(Boolean);
   const prefixesPool = uniqueMerge(prefixes, profile.prefix);
@@ -1075,7 +1636,7 @@ export function generateUsernames({
       candidate = applyHackerTransform(candidate);
     }
 
-    const fitted = fitCandidateLength(candidate, targetLength, suffixesPool);
+    const fitted = fitCandidateLength(candidate, range.minLength, range.maxLength, suffixesPool);
     if (!fitted) continue;
 
     if (/^[A-Za-z0-9@]+$/.test(fitted)) {
@@ -1083,10 +1644,72 @@ export function generateUsernames({
     }
   }
 
-  while (output.size < safeAmount) {
+  while (output.size < safeAmount && attempts < maxAttempts * 2) {
+    attempts += 1;
     let fallback = `${randomFrom(prefixesPool)}${randomFrom(corePool)}${generateNumberToken()}`;
     if (style === "hacker") fallback = applyHackerTransform(fallback);
-    output.add(fallback.slice(0, targetLength + 3));
+    const fittedFallback = fitCandidateLength(fallback, range.minLength, range.maxLength, suffixesPool);
+    if (fittedFallback && /^[A-Za-z0-9@]+$/.test(fittedFallback)) {
+      output.add(fittedFallback);
+    }
+  }
+
+  return Array.from(output);
+}
+
+export function generateSimilarUsernames({
+  baseName,
+  style,
+  amount = 10,
+  minLength,
+  maxLength,
+}: {
+  baseName: string;
+  style: UsernameStyle;
+  amount?: number;
+  minLength?: number;
+  maxLength?: number;
+}) {
+  const safeAmount = Math.max(1, amount);
+  const profile = styleProfiles[style];
+  const baseTokens = splitNameTokens(baseName);
+  const keywordPool = baseTokens.length > 0 ? baseTokens : [toPascal(sanitizeToken(baseName))].filter(Boolean);
+  const prefixesPool = uniqueMerge(prefixes, profile.prefix, keywordPool);
+  const corePool = uniqueMerge(profile.core, keywordPool);
+  const suffixesPool = uniqueMerge(suffixes, profile.suffix, keywordPool);
+  const range = normalizeLengthRange(maxLength ?? 10, minLength, maxLength);
+  const output = new Set<string>();
+  let attempts = 0;
+  const maxAttempts = safeAmount * 160;
+
+  while (output.size < safeAmount && attempts < maxAttempts) {
+    attempts += 1;
+    const first = randomFrom(keywordPool.length > 0 ? keywordPool : corePool);
+    const second = randomFrom(corePool);
+    const prefix = randomFrom(prefixesPool);
+    const suffix = randomFrom(suffixesPool);
+    const includeNumber = Math.random() < Math.max(0.12, profile.numberRate * 0.6);
+    const number = includeNumber ? generateNumberToken() : "";
+    const structures = [
+      `${first}${suffix}`,
+      `${prefix}${first}`,
+      `${first}${second}`,
+      `${second}${first}`,
+      `${prefix}${second}`,
+      `${first}${suffix}${number}`,
+    ];
+
+    let candidate = capitalizeFirst(randomFrom(structures));
+    if (style === "hacker" && Math.random() > 0.35) {
+      candidate = applyHackerTransform(candidate);
+    }
+
+    if (candidate === baseName) continue;
+    const fitted = fitCandidateLength(candidate, range.minLength, range.maxLength, suffixesPool);
+    if (!fitted || fitted === baseName) continue;
+    if (/^[A-Za-z0-9@]+$/.test(fitted)) {
+      output.add(fitted);
+    }
   }
 
   return Array.from(output);
@@ -1210,6 +1833,47 @@ export function generateFantasyNames({ keyword = "", amount = 30 }: { keyword?: 
   while (output.size < safeAmount) {
     const fallback = `${randomFrom(fantasyPrefixes)}${toPascal(randomFrom(fantasySuffixes))}`;
     output.add(fallback);
+  }
+
+  return Array.from(output);
+}
+
+export function generateOgUsernames({ keyword = "", amount = 24 }: { keyword?: string; amount?: number }) {
+  const safeAmount = Math.max(1, amount);
+  const safeKeyword = toPascal(sanitizeToken(keyword));
+  const keywordBase = safeKeyword.slice(0, 5);
+  const output = new Set<string>();
+  let attempts = 0;
+  const maxAttempts = safeAmount * 140;
+
+  while (output.size < safeAmount && attempts < maxAttempts) {
+    attempts += 1;
+    const base = randomFrom(ogShortNames);
+    const alt = randomFrom(ogShortNames);
+    const useKeyword = Boolean(keywordBase) && Math.random() > 0.45;
+
+    const structures = [
+      base,
+      alt,
+      `${base.slice(0, 2)}${alt.slice(0, 2)}`,
+      `${alt.slice(0, 2)}${base.slice(2, 4)}`,
+      `${base.slice(0, 3)}${alt.slice(0, 1)}`,
+      `${alt.slice(0, 3)}${base.slice(0, 1)}`,
+      useKeyword ? keywordBase : base,
+      useKeyword ? `${keywordBase.slice(0, 2)}${base.slice(0, 2)}` : base,
+    ].filter(Boolean);
+
+    const candidate = capitalizeFirst(randomFrom(structures)).slice(0, 5);
+    if (!/^[A-Za-z0-9]+$/.test(candidate)) continue;
+    if (candidate.length < 4 || candidate.length > 5) continue;
+    output.add(candidate);
+  }
+
+  while (output.size < safeAmount) {
+    const fallback = randomFrom(ogShortNames);
+    if (fallback.length >= 4 && fallback.length <= 5) {
+      output.add(fallback);
+    }
   }
 
   return Array.from(output);

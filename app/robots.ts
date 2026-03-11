@@ -6,6 +6,8 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://gamertagforge.com/sitemap.xml",
+    sitemap: "https://www.namelaunchpad.com/sitemap.xml",
   };
 }
+
+

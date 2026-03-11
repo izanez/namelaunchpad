@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { RobloxEngine } from "@/components/generator/roblox-engine";
+import { RelatedGenerators } from "@/components/seo/related-generators";
 import { SeoContent } from "@/components/seo/seo-content";
 import { JsonLd } from "@/components/seo/json-ld";
-import { createGeneratorSchema } from "@/lib/seo";
+import { absoluteUrl } from "@/app/metadata";
+import { createBreadcrumbSchema, createGeneratorSchema } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Roblox Username Generator - Kid Friendly Roblox Usernames",
@@ -31,9 +33,15 @@ export default function RobloxGenerator() {
         data={createGeneratorSchema({
           title: "Roblox Username Generator",
           description: "Generate safe and kid-friendly Roblox usernames with playful name combinations.",
-          url: "https://gamertagforge.com/roblox-username-generator",
+          url: absoluteUrl("/roblox-username-generator"),
           category: "GameApplication",
         })}
+      />
+      <JsonLd
+        data={createBreadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Roblox Username Generator", path: "/roblox-username-generator" },
+        ])}
       />
       <RobloxEngine />
       <SeoContent
@@ -56,6 +64,9 @@ export default function RobloxGenerator() {
           { href: "/fortnite-name-generator", label: "Fortnite Name Generator" },
         ]}
       />
+      <RelatedGenerators currentSlug="roblox-username-generator" />
     </>
   );
 }
+
+

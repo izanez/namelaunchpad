@@ -1,6 +1,6 @@
-# GamertagForge
+# NameLaunchpad
 
-Premium username and gamertag generator built with Next.js App Router, TypeScript, and TailwindCSS.
+Premium username platform built with Next.js App Router, TypeScript, and TailwindCSS.
 
 ## Stack
 
@@ -40,7 +40,7 @@ Copy `.env.example` to `.env.local` and fill in values if needed.
 
 ## Vercel deploy
 
-1. Create a new GitHub repository, for example `GamertagForge`
+1. Create a new GitHub repository, for example `NameLaunchpad`
 2. Push this project to GitHub
 3. Import the repository into Vercel
 4. Add environment variables from `.env.example`
@@ -53,6 +53,7 @@ git init
 git add .
 git commit -m "Initial commit"
 git branch -M main
-git remote add origin https://github.com/izanez/GamertagForge.git
+git remote add origin https://github.com/izanez/NameLaunchpad.git
 git push -u origin main
 ```
+

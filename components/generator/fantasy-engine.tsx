@@ -2,10 +2,12 @@
 
 import { startTransition, useEffect, useMemo, useState } from "react";
 import { AdSlot } from "@/components/ads/ad-slot";
+import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { LoadingGrid } from "@/components/generator/loading-grid";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { generateFantasyNames } from "@/lib/generators";
+import { trackGeneratorUsage } from "@/lib/generator-stats";
 
 const examples = ["Shadowbane", "DragonSlayerX", "Stormwarden", "Nightfang", "FrostKnight"];
 
@@ -15,13 +17,15 @@ export function FantasyEngine() {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [copied, setCopied] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
-  const storageKey = useMemo(() => "gamertagforge:favorites:fantasy-engine", []);
+  const storageKey = useMemo(() => "namelaunchpad:favorites:fantasy-engine", []);
 
   const onGenerate = () => {
     setIsGenerating(true);
     window.setTimeout(() => {
       startTransition(() => {
-        setResults(generateFantasyNames({ keyword, amount: 30 }));
+        const next = generateFantasyNames({ keyword, amount: 30 });
+        setResults(next);
+        trackGeneratorUsage("fantasy-name-generator", next.length);
       });
       setIsGenerating(false);
     }, 120);
@@ -66,6 +70,13 @@ export function FantasyEngine() {
       <div className="grid gap-7 xl:grid-cols-[minmax(0,1fr)_300px]">
         <Card className="overflow-hidden border-purple-300/25 p-0">
           <div className="bg-gradient-to-r from-purple-600/30 via-indigo-500/20 to-cyan-400/15 p-6 md:p-8">
+            <Breadcrumbs
+              items={[
+                { label: "Home", href: "/" },
+                { label: "Generators", href: "/all-generators" },
+                { label: "Fantasy Name Generator" },
+              ]}
+            />
             <h1 className="text-3xl font-black text-white md:text-4xl">Fantasy Name Generator</h1>
             <p className="mt-2 max-w-3xl text-slate-200">
               Craft heroic RPG names with fantasy-inspired prefixes and suffixes for knights, mages, rogues, and guild
@@ -145,3 +156,4 @@ export function FantasyEngine() {
     </section>
   );
 }
+

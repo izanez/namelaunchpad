@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { FortniteEngine } from "@/components/generator/fortnite-engine";
+import { RelatedGenerators } from "@/components/seo/related-generators";
 import { SeoContent } from "@/components/seo/seo-content";
 import { JsonLd } from "@/components/seo/json-ld";
-import { createGeneratorSchema } from "@/lib/seo";
+import { absoluteUrl } from "@/app/metadata";
+import { createBreadcrumbSchema, createGeneratorSchema } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Fortnite Name Generator - Cool Fortnite Gamertags",
@@ -25,9 +27,15 @@ export default function FortniteGenerator() {
         data={createGeneratorSchema({
           title: "Fortnite Name Generator",
           description: "Generate cool Fortnite gamertags, sweaty usernames, and battle-ready aliases.",
-          url: "https://gamertagforge.com/fortnite-name-generator",
+          url: absoluteUrl("/fortnite-name-generator"),
           category: "GameApplication",
         })}
+      />
+      <JsonLd
+        data={createBreadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Fortnite Name Generator", path: "/fortnite-name-generator" },
+        ])}
       />
       <FortniteEngine />
       <SeoContent
@@ -47,9 +55,12 @@ export default function FortniteGenerator() {
           { href: "/valorant-name-generator", label: "Valorant Name Generator" },
           { href: "/twitch-username-generator", label: "Twitch Username Generator" },
           { href: "/username-generator", label: "Username Generator" },
-          { href: "/gamer-tag-generator", label: "Gamer Tag Generator" },
+          { href: "/gamer-tag-generator", label: "NameLaunchpad" },
         ]}
       />
+      <RelatedGenerators currentSlug="fortnite-name-generator" />
     </>
   );
 }
+
+

@@ -9,6 +9,8 @@ import {
   type GeneratorCategorySlug,
 } from "@/lib/generators";
 import { JsonLd } from "@/components/seo/json-ld";
+import { absoluteUrl } from "@/app/metadata";
+import { createBreadcrumbSchema } from "@/lib/seo";
 
 type PageProps = {
   params: Promise<{
@@ -40,7 +42,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: `${category.title} Username Generators`,
       description: category.description,
       type: "website",
-      url: `https://gamertagforge.com${getCategoryPath(category.slug)}`,
+      url: absoluteUrl(getCategoryPath(category.slug)),
     },
     alternates: {
       canonical: getCategoryPath(category.slug),
@@ -63,8 +65,15 @@ export default async function CategoryPage({ params }: PageProps) {
           "@type": "CollectionPage",
           name: `${category.title} Username Generators`,
           description: category.description,
-          url: `https://gamertagforge.com${getCategoryPath(category.slug)}`,
+          url: absoluteUrl(getCategoryPath(category.slug)),
         }}
+      />
+      <JsonLd
+        data={createBreadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Categories", path: getCategoryPath(category.slug) },
+          { name: category.title, path: getCategoryPath(category.slug) },
+        ])}
       />
       <section className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6">
         <div className="rounded-3xl border border-white/10 bg-white/5 p-7 backdrop-blur-xl md:p-10">
@@ -109,3 +118,5 @@ export default async function CategoryPage({ params }: PageProps) {
     </>
   );
 }
+
+

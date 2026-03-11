@@ -3,9 +3,11 @@
 import { startTransition, useEffect, useMemo, useState } from "react";
 import { AdSlot } from "@/components/ads/ad-slot";
 import { LoadingGrid } from "@/components/generator/loading-grid";
+import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { generateTags, type GeneratorType } from "@/lib/generators";
+import { trackGeneratorUsage } from "@/lib/generator-stats";
 
 type GeneratorPageProps = {
   type: GeneratorType;
@@ -21,7 +23,7 @@ export function GeneratorPage({ type, title, description }: GeneratorPageProps) 
   const [isGenerating, setIsGenerating] = useState(false);
 
   const canGenerate = useMemo(() => seed.trim().length <= 25, [seed]);
-  const storageKey = useMemo(() => `gamertagforge:favorites:${type}`, [type]);
+  const storageKey = useMemo(() => `namelaunchpad:favorites:${type}`, [type]);
 
   useEffect(() => {
     const cached = window.localStorage.getItem(storageKey);
@@ -45,6 +47,7 @@ export function GeneratorPage({ type, title, description }: GeneratorPageProps) 
       startTransition(() => {
         setResults(next);
       });
+      trackGeneratorUsage(`${type}-generator`, next.length);
       setIsGenerating(false);
     }, 120);
   };
@@ -72,6 +75,13 @@ export function GeneratorPage({ type, title, description }: GeneratorPageProps) 
       <div className="grid gap-7 xl:grid-cols-[minmax(0,1fr)_300px]">
         <div className="space-y-7">
           <Card className="p-6 md:p-8">
+            <Breadcrumbs
+              items={[
+                { label: "Home", href: "/" },
+                { label: "Generators", href: "/all-generators" },
+                { label: title },
+              ]}
+            />
             <h1 className="text-3xl font-black text-white md:text-4xl">{title}</h1>
             <p className="mt-2 max-w-2xl text-slate-300">{description}</p>
 
@@ -157,3 +167,4 @@ export function GeneratorPage({ type, title, description }: GeneratorPageProps) 
     </section>
   );
 }
+

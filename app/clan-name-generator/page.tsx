@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { GeneratorPage } from "@/components/generator/generator-page";
+import { RelatedGenerators } from "@/components/seo/related-generators";
 import { SeoContent } from "@/components/seo/seo-content";
 import { JsonLd } from "@/components/seo/json-ld";
-import { createGeneratorSchema } from "@/lib/seo";
+import { absoluteUrl } from "@/app/metadata";
+import { createBreadcrumbSchema, createGeneratorSchema } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Clan Name Generator - Team and Gaming Clan Names",
@@ -25,9 +27,15 @@ export default function ClanGenerator() {
         data={createGeneratorSchema({
           title: "Clan Name Generator",
           description: "Generate team names and clan names for squads, esports groups, and communities.",
-          url: "https://gamertagforge.com/clan-name-generator",
+          url: absoluteUrl("/clan-name-generator"),
           category: "UtilitiesApplication",
         })}
+      />
+      <JsonLd
+        data={createBreadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Clan Name Generator", path: "/clan-name-generator" },
+        ])}
       />
       <GeneratorPage
         type="clan"
@@ -51,9 +59,12 @@ export default function ClanGenerator() {
           { href: "/discord-name-generator", label: "Discord Name Generator" },
           { href: "/valorant-name-generator", label: "Valorant Name Generator" },
           { href: "/fortnite-name-generator", label: "Fortnite Name Generator" },
-          { href: "/gamer-tag-generator", label: "Gamer Tag Generator" },
+          { href: "/gamer-tag-generator", label: "NameLaunchpad" },
         ]}
       />
+      <RelatedGenerators currentSlug="clan-name-generator" />
     </>
   );
 }
+
+

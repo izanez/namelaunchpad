@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import { KeywordLandingGenerator } from "@/components/generator/keyword-landing-generator";
 import { getGeneratorEntry, generatorSlugs } from "@/lib/generators";
 import { JsonLd } from "@/components/seo/json-ld";
-import { createGeneratorMetadata, createGeneratorSchema } from "@/lib/seo";
+import { createBreadcrumbSchema, createGeneratorMetadata, createGeneratorSchema } from "@/lib/seo";
+import { absoluteUrl } from "@/app/metadata";
 
 type PageProps = {
   params: Promise<{
@@ -38,11 +39,20 @@ export default async function GeneratorLandingPage({ params }: PageProps) {
         data={createGeneratorSchema({
           title: page.title,
           description: page.description,
-          url: `https://gamertagforge.com${getGeneratorPath(page.slug)}`,
+          url: absoluteUrl(getGeneratorPath(page.slug)),
           category: "UtilitiesApplication",
         })}
+      />
+      <JsonLd
+        data={createBreadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Generators", path: getGeneratorPath(page.slug) },
+          { name: page.title, path: getGeneratorPath(page.slug) },
+        ])}
       />
       <KeywordLandingGenerator page={page} />
     </>
   );
 }
+
+
