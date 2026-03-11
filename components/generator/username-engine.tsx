@@ -156,6 +156,18 @@ function createShareLink(value: string) {
   return `${window.location.origin}/username-generator?keywords=${encodeURIComponent(value)}`;
 }
 
+function downloadTextFile(filename: string, content: string, mimeType: string) {
+  if (typeof window === "undefined") return;
+
+  const blob = new Blob([content], { type: mimeType });
+  const url = window.URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.click();
+  window.URL.revokeObjectURL(url);
+}
+
 type ResultCardProps = {
   name: string;
   favorite: boolean;
@@ -602,6 +614,33 @@ export function UsernameEngine({
   const onDeleteFavorite = useCallback((value: string) => {
     setFavorites((current) => current.filter((item) => item !== value));
   }, []);
+
+  const onExportFavoritesTxt = useCallback(() => {
+    if (favorites.length === 0) return;
+    downloadTextFile("namelaunchpad-favorites.txt", favorites.join("\n"), "text/plain;charset=utf-8");
+    setToast("Favorites exported as TXT.");
+    window.setTimeout(() => setToast(null), 1800);
+  }, [favorites]);
+
+  const onExportFavoritesCsv = useCallback(() => {
+    if (favorites.length === 0) return;
+    const csvContent = ["username", ...favorites.map((value) => `"${value.replace(/"/g, '""')}"`)].join("\n");
+    downloadTextFile("namelaunchpad-favorites.csv", csvContent, "text/csv;charset=utf-8");
+    setToast("Favorites exported as CSV.");
+    window.setTimeout(() => setToast(null), 1800);
+  }, [favorites]);
+
+  const onCopyFavoritesList = useCallback(async () => {
+    if (favorites.length === 0) return;
+
+    try {
+      await navigator.clipboard.writeText(favorites.join("\n"));
+      setToast("Favorites list copied.");
+      window.setTimeout(() => setToast(null), 1800);
+    } catch {
+      setToast(null);
+    }
+  }, [favorites]);
 
   const onGenerateSimilar = useCallback(
     (value: string) => {
@@ -1070,9 +1109,24 @@ export function UsernameEngine({
           </Card>
 
           <Card className="p-6">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-bold text-white">Favorites</h2>
-              <span className="text-xs text-slate-400">{favorites.length} saved</span>
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div className="flex items-center justify-between gap-3">
+                <h2 className="text-xl font-bold text-white">Favorites</h2>
+                <span className="text-xs text-slate-400">{favorites.length} saved</span>
+              </div>
+              {favorites.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  <Button variant="ghost" className="px-3 py-2 text-xs" onClick={onExportFavoritesTxt}>
+                    Export TXT
+                  </Button>
+                  <Button variant="ghost" className="px-3 py-2 text-xs" onClick={onExportFavoritesCsv}>
+                    Export CSV
+                  </Button>
+                  <Button variant="ghost" className="px-3 py-2 text-xs" onClick={onCopyFavoritesList}>
+                    Copy List
+                  </Button>
+                </div>
+              ) : null}
             </div>
             {favorites.length === 0 ? (
               <p className="mt-3 text-sm text-slate-400">No favorites yet. Star usernames you want to keep.</p>
