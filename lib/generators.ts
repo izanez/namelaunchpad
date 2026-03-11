@@ -880,113 +880,6 @@ export type UsernameStyle =
 
 export type UsernameLengthFilter = "short" | "medium" | "long";
 
-const prefixes = [
-  "Shadow",
-  "Cyber",
-  "Nova",
-  "Ghost",
-  "Pixel",
-  "Void",
-  "Storm",
-  "Dark",
-  "Neon",
-  "Alpha",
-  "Omega",
-  "Hyper",
-  "Turbo",
-  "Blaze",
-  "Frost",
-  "Crimson",
-  "Iron",
-  "Silent",
-  "Rapid",
-  "Night",
-  "Phantom",
-  "Titan",
-  "Aero",
-  "Solar",
-  "Lunar",
-  "Quantum",
-  "Viral",
-  "Savage",
-  "Fatal",
-  "Arc",
-  "Zero",
-  "Prime",
-  "Steel",
-  "Venom",
-  "Obsidian",
-  "Inferno",
-  "Thunder",
-  "Mystic",
-  "Rune",
-  "Drift",
-  "Pulse",
-  "Nova",
-  "Vortex",
-  "Echo",
-  "Glitch",
-  "Spectral",
-  "Rogue",
-  "Astral",
-  "Chrome",
-  "Velocity",
-  "Warden",
-];
-
-const suffixes = [
-  "Strike",
-  "Slayer",
-  "Knight",
-  "Hunter",
-  "Rider",
-  "Phantom",
-  "Sniper",
-  "Lord",
-  "Wolf",
-  "Storm",
-  "Pulse",
-  "Echo",
-  "Rush",
-  "Drift",
-  "Rogue",
-  "Byte",
-  "Blade",
-  "Vortex",
-  "Shadow",
-  "Ghost",
-  "Fang",
-  "Core",
-  "Nova",
-  "Breaker",
-  "Warden",
-  "Reaper",
-  "Ranger",
-  "Havoc",
-  "Blitz",
-  "Cipher",
-  "Mancer",
-  "Master",
-  "Sentinel",
-  "Legend",
-  "Assassin",
-  "Raider",
-  "Champion",
-  "Operator",
-  "Crusher",
-  "Samurai",
-  "Titan",
-  "Spark",
-  "Glitch",
-  "Shade",
-  "Caster",
-  "Seeker",
-  "Specter",
-  "Guardian",
-  "Claw",
-  "Fury",
-];
-
 const robloxWords = [
   "Block",
   "Craft",
@@ -1181,75 +1074,444 @@ const offensiveBlocklist = [
   "abuse",
 ];
 
+type StyleWordSeedGroup = {
+  prefixBases: string[];
+  coreBases: string[];
+  suffixBases: string[];
+  fragments: string[];
+  numberRate: number;
+};
+
+function uniqueTitleCase(list: string[]) {
+  return Array.from(new Set(list.map((value) => value.trim()).filter(Boolean).map((value) => value.charAt(0).toUpperCase() + value.slice(1))));
+}
+
+function buildWordLibrary(left: string[], right: string[], limit: number, { min = 4, max = 14 } = {}) {
+  const output: string[] = [];
+  for (const leftPart of left) {
+    for (const rightPart of right) {
+      const candidate = `${leftPart}${rightPart}`.replace(/[^A-Za-z0-9]/g, "");
+      if (candidate.length >= min && candidate.length <= max) {
+        output.push(candidate.charAt(0).toUpperCase() + candidate.slice(1));
+      }
+      if (output.length >= limit * 2) {
+        return uniqueTitleCase(output).slice(0, limit);
+      }
+    }
+  }
+  return uniqueTitleCase(output).slice(0, limit);
+}
+
+function buildFragmentLibrary() {
+  const starts = ["ka", "ki", "ko", "ky", "ra", "re", "ri", "ro", "ru", "sa", "se", "shi", "so", "su", "ta", "te", "ti", "to", "tu", "va", "ve", "vi", "vo", "xa", "xe", "xi", "xo", "za", "ze", "zi", "zo", "ly", "ny", "ry", "fy", "my"];
+  const mids = ["a", "e", "i", "o", "u", "ae", "ai", "ea", "eo", "ia", "io", "oa", "oi", "ua", "ui", "yx", "yr", "yl"];
+  const ends = ["n", "r", "x", "z", "v", "ro", "ra", "ri", "rex", "zen", "zor", "ven", "vex", "dor", "lix", "kir", "tos", "mir", "ryn", "sen", "vek", "kai", "shi", "ron"];
+  const fragments: string[] = [];
+
+  for (const start of starts) {
+    for (const mid of mids) {
+      for (const end of ends) {
+        const candidate = `${start}${mid}${end}`;
+        if (candidate.length >= 3 && candidate.length <= 6) {
+          fragments.push(candidate.charAt(0).toUpperCase() + candidate.slice(1));
+        }
+      }
+    }
+  }
+
+  return uniqueTitleCase(fragments).slice(0, 800);
+}
+
+const shortFragments = buildFragmentLibrary();
+
+const commonPrefixModifiers = uniqueTitleCase([
+  "Shadow",
+  "Cyber",
+  "Ghost",
+  "Pixel",
+  "Void",
+  "Storm",
+  "Crimson",
+  "Frost",
+  "Nova",
+  "Blaze",
+  "Venom",
+  "Dragon",
+  "Glitch",
+  "Pulse",
+  "Rogue",
+  "Dark",
+  "Luna",
+  "Neon",
+  "Iron",
+  "Silver",
+  "Rapid",
+  "Turbo",
+  "Quantum",
+  "Silent",
+  "Night",
+  "Astral",
+  "Chrome",
+  "Prime",
+  "Solar",
+  "Lunar",
+  "Inferno",
+  "Mystic",
+  "Rune",
+  "Toxic",
+  "Fatal",
+  "Alpha",
+  "Omega",
+  "Hyper",
+  "Zero",
+  "Aero",
+  "Arc",
+  "Scarlet",
+  "Ivory",
+  "Steel",
+  "Ember",
+  "Obsidian",
+  "Phantom",
+  "Viper",
+  "Thunder",
+  "Savage",
+  "Eternal",
+  "Hex",
+  "Spirit",
+  "Wicked",
+  "Electric",
+  "Virtual",
+  "Cosmic",
+  "Aurora",
+  "Velvet",
+  "Glimmer",
+  "Dread",
+  "Blood",
+  "Hollow",
+  "Midnight",
+]);
+
+const commonThemeRoots = uniqueTitleCase([
+  "Nova",
+  "Knight",
+  "Viper",
+  "Rider",
+  "Fang",
+  "Pulse",
+  "Reaper",
+  "Wolf",
+  "Samurai",
+  "Phantom",
+  "Breaker",
+  "Cipher",
+  "Seeker",
+  "Ghost",
+  "Storm",
+  "Blaze",
+  "Rogue",
+  "Drift",
+  "Warden",
+  "Vortex",
+  "Byte",
+  "Core",
+  "Spark",
+  "Legend",
+  "Claw",
+  "Strike",
+  "Blade",
+  "Mancer",
+  "Hunter",
+  "Raider",
+  "Sentinel",
+  "Oracle",
+  "Caster",
+  "Shifter",
+  "Runner",
+  "Ranger",
+  "Howl",
+  "Echo",
+  "Glow",
+  "Skies",
+  "Myth",
+  "Dragon",
+  "Mage",
+  "Ronin",
+  "Shinobi",
+  "Otaku",
+  "Kernel",
+  "Proxy",
+  "Daemon",
+  "Socket",
+  "Creator",
+  "Channel",
+  "Raid",
+  "Hype",
+  "Studio",
+  "Clips",
+  "Arena",
+  "Quest",
+  "Titan",
+  "Vandal",
+  "Sniper",
+  "Shade",
+  "Venom",
+  "Luna",
+]);
+
+const commonSuffixStems = uniqueTitleCase([
+  "Strike",
+  "Slayer",
+  "Knight",
+  "Hunter",
+  "Rider",
+  "Phantom",
+  "Sniper",
+  "Lord",
+  "Wolf",
+  "Storm",
+  "Pulse",
+  "Echo",
+  "Rush",
+  "Drift",
+  "Rogue",
+  "Byte",
+  "Blade",
+  "Vortex",
+  "Fang",
+  "Core",
+  "Breaker",
+  "Warden",
+  "Reaper",
+  "Ranger",
+  "Havoc",
+  "Blitz",
+  "Cipher",
+  "Mancer",
+  "Master",
+  "Sentinel",
+  "Legend",
+  "Assassin",
+  "Raider",
+  "Champion",
+  "Operator",
+  "Crusher",
+  "Samurai",
+  "Titan",
+  "Spark",
+  "Glitch",
+  "Shade",
+  "Caster",
+  "Seeker",
+  "Specter",
+  "Guardian",
+  "Claw",
+  "Fury",
+  "Nova",
+  "Wave",
+  "Dawn",
+  "Mist",
+  "Soul",
+  "Sensei",
+  "Stack",
+  "Trace",
+  "TV",
+  "Live",
+  "Zone",
+  "Show",
+]);
+
+const commonCoreConnectors = uniqueTitleCase([
+  "Arc",
+  "Forge",
+  "Shift",
+  "Volt",
+  "Flux",
+  "Mode",
+  "Rush",
+  "Drive",
+  "Quest",
+  "Crest",
+  "Bloom",
+  "Mist",
+  "Aura",
+  "Noir",
+  "Hex",
+  "Zen",
+  "Kai",
+  "Tek",
+  "Loop",
+  "Grid",
+  "Fire",
+  "Ice",
+  "Moon",
+  "Sun",
+  "Ash",
+  "Rune",
+  "Myth",
+  "Frost",
+  "Blitz",
+  "Glow",
+  "Gale",
+  "Bite",
+  "Howl",
+  "Cry",
+  "Drift",
+  "Echo",
+  "Lock",
+  "Code",
+  "Wire",
+  "Cast",
+  "Raid",
+  "Clip",
+  "Chat",
+  "Stage",
+]);
+
+const numberTokens = uniqueTitleCase([
+  ...Array.from({ length: 90 }, (_, index) => String(index + 10)),
+  ...Array.from({ length: 900 }, (_, index) => String(index + 100)),
+  ...Array.from({ length: 400 }, (_, index) => String(index + 1000)),
+]);
+
+const prefixes = uniqueTitleCase([
+  ...commonPrefixModifiers,
+  ...buildWordLibrary(commonPrefixModifiers, commonThemeRoots, 2200, { min: 5, max: 14 }),
+  ...buildWordLibrary(commonPrefixModifiers, shortFragments.slice(0, 240), 900, { min: 5, max: 12 }),
+]).slice(0, 3200);
+
+const coreWords = uniqueTitleCase([
+  ...commonThemeRoots,
+  ...buildWordLibrary(commonThemeRoots, commonCoreConnectors, 1600, { min: 5, max: 14 }),
+  ...buildWordLibrary(commonCoreConnectors, commonThemeRoots, 1200, { min: 5, max: 14 }),
+  ...buildWordLibrary(shortFragments.slice(0, 300), commonThemeRoots, 700, { min: 4, max: 12 }),
+]).slice(0, 3200);
+
+const suffixes = uniqueTitleCase([
+  ...commonSuffixStems,
+  ...buildWordLibrary(commonThemeRoots, commonSuffixStems, 1700, { min: 5, max: 14 }),
+  ...buildWordLibrary(commonCoreConnectors, commonSuffixStems, 900, { min: 4, max: 12 }),
+  ...buildWordLibrary(shortFragments.slice(60, 420), commonSuffixStems, 700, { min: 4, max: 12 }),
+]).slice(0, 3200);
+
+export function getUsernameWordLibraryStats() {
+  return {
+    prefixes: prefixes.length,
+    coreWords: coreWords.length,
+    suffixes: suffixes.length,
+    shortFragments: shortFragments.length,
+    numberTokens: numberTokens.length,
+    styleProfiles: Object.fromEntries(
+      (Object.entries(styleProfiles) as Array<[UsernameStyle, { core: string[]; prefix: string[]; suffix: string[] }]>).map(
+        ([style, profile]) => [
+          style,
+          {
+            prefixes: profile.prefix.length,
+            coreWords: profile.core.length,
+            suffixes: profile.suffix.length,
+          },
+        ]
+      )
+    ),
+  };
+}
+
+const styleWordSeeds: Record<UsernameStyle, StyleWordSeedGroup> = {
+  cool: {
+    prefixBases: ["Shadow", "Cyber", "Nova", "Ghost", "Pixel", "Storm", "Crimson", "Frost", "Blaze", "Pulse", "Rogue", "Viper"],
+    coreBases: ["Nova", "Knight", "Viper", "Pulse", "Blaze", "Rider", "Drift", "Echo", "Strike", "Breaker", "Wolf", "Rush"],
+    suffixBases: ["Knight", "Rider", "Strike", "Blaze", "Legend", "Breaker", "Core", "Wave", "Dash", "Storm"],
+    fragments: shortFragments.slice(0, 120),
+    numberRate: 0.32,
+  },
+  funny: {
+    prefixBases: ["Sir", "Captain", "Waffle", "Pickle", "Banana", "Goofy", "Tiny", "Bouncy", "Noodle", "Cheese"],
+    coreBases: ["Wizard", "Pants", "Potato", "Nugget", "Toast", "Monkey", "Muffin", "Gremlin", "Toaster", "Bean"],
+    suffixBases: ["Face", "Boi", "Snack", "Mcgee", "Club", "Mode", "Xd", "Lol", "Jr", "King"],
+    fragments: shortFragments.slice(120, 220),
+    numberRate: 0.25,
+  },
+  dark: {
+    prefixBases: ["Void", "Night", "Abyss", "Crypt", "Dread", "Phantom", "Obsidian", "Blood", "Hollow", "Venom"],
+    coreBases: ["Reaper", "Shade", "Fang", "Ruin", "Wraith", "Noir", "Hex", "Claw", "Howl", "Ghost"],
+    suffixBases: ["Reaper", "Shade", "Hex", "Ruin", "Lord", "Bite", "Ash", "Vex", "Mourn", "Claw"],
+    fragments: shortFragments.slice(220, 320),
+    numberRate: 0.2,
+  },
+  aesthetic: {
+    prefixBases: ["Luna", "Velvet", "Aura", "Cloud", "Rose", "Dream", "Opal", "Halo", "Pearl", "Bloom"],
+    coreBases: ["Glow", "Muse", "Mist", "Skies", "Dawn", "Vibe", "Petal", "Whisper", "Dusk", "Charm"],
+    suffixBases: ["Glow", "Bloom", "Mist", "Aura", "Dawn", "Vibe", "Dust", "Skies", "Wave", "Muse"],
+    fragments: shortFragments.slice(320, 420),
+    numberRate: 0.12,
+  },
+  fantasy: {
+    prefixBases: ["Dragon", "Rune", "Elder", "Storm", "Moon", "Crimson", "Frost", "Mystic", "Arcane", "Silver"],
+    coreBases: ["Warden", "Blade", "Knight", "Seer", "Mage", "Raven", "Slayer", "Oracle", "Paladin", "Titan"],
+    suffixBases: ["Blade", "Mage", "Knight", "Oracle", "Seer", "Slayer", "Caller", "Born", "Weaver", "Guard"],
+    fragments: shortFragments.slice(420, 520),
+    numberRate: 0.18,
+  },
+  hacker: {
+    prefixBases: ["Zero", "Null", "Cipher", "Root", "Byte", "Kernel", "Proxy", "Binary", "Quantum", "Trace"],
+    coreBases: ["Node", "Shell", "Hack", "Script", "Stack", "Packet", "Daemon", "Socket", "Matrix", "Inject"],
+    suffixBases: ["Node", "Bit", "Hex", "Code", "Loop", "Ping", "Glitch", "Wire", "Trace", "Stack"],
+    fragments: shortFragments.slice(520, 620),
+    numberRate: 0.45,
+  },
+  anime: {
+    prefixBases: ["Kitsune", "Sakura", "Kage", "Ronin", "Akira", "Shinobi", "Neko", "Hikari", "Yokai", "Luna"],
+    coreBases: ["Blade", "Soul", "Wave", "Pulse", "Sensei", "Kami", "Otaku", "Nova", "Fang", "Aura"],
+    suffixBases: ["Chan", "Kun", "Blade", "Soul", "Wave", "Sensei", "Kai", "Zen", "Spark", "Moon"],
+    fragments: shortFragments.slice(620, 720),
+    numberRate: 0.22,
+  },
+  streamer: {
+    prefixBases: ["Live", "Clip", "Prime", "Chat", "Raid", "Hype", "Stage", "Creator", "Channel", "Neon"],
+    coreBases: ["Caster", "Focus", "Channel", "Rush", "Raid", "Mic", "Pulse", "Show", "Stream", "Studio"],
+    suffixBases: ["Tv", "Live", "Gg", "Zone", "Show", "Arena", "Plays", "Media", "Clips", "Hub"],
+    fragments: shortFragments.slice(80, 180),
+    numberRate: 0.4,
+  },
+};
+
+function buildStyleProfile(seed: StyleWordSeedGroup) {
+  const prefix = uniqueTitleCase([
+    ...seed.prefixBases,
+    ...buildWordLibrary(seed.prefixBases, commonThemeRoots, 420, { min: 4, max: 14 }),
+    ...buildWordLibrary(seed.prefixBases, seed.fragments, 160, { min: 4, max: 12 }),
+  ]);
+  const core = uniqueTitleCase([
+    ...seed.coreBases,
+    ...buildWordLibrary(seed.prefixBases, seed.coreBases, 320, { min: 4, max: 14 }),
+    ...buildWordLibrary(seed.fragments, seed.coreBases, 140, { min: 4, max: 12 }),
+    ...buildWordLibrary(seed.coreBases, commonCoreConnectors, 120, { min: 4, max: 13 }),
+  ]);
+  const suffix = uniqueTitleCase([
+    ...seed.suffixBases,
+    ...buildWordLibrary(seed.coreBases, seed.suffixBases, 260, { min: 4, max: 14 }),
+    ...buildWordLibrary(seed.fragments, seed.suffixBases, 120, { min: 4, max: 12 }),
+  ]);
+
+  return {
+    core,
+    prefix,
+    suffix,
+    numberRate: seed.numberRate,
+  };
+}
+
 const styleProfiles: Record<
   UsernameStyle,
   { core: string[]; prefix: string[]; suffix: string[]; numberRate: number }
 > = {
-  cool: {
-    core: [
-      "Nova",
-      "Cyber",
-      "Phantom",
-      "Pixel",
-      "Vortex",
-      "Turbo",
-      "Pulse",
-      "Blitz",
-      "Chrome",
-      "Velocity",
-      "Arcade",
-      "Drift",
-      "Echo",
-      "Savage",
-      "Nitro",
-      "Reactor",
-    ],
-    prefix: ["Shadow", "Neon", "Hyper", "Omega", "Aero", "Frost", "Prime", "Rapid", "Solar", "Quantum"],
-    suffix: ["Wolf", "Knight", "Rider", "Strike", "Drift", "Storm", "Blaze", "Legend", "Breaker", "Core"],
-    numberRate: 0.32,
-  },
-  funny: {
-    core: ["Meme", "Waffle", "Noodle", "Banana", "Goblin", "Pickle", "Derp", "Giggle", "Biscuit", "Muffin", "Taco", "Toaster"],
-    prefix: ["Sir", "Captain", "Bouncy", "Sneaky", "Loopy", "Chunky", "Wobbly", "Goofy", "Captain", "Tiny"],
-    suffix: ["Pants", "Face", "Nugget", "Wizard", "Chimp", "Potato", "Toast", "Boi", "Pickles", "McGee"],
-    numberRate: 0.25,
-  },
-  dark: {
-    core: ["Abyss", "Reaper", "Night", "Venom", "Obsidian", "Grim", "Nocturne", "Dread", "Crypt", "Shade", "Ruin", "Hollow"],
-    prefix: ["Shadow", "Void", "Black", "Crypt", "Silent", "Blood", "Dark", "Night", "Phantom", "Obsidian"],
-    suffix: ["Fang", "Ruin", "Wraith", "Rogue", "Hex", "Hunter", "Reaper", "Shade", "Lord", "Claw"],
-    numberRate: 0.2,
-  },
-  aesthetic: {
-    core: ["Luna", "Velvet", "Halo", "Iris", "Opal", "Aura", "Cloud", "Echo", "Blush", "Satin", "Muse", "Pearl"],
-    prefix: ["Neo", "Soft", "Pastel", "Astral", "Moon", "Dream", "Velvet", "Glimmer", "Cotton", "Rose"],
-    suffix: ["Glow", "Bloom", "Wave", "Muse", "Mist", "Vibe", "Dusk", "Dawn", "Skies", "Aura"],
-    numberRate: 0.12,
-  },
-  fantasy: {
-    core: ["Dragon", "Arcane", "Rune", "Elder", "Myth", "Phoenix", "Titan", "Warden", "Ember", "Griffin", "Mystic", "Paladin"],
-    prefix: ["Iron", "Storm", "Silver", "Eternal", "Ancient", "Crimson", "Rune", "Shadow", "Moon", "Dawn"],
-    suffix: ["Blade", "Mage", "King", "Raven", "Oracle", "Knight", "Warden", "Seer", "Slayer", "Caller"],
-    numberRate: 0.18,
-  },
-  hacker: {
-    core: ["Cipher", "Null", "Root", "Glitch", "Hex", "Kernel", "Ghost", "Proxy", "Byte", "Socket", "Packet", "Daemon"],
-    prefix: ["Zero", "Byte", "Cyber", "Dark", "Silent", "Quantum", "Root", "Null", "Ghost", "Binary"],
-    suffix: ["Script", "Inject", "Node", "Bit", "Shell", "Trace", "Hack", "Code", "Cipher", "Stack"],
-    numberRate: 0.45,
-  },
-  anime: {
-    core: ["Kitsune", "Shinobi", "Sakura", "Otaku", "Ronin", "Senpai", "Neko", "Yokai", "Kage", "Kami", "Akira", "Hikari"],
-    prefix: ["Neo", "Shadow", "Crimson", "Lunar", "Ghost", "Silver", "Storm", "Nova", "Tokyo", "Spirit"],
-    suffix: ["Chan", "Kun", "Blade", "Pulse", "Soul", "Wave", "Fang", "Aura", "X", "Sensei"],
-    numberRate: 0.22,
-  },
-  streamer: {
-    core: ["Live", "Clip", "Hype", "Chat", "Prime", "Epic", "Focus", "Raid", "Cast", "Stage", "Channel", "Creator"],
-    prefix: ["Pro", "Ultra", "Neon", "GG", "Turbo", "Real", "Live", "Prime", "Top", "Next"],
-    suffix: ["TV", "Plays", "Live", "GG", "Stream", "Arena", "HQ", "Clips", "Show", "Zone"],
-    numberRate: 0.4,
-  },
+  cool: buildStyleProfile(styleWordSeeds.cool),
+  funny: buildStyleProfile(styleWordSeeds.funny),
+  dark: buildStyleProfile(styleWordSeeds.dark),
+  aesthetic: buildStyleProfile(styleWordSeeds.aesthetic),
+  fantasy: buildStyleProfile(styleWordSeeds.fantasy),
+  hacker: buildStyleProfile(styleWordSeeds.hacker),
+  anime: buildStyleProfile(styleWordSeeds.anime),
+  streamer: buildStyleProfile(styleWordSeeds.streamer),
 };
 
 function randomFrom<T>(arr: T[]): T {
@@ -1296,9 +1558,9 @@ function uniqueMerge(...lists: string[][]) {
 function generateNumberToken() {
   const roll = Math.random();
   if (roll < 0.15) return String(Math.floor(1 + Math.random() * 9));
-  if (roll < 0.45) return String(Math.floor(10 + Math.random() * 90));
-  if (roll < 0.85) return String(Math.floor(100 + Math.random() * 900));
-  return String(Math.floor(1000 + Math.random() * 9000));
+  if (roll < 0.45) return randomFrom(numberTokens.slice(0, 90));
+  if (roll < 0.85) return randomFrom(numberTokens.slice(90, 990));
+  return randomFrom(numberTokens.slice(990));
 }
 
 function capitalizeFirst(value: string) {
