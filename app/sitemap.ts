@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { blogArticleSlugs } from "@/lib/blog-articles";
+import { blogCategorySlugs } from "@/lib/blog-hub";
 import { generatorCategories, generatorDatabase, generatorSlugs } from "@/lib/generators";
 import { programmaticSeoSlugs } from "@/lib/programmatic-seo-pages";
 import { usernameListingSlugs } from "@/lib/username-listing-pages";
@@ -33,6 +34,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/explore-generators",
     "/username-database",
     "/blog",
+    "/guides",
+    "/articles",
   ];
 
   const directGeneratorRoutes = generatorDatabase
@@ -44,6 +47,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const seoRoutes = programmaticSeoSlugs.map((slug) => `/${slug}`);
   const usernameListingRoutes = usernameListingSlugs.map((slug) => `/${slug}`);
   const blogRoutes = blogArticleSlugs.map((slug) => `/blog/${slug}`);
+  const articleCategoryRoutes = blogCategorySlugs.map((slug) => `/categories/${slug}`);
   const allRoutes = Array.from(
     new Set([
       ...staticRoutes,
@@ -53,6 +57,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       ...seoRoutes,
       ...usernameListingRoutes,
       ...blogRoutes,
+      ...articleCategoryRoutes,
     ])
   );
 
