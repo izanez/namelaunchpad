@@ -318,6 +318,10 @@ export function getUsernameDatabaseStats() {
   };
 }
 
+export function getAllUsernameDatabaseRecords(): UsernameRecord[] {
+  return getDatabaseCache().records.map(({ searchable, lengthBucket, ...record }) => record);
+}
+
 export function queryUsernameDatabase({
   q,
   categories: selectedCategories = [],

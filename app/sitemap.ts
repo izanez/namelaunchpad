@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { generatorCategories, generatorDatabase, generatorSlugs } from "@/lib/generators";
 import { programmaticSeoSlugs } from "@/lib/programmatic-seo-pages";
+import { usernameListingSlugs } from "@/lib/username-listing-pages";
 
 const directGeneratorPageSlugs = new Set([
   "username-generator",
@@ -39,8 +40,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const generatorRoutes = generatorSlugs.map((slug) => `/generators/${slug}`);
   const categoryRoutes = generatorCategories.map((category) => `/category/${category.slug}`);
   const seoRoutes = programmaticSeoSlugs.map((slug) => `/${slug}`);
+  const usernameListingRoutes = usernameListingSlugs.map((slug) => `/${slug}`);
   const allRoutes = Array.from(
-    new Set([...staticRoutes, ...directGeneratorRoutes, ...generatorRoutes, ...categoryRoutes, ...seoRoutes])
+    new Set([...staticRoutes, ...directGeneratorRoutes, ...generatorRoutes, ...categoryRoutes, ...seoRoutes, ...usernameListingRoutes])
   );
 
   return allRoutes.map((route) => ({

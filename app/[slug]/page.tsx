@@ -3,10 +3,17 @@ import { notFound } from "next/navigation";
 import { KeywordLandingGenerator } from "@/components/generator/keyword-landing-generator";
 import { JsonLd } from "@/components/seo/json-ld";
 import { ProgrammaticSeoPageView } from "@/components/seo/programmatic-seo-page";
+import { UsernameListingPageView } from "@/components/seo/username-listing-page";
 import { absoluteUrl } from "@/app/metadata";
 import { createBreadcrumbSchema, createGeneratorSchema } from "@/lib/seo";
 import { getKeywordLandingPage, landingPageSlugs } from "@/lib/keyword-landing-pages";
 import { getProgrammaticSeoPage, programmaticSeoSlugs } from "@/lib/programmatic-seo-pages";
+import {
+  buildUsernameListingSeoContent,
+  getUsernameListingPage,
+  getUsernameListingRecords,
+  usernameListingSlugs,
+} from "@/lib/username-listing-pages";
 import type { GeneratorDirectoryEntry } from "@/lib/generators";
 
 type PageProps = {
@@ -16,14 +23,38 @@ type PageProps = {
 };
 
 export async function generateStaticParams() {
-  return [...landingPageSlugs, ...programmaticSeoSlugs].map((slug) => ({ slug }));
+  return [...landingPageSlugs, ...programmaticSeoSlugs, ...usernameListingSlugs].map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const page = getKeywordLandingPage(slug);
   const seoPage = getProgrammaticSeoPage(slug);
-  if (!page && !seoPage) return {};
+  const usernameListingPage = getUsernameListingPage(slug);
+  if (!page && !seoPage && !usernameListingPage) return {};
+
+  if (usernameListingPage) {
+    return {
+      title: usernameListingPage.seoTitle,
+      description: usernameListingPage.metaDescription,
+      keywords: [
+        usernameListingPage.slug.replace(/-/g, " "),
+        usernameListingPage.title.toLowerCase(),
+        "username list",
+        "username database",
+        "NameLaunchpad",
+      ],
+      openGraph: {
+        title: usernameListingPage.seoTitle,
+        description: usernameListingPage.metaDescription,
+        type: "website",
+        url: absoluteUrl(`/${usernameListingPage.slug}`),
+      },
+      alternates: {
+        canonical: `/${usernameListingPage.slug}`,
+      },
+    };
+  }
 
   if (seoPage) {
     return {
@@ -73,7 +104,33 @@ export default async function KeywordLandingPage({ params }: PageProps) {
   const { slug } = await params;
   const page = getKeywordLandingPage(slug);
   const seoPage = getProgrammaticSeoPage(slug);
-  if (!page && !seoPage) notFound();
+  const usernameListingPage = getUsernameListingPage(slug);
+  if (!page && !seoPage && !usernameListingPage) notFound();
+
+  if (usernameListingPage) {
+    const usernames = getUsernameListingRecords(usernameListingPage, 120);
+    const seoContent = buildUsernameListingSeoContent(usernameListingPage);
+
+    return (
+      <>
+        <JsonLd
+          data={createGeneratorSchema({
+            title: usernameListingPage.title,
+            description: usernameListingPage.metaDescription,
+            url: absoluteUrl(`/${usernameListingPage.slug}`),
+            category: "UtilitiesApplication",
+          })}
+        />
+        <JsonLd
+          data={createBreadcrumbSchema([
+            { name: "Home", path: "/" },
+            { name: usernameListingPage.title, path: `/${usernameListingPage.slug}` },
+          ])}
+        />
+        <UsernameListingPageView page={usernameListingPage} usernames={usernames} seoContent={seoContent} />
+      </>
+    );
+  }
 
   if (seoPage) {
     return (
