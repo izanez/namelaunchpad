@@ -112,6 +112,45 @@ export function ProgrammaticSeoPageView({ page }: { page: ProgrammaticSeoPage })
           </div>
         </Card>
 
+        {page.comparisonSection ? (
+          <Card className="p-6 md:p-8">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <h2 className="text-2xl font-black text-white">{page.comparisonSection.title}</h2>
+                <p className="mt-2 max-w-3xl text-sm text-slate-400">{page.comparisonSection.intro}</p>
+              </div>
+              <span className="rounded-full border border-cyan-300/30 bg-cyan-300/10 px-3 py-1 text-xs font-semibold text-cyan-100">
+                {page.comparisonSection.generators.length} compared
+              </span>
+            </div>
+
+            <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {page.comparisonSection.generators.map((generator) => (
+                <Card key={generator.href} className="p-5">
+                  <h3 className="text-lg font-semibold text-white">{generator.title}</h3>
+                  <p className="mt-2 text-sm text-slate-300">{generator.description}</p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {generator.examples.map((example) => (
+                      <span
+                        key={`${generator.title}-${example}`}
+                        className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold text-slate-200"
+                      >
+                        {example}
+                      </span>
+                    ))}
+                  </div>
+                  <Link
+                    href={generator.href}
+                    className="mt-4 inline-block text-sm font-semibold text-cyan-300 transition hover:text-cyan-200"
+                  >
+                    Open Generator
+                  </Link>
+                </Card>
+              ))}
+            </div>
+          </Card>
+        ) : null}
+
         <Card className="p-6 md:p-8">
           <h2 className="text-2xl font-black text-white">SEO Text</h2>
           <div className="mt-5 grid gap-6">
