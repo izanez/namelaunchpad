@@ -11,6 +11,7 @@ import {
   getRelatedBlogArticles,
   type BlogArticle,
 } from "@/lib/blog-articles";
+import { generateUsernames } from "@/lib/generators";
 
 function renderParagraphs(body: string) {
   return body.split("\n\n").map((paragraph) => (
@@ -24,11 +25,23 @@ function getLinkLabel(href: string) {
   return href.replace(/^\//, "").replace(/-/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
+function buildTryGeneratorBatch(article: BlogArticle) {
+  return generateUsernames({
+    keywords: article.examplesSeed,
+    style: article.style,
+    amount: 12,
+    length: article.maxLength,
+    minLength: article.minLength,
+    maxLength: article.maxLength,
+  });
+}
+
 export function BlogArticlePage({ article }: { article: BlogArticle }) {
   const [toast, setToast] = useState<string | null>(null);
+  const [generatorBatch, setGeneratorBatch] = useState<string[]>(() => buildTryGeneratorBatch(article));
   const sections = useMemo(() => buildBlogArticleSections(article), [article]);
   const examples = useMemo(() => buildBlogArticleExamples(article), [article]);
-  const relatedArticles = useMemo(() => getRelatedBlogArticles(article), [article]);
+  const relatedArticles = useMemo(() => getRelatedBlogArticles(article, 6), [article]);
 
   const onCopy = useCallback(async (value: string) => {
     try {
@@ -39,6 +52,10 @@ export function BlogArticlePage({ article }: { article: BlogArticle }) {
       setToast(null);
     }
   }, []);
+
+  const regenerate = useCallback(() => {
+    setGeneratorBatch(buildTryGeneratorBatch(article));
+  }, [article]);
 
   return (
     <section className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6">
@@ -63,13 +80,13 @@ export function BlogArticlePage({ article }: { article: BlogArticle }) {
         <Card className="p-6 md:p-8">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <h2 className="text-2xl font-black text-white">Username Examples</h2>
-              <p className="mt-2 text-sm text-slate-400">Copy any example and use the linked generator pages to build more variations.</p>
+              <h2 className="text-2xl font-black text-white">Relevant Username Ideas</h2>
+              <p className="mt-2 text-sm text-slate-400">Every article now includes a larger filtered list of relevant usernames for the exact topic.</p>
             </div>
             <span className="rounded-full border border-cyan-300/30 bg-cyan-300/10 px-3 py-1 text-xs font-semibold text-cyan-100">{examples.length} ideas</span>
           </div>
 
-          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {examples.map((name) => (
               <div key={name} className="rounded-xl2 border border-white/10 bg-white/5 px-4 py-3">
                 <p className="text-sm font-semibold text-slate-100">{name}</p>
@@ -78,6 +95,38 @@ export function BlogArticlePage({ article }: { article: BlogArticle }) {
                 </Button>
               </div>
             ))}
+          </div>
+        </Card>
+
+        <Card className="p-6 md:p-8">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h2 className="text-2xl font-black text-white">Try the Generator</h2>
+              <p className="mt-2 text-sm text-slate-400">Quick in-article preview results let users test the naming style before opening the full generator tool.</p>
+            </div>
+            <Button onClick={regenerate} className="px-4 py-2 text-sm">
+              Generate More
+            </Button>
+          </div>
+
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6">
+            {generatorBatch.map((name) => (
+              <div key={name} className="rounded-2xl border border-cyan-300/20 bg-cyan-400/5 px-3 py-3">
+                <p className="text-sm font-semibold text-white">{name}</p>
+                <Button variant="ghost" className="mt-2 w-full px-3 py-2 text-xs" onClick={() => onCopy(name)}>
+                  Copy
+                </Button>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-5 flex flex-wrap gap-3">
+            <Link href={article.ctaHref} className="rounded-xl2 border border-cyan-300/30 bg-cyan-300/10 px-4 py-2 text-sm font-semibold text-cyan-100 hover:border-cyan-200/60 hover:text-white">
+              Open Full Generator
+            </Link>
+            <Link href="/username-generator" className="rounded-xl2 border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-200 hover:border-cyan-300/30 hover:text-cyan-200">
+              Try Main Username Generator
+            </Link>
           </div>
         </Card>
 
@@ -93,32 +142,13 @@ export function BlogArticlePage({ article }: { article: BlogArticle }) {
           </div>
         </Card>
 
-        <Card className="p-6 md:p-8">
-          <h2 className="text-2xl font-black text-white">Tips and Tools</h2>
-          <div className="mt-5 grid gap-4 md:grid-cols-2">
-            <div className="rounded-3xl border border-cyan-300/20 bg-cyan-400/5 p-5">
-              <h3 className="text-lg font-semibold text-white">Use the Generator</h3>
-              <p className="mt-2 text-sm leading-7 text-slate-300">Open the related generator to create new username ideas with filters for style, length, and keywords.</p>
-              <Link href={article.ctaHref} className="mt-4 inline-block text-sm font-semibold text-cyan-300 hover:text-cyan-200">Open Generator</Link>
-            </div>
-            <div className="rounded-3xl border border-white/10 bg-white/5 p-5">
-              <h3 className="text-lg font-semibold text-white">Quick naming tips</h3>
-              <ul className="mt-3 grid gap-2 text-sm leading-7 text-slate-300">
-                <li>Keep the base name readable before adding numbers or symbols.</li>
-                <li>Prefer names that still look good in game lobbies, Discord, and social handles.</li>
-                <li>Choose a style first, then tighten the length range for cleaner results.</li>
-                <li>Compare a few strong options instead of committing to the first acceptable name.</li>
-              </ul>
-            </div>
-          </div>
-        </Card>
-
-        <div className="grid gap-6 xl:grid-cols-2">
+        <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
           <Card className="p-6 md:p-8">
-            <h2 className="text-2xl font-black text-white">Related Generators</h2>
-            <div className="mt-5 grid gap-3">
+            <h2 className="text-2xl font-black text-white">Relevant Generator Pages</h2>
+            <p className="mt-2 text-sm text-slate-400">Each article surfaces 3 to 8 closely related tools to improve crawl depth and user flow.</p>
+            <div className="mt-5 grid gap-3 md:grid-cols-2">
               {article.relatedGenerators.map((href) => (
-                <Link key={href} href={href} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:border-cyan-300/30 hover:text-cyan-200">
+                <Link key={href} href={href} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-sm font-semibold text-slate-100 transition hover:border-cyan-300/30 hover:text-cyan-200">
                   {getLinkLabel(href)}
                 </Link>
               ))}
@@ -126,10 +156,11 @@ export function BlogArticlePage({ article }: { article: BlogArticle }) {
           </Card>
 
           <Card className="p-6 md:p-8">
-            <h2 className="text-2xl font-black text-white">Related Username Lists</h2>
+            <h2 className="text-2xl font-black text-white">Related Username Ideas</h2>
+            <p className="mt-2 text-sm text-slate-400">These filtered lists keep users inside the naming cluster around this article topic.</p>
             <div className="mt-5 grid gap-3">
               {article.relatedUsernameLists.map((href) => (
-                <Link key={href} href={href} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-slate-100 transition hover:border-cyan-300/30 hover:text-cyan-200">
+                <Link key={href} href={href} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-sm font-semibold text-slate-100 transition hover:border-cyan-300/30 hover:text-cyan-200">
                   {getLinkLabel(href)}
                 </Link>
               ))}
@@ -138,8 +169,26 @@ export function BlogArticlePage({ article }: { article: BlogArticle }) {
         </div>
 
         <Card className="p-6 md:p-8">
+          <h2 className="text-2xl font-black text-white">Call to Action</h2>
+          <div className="mt-5 rounded-3xl border border-cyan-300/20 bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-purple-500/10 p-6">
+            <h3 className="text-xl font-bold text-white">Generate more names that match this style</h3>
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">
+              If this article narrowed your taste, the next step is to open the generator and keep iterating with clearer style and length filters. That gives you faster feedback than browsing generic name dumps.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Link href={article.ctaHref} className="rounded-xl2 border border-cyan-300/30 bg-cyan-300/10 px-4 py-2 text-sm font-semibold text-cyan-100 hover:border-cyan-200/60 hover:text-white">
+                Try the Generator
+              </Link>
+              <Link href="/all-generators" className="rounded-xl2 border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-200 hover:border-cyan-300/30 hover:text-cyan-200">
+                Browse All Generators
+              </Link>
+            </div>
+          </div>
+        </Card>
+
+        <Card className="p-6 md:p-8">
           <h2 className="text-2xl font-black text-white">Related Articles</h2>
-          <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {relatedArticles.map((relatedArticle) => (
               <Link key={relatedArticle.slug} href={`/blog/${relatedArticle.slug}`} className="rounded-3xl border border-white/10 bg-white/5 p-5 transition hover:border-cyan-300/30">
                 <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-200">{relatedArticle.category}</p>
