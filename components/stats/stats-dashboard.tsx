@@ -14,6 +14,40 @@ function formatGeneratorName(slug: string) {
     .replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
+function LeaderboardColumn({
+  title,
+  items,
+}: {
+  title: string;
+  items: Array<{ slug: string; count: number }>;
+}) {
+  return (
+    <Card className="p-6 md:p-8">
+      <h2 className="text-2xl font-black text-white">{title}</h2>
+      <div className="mt-5 grid gap-3">
+        {items.length === 0 ? (
+          <p className="text-sm text-slate-400">No generator usage tracked yet.</p>
+        ) : (
+          items.slice(0, 10).map((entry, index) => (
+            <div
+              key={`${title}-${entry.slug}-${entry.count}`}
+              className="flex items-center justify-between rounded-xl2 border border-white/10 bg-white/5 px-4 py-3"
+            >
+              <div>
+                <p className="text-xs uppercase tracking-wide text-cyan-300">#{index + 1}</p>
+                <p className="mt-1 text-sm font-semibold text-slate-100">{formatGeneratorName(entry.slug)}</p>
+              </div>
+              <span className="rounded-full border border-cyan-300/30 bg-cyan-300/10 px-3 py-1 text-xs font-semibold text-cyan-100">
+                {entry.count} runs
+              </span>
+            </div>
+          ))
+        )}
+      </div>
+    </Card>
+  );
+}
+
 function getHeatLevel(count: number, maxCount: number) {
   if (maxCount <= 0 || count <= 0) {
     return {
@@ -140,6 +174,21 @@ export function StatsDashboard() {
             </div>
           </Card>
         </div>
+
+        <Card className="overflow-hidden p-0">
+          <div className="bg-gradient-to-r from-cyan-500/18 via-blue-500/14 to-purple-500/18 p-6 md:p-8">
+            <p className="text-sm font-semibold uppercase tracking-[0.22em] text-cyan-200">Leaderboard</p>
+            <h2 className="mt-3 text-3xl font-black text-white md:text-4xl">Generator Leaderboard</h2>
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">
+              Live rankings of the top generators today, this week, and this month based on tracked generator usage.
+            </p>
+          </div>
+          <div className="grid gap-6 p-6 xl:grid-cols-3 md:p-8">
+            <LeaderboardColumn title="Top Generators Today" items={stats.topGeneratorsToday} />
+            <LeaderboardColumn title="Top Generators This Week" items={stats.topGeneratorsThisWeek} />
+            <LeaderboardColumn title="Top Generators This Month" items={stats.topGeneratorsThisMonth} />
+          </div>
+        </Card>
 
         <Card className="p-6 md:p-8">
           <div className="flex items-center justify-between gap-3">
