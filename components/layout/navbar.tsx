@@ -2,7 +2,8 @@ import Link from "next/link";
 import { Logo } from "@/components/layout/logo";
 
 const links = [
-  { href: "/generators/fortnite-name-generator", label: "Generators" },
+  { href: "/explore-generators", label: "Explore" },
+  { href: "/all-generators", label: "Generators" },
   { href: "/gamer-tag-generator", label: "Gamertags" },
   { href: "/username-generator", label: "Username" },
   { href: "/roblox-username-generator", label: "Roblox" },

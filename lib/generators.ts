@@ -18,9 +18,17 @@ export type GeneratorCategorySlug =
   | "social-media"
   | "fantasy"
   | "anime"
+  | "cool"
   | "funny"
+  | "rare"
+  | "short"
+  | "aesthetic"
+  | "hacker"
   | "streamer"
-  | "hacker";
+  | "clan"
+  | "duo"
+  | "tech"
+  | "dark";
 
 export type GeneratorCategory = {
   slug: GeneratorCategorySlug;
@@ -32,40 +40,79 @@ export const generatorCategories: GeneratorCategory[] = [
   {
     slug: "gaming",
     title: "Gaming",
-    description: "Generators for gaming usernames, competitive aliases, clan names, and game-specific identities.",
+    description: "Generators for game-specific usernames, gamertags, team brands, and competitive aliases.",
   },
   {
     slug: "social-media",
     title: "Social Media",
-    description: "Generators for usernames used on Discord, TikTok, Instagram, Reddit, X, and other platforms.",
+    description: "Generators for usernames used on Discord, TikTok, Instagram, Reddit, X, YouTube, and creator platforms.",
   },
   {
     slug: "fantasy",
     title: "Fantasy",
-    description: "Generators for RPG names, guilds, magical aliases, and fantasy-inspired characters.",
+    description: "Generators for RPG names, dragons, demons, elves, guilds, and fantasy-inspired identities.",
   },
   {
     slug: "anime",
     title: "Anime",
-    description: "Generators for anime-inspired usernames, fandom handles, and character-style identities.",
+    description: "Generators for anime-inspired usernames, fandom handles, VTuber brands, and character-style identities.",
+  },
+  {
+    slug: "cool",
+    title: "Cool",
+    description: "Generators for sharp, modern, premium, and cool username ideas for gaming and social media.",
   },
   {
     slug: "funny",
     title: "Funny",
-    description: "Generators for playful, silly, meme-friendly, and lighthearted usernames.",
+    description: "Generators for playful, meme-friendly, silly, and lighthearted usernames and gamer tags.",
   },
   {
-    slug: "streamer",
-    title: "Streamer",
-    description: "Generators for Twitch, YouTube, VTuber, and creator-facing streaming brands.",
+    slug: "rare",
+    title: "Rare",
+    description: "Generators focused on uncommon, clean, low-noise, and rare username patterns.",
+  },
+  {
+    slug: "short",
+    title: "Short",
+    description: "Generators for short usernames, quick gamer tags, and compact handles with strong readability.",
+  },
+  {
+    slug: "aesthetic",
+    title: "Aesthetic",
+    description: "Generators for soft, dreamy, stylish, and aesthetic usernames for creators and gamers.",
   },
   {
     slug: "hacker",
     title: "Hacker",
     description: "Generators for cyber, glitch, terminal, and hacker-style username ideas.",
   },
+  {
+    slug: "streamer",
+    title: "Streamer",
+    description: "Generators for Twitch, YouTube, Kick, VTuber, and creator-facing streaming brands.",
+  },
+  {
+    slug: "clan",
+    title: "Clan",
+    description: "Generators for clan names, squad brands, team identities, and multiplayer group naming.",
+  },
+  {
+    slug: "duo",
+    title: "Duo",
+    description: "Generators for duos, pairs, gaming partners, and two-player branding ideas.",
+  },
+  {
+    slug: "tech",
+    title: "Tech",
+    description: "Generators for tech-inspired usernames with digital, futuristic, software, and cyber themes.",
+  },
+  {
+    slug: "dark",
+    title: "Dark",
+    description: "Generators for dark usernames with void, gothic, shadow, and ominous naming styles.",
+  },
 ];
-
 export const generatorDatabase: GeneratorDirectoryEntry[] = [
   {
     slug: "fortnite-name-generator",
@@ -514,422 +561,99 @@ function buildAutoExpandedGenerators(): GeneratorDirectoryEntry[] {
     "survival-game-name-generator",
   ]);
 
-  const targets: Array<{
-    slug: string;
-    label: string;
-    category: string;
-    seed: string;
-    variants: Array<{
-      slugSuffix: string;
-      titleSuffix: string;
-      descriptionNoun: string;
-    }>;
-  }> = [
-    {
-      slug: "minecraft",
-      label: "Minecraft",
-      category: "gaming",
-      seed: "Block",
-      variants: [
-        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
-        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
-        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
-        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
-        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
-        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
-      ],
-    },
-    {
-      slug: "valorant",
-      label: "Valorant",
-      category: "gaming",
-      seed: "Clutch",
-      variants: [
-        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
-        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
-        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
-        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
-        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
-        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
-      ],
-    },
-    {
-      slug: "apex",
-      label: "Apex",
-      category: "gaming",
-      seed: "Legend",
-      variants: [
-        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
-        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
-        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
-        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
-        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
-        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
-      ],
-    },
-    {
-      slug: "cod",
-      label: "Call of Duty",
-      category: "gaming",
-      seed: "Tactical",
-      variants: [
-        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
-        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
-        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
-        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
-        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
-        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
-      ],
-    },
-    {
-      slug: "steam",
-      label: "Steam",
-      category: "gaming",
-      seed: "Valve",
-      variants: [
-        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
-        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
-        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
-        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
-        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
-        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
-      ],
-    },
-    {
-      slug: "psn",
-      label: "PSN",
-      category: "gaming",
-      seed: "Dual",
-      variants: [
-        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
-        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
-        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
-        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
-        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
-        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
-      ],
-    },
-    {
-      slug: "xbox",
-      label: "Xbox",
-      category: "gaming",
-      seed: "Halo",
-      variants: [
-        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
-        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
-        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
-        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
-        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
-      ],
-    },
-    {
-      slug: "twitch",
-      label: "Twitch",
-      category: "streaming",
-      seed: "Live",
-      variants: [
-        { slugSuffix: "streamer-name-generator", titleSuffix: "Streamer Name Generator", descriptionNoun: "streamer names" },
-        { slugSuffix: "gaming-name-generator", titleSuffix: "Gaming Name Generator", descriptionNoun: "gaming names" },
-        { slugSuffix: "handle-generator", titleSuffix: "Handle Generator", descriptionNoun: "handles" },
-        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
-        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
-      ],
-    },
-    {
-      slug: "youtube",
-      label: "YouTube",
-      category: "streaming",
-      seed: "Clip",
-      variants: [
-        { slugSuffix: "streamer-name-generator", titleSuffix: "Streamer Name Generator", descriptionNoun: "streamer names" },
-        { slugSuffix: "gaming-name-generator", titleSuffix: "Gaming Name Generator", descriptionNoun: "gaming names" },
-        { slugSuffix: "handle-generator", titleSuffix: "Handle Generator", descriptionNoun: "handles" },
-        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
-        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
-      ],
-    },
-    {
-      slug: "discord",
-      label: "Discord",
-      category: "social",
-      seed: "Echo",
-      variants: [
-        { slugSuffix: "streamer-name-generator", titleSuffix: "Streamer Name Generator", descriptionNoun: "streamer names" },
-        { slugSuffix: "gaming-name-generator", titleSuffix: "Gaming Name Generator", descriptionNoun: "gaming names" },
-        { slugSuffix: "handle-generator", titleSuffix: "Handle Generator", descriptionNoun: "handles" },
-        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
-        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
-      ],
-    },
-    {
-      slug: "tiktok",
-      label: "TikTok",
-      category: "social",
-      seed: "Trend",
-      variants: [
-        { slugSuffix: "streamer-name-generator", titleSuffix: "Streamer Name Generator", descriptionNoun: "streamer names" },
-        { slugSuffix: "gaming-name-generator", titleSuffix: "Gaming Name Generator", descriptionNoun: "gaming names" },
-        { slugSuffix: "handle-generator", titleSuffix: "Handle Generator", descriptionNoun: "handles" },
-        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
-        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
-      ],
-    },
-    {
-      slug: "instagram",
-      label: "Instagram",
-      category: "social",
-      seed: "Aura",
-      variants: [
-        { slugSuffix: "streamer-name-generator", titleSuffix: "Streamer Name Generator", descriptionNoun: "streamer names" },
-        { slugSuffix: "gaming-name-generator", titleSuffix: "Gaming Name Generator", descriptionNoun: "gaming names" },
-        { slugSuffix: "handle-generator", titleSuffix: "Handle Generator", descriptionNoun: "handles" },
-        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
-        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
-      ],
-    },
-    {
-      slug: "reddit",
-      label: "Reddit",
-      category: "social",
-      seed: "Thread",
-      variants: [
-        { slugSuffix: "streamer-name-generator", titleSuffix: "Streamer Name Generator", descriptionNoun: "streamer names" },
-        { slugSuffix: "gaming-name-generator", titleSuffix: "Gaming Name Generator", descriptionNoun: "gaming names" },
-        { slugSuffix: "handle-generator", titleSuffix: "Handle Generator", descriptionNoun: "handles" },
-        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
-        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
-      ],
-    },
-    {
-      slug: "kick",
-      label: "Kick",
-      category: "streaming",
-      seed: "Prime",
-      variants: [
-        { slugSuffix: "streamer-name-generator", titleSuffix: "Streamer Name Generator", descriptionNoun: "streamer names" },
-        { slugSuffix: "gaming-name-generator", titleSuffix: "Gaming Name Generator", descriptionNoun: "gaming names" },
-        { slugSuffix: "handle-generator", titleSuffix: "Handle Generator", descriptionNoun: "handles" },
-        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
-        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
-      ],
-    },
-    {
-      slug: "halo",
-      label: "Halo",
-      category: "gaming",
-      seed: "Spartan",
-      variants: [
-        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
-        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
-        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
-        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
-        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
-        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
-      ],
-    },
-    {
-      slug: "rocket-league",
-      label: "Rocket League",
-      category: "gaming",
-      seed: "Boost",
-      variants: [
-        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
-        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
-        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
-        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
-        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
-        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
-      ],
-    },
-    {
-      slug: "gta",
-      label: "GTA",
-      category: "gaming",
-      seed: "Vice",
-      variants: [
-        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
-        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
-        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
-        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
-        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
-        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
-      ],
-    },
-    {
-      slug: "rainbow-six",
-      label: "Rainbow Six",
-      category: "gaming",
-      seed: "Siege",
-      variants: [
-        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
-        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
-        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
-        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
-        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
-        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
-      ],
-    },
-    {
-      slug: "destiny",
-      label: "Destiny",
-      category: "gaming",
-      seed: "Guardian",
-      variants: [
-        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
-        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
-        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
-        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
-        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
-        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
-      ],
-    },
-    {
-      slug: "battlefield",
-      label: "Battlefield",
-      category: "gaming",
-      seed: "Squad",
-      variants: [
-        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
-        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
-        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
-        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
-        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
-        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
-      ],
-    },
-    {
-      slug: "fifa",
-      label: "FIFA",
-      category: "gaming",
-      seed: "Goal",
-      variants: [
-        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
-        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
-        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
-        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
-        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
-        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
-      ],
-    },
-    {
-      slug: "ea-fc",
-      label: "EA FC",
-      category: "gaming",
-      seed: "Ultra",
-      variants: [
-        { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
-        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
-        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
-        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
-        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
-        { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
-      ],
-    },
-    {
-      slug: "pokemon",
-      label: "Pokemon",
-      category: "fandom",
-      seed: "Trainer",
-      variants: [
-        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
-        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
-        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
-        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
-      ],
-    },
-    {
-      slug: "naruto",
-      label: "Naruto",
-      category: "fandom",
-      seed: "Shinobi",
-      variants: [
-        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
-        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
-        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
-        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
-      ],
-    },
-    {
-      slug: "one-piece",
-      label: "One Piece",
-      category: "fandom",
-      seed: "Pirate",
-      variants: [
-        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
-        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
-        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
-        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
-      ],
-    },
-    {
-      slug: "dragon-ball",
-      label: "Dragon Ball",
-      category: "fandom",
-      seed: "Saiyan",
-      variants: [
-        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
-        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
-        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
-        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
-      ],
-    },
-    {
-      slug: "elden-ring",
-      label: "Elden Ring",
-      category: "fantasy",
-      seed: "Rune",
-      variants: [
-        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
-        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
-        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
-        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
-      ],
-    },
-    {
-      slug: "wow",
-      label: "WoW",
-      category: "fantasy",
-      seed: "Azeroth",
-      variants: [
-        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
-        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
-        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
-        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
-      ],
-    },
-    {
-      slug: "dnd",
-      label: "D&D",
-      category: "fantasy",
-      seed: "Arcane",
-      variants: [
-        { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
-        { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
-        { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
-        { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
-      ],
-    },
+  const themes: Array<{ slug: string; label: string; category: string; seed: string }> = [
+    { slug: "minecraft", label: "Minecraft", category: "gaming", seed: "Block" },
+    { slug: "valorant", label: "Valorant", category: "gaming", seed: "Clutch" },
+    { slug: "apex", label: "Apex", category: "gaming", seed: "Legend" },
+    { slug: "cod", label: "COD", category: "gaming", seed: "Tactical" },
+    { slug: "pubg", label: "PUBG", category: "gaming", seed: "Drop" },
+    { slug: "steam", label: "Steam", category: "gaming", seed: "Valve" },
+    { slug: "xbox", label: "Xbox", category: "gaming", seed: "Halo" },
+    { slug: "psn", label: "PSN", category: "gaming", seed: "Dual" },
+    { slug: "playstation", label: "PlayStation", category: "gaming", seed: "Shock" },
+    { slug: "nintendo", label: "Nintendo", category: "gaming", seed: "Joy" },
+    { slug: "fortnite", label: "Fortnite", category: "gaming", seed: "Storm" },
+    { slug: "roblox", label: "Roblox", category: "gaming", seed: "Obby" },
+    { slug: "halo", label: "Halo", category: "gaming", seed: "Spartan" },
+    { slug: "rocket-league", label: "Rocket League", category: "gaming", seed: "Boost" },
+    { slug: "gta", label: "GTA", category: "gaming", seed: "Vice" },
+    { slug: "rainbow-six", label: "Rainbow Six", category: "gaming", seed: "Siege" },
+    { slug: "battlefield", label: "Battlefield", category: "gaming", seed: "Squad" },
+    { slug: "fifa", label: "FIFA", category: "gaming", seed: "Goal" },
+    { slug: "ea-fc", label: "EA FC", category: "gaming", seed: "Ultra" },
+    { slug: "overwatch", label: "Overwatch", category: "gaming", seed: "Payload" },
+    { slug: "league-of-legends", label: "League of Legends", category: "gaming", seed: "Rift" },
+    { slug: "dota", label: "Dota", category: "gaming", seed: "Ancient" },
+    { slug: "cs2", label: "CS2", category: "gaming", seed: "Frag" },
+    { slug: "free-fire", label: "Free Fire", category: "gaming", seed: "Rush" },
+    { slug: "twitch", label: "Twitch", category: "streaming", seed: "Live" },
+    { slug: "youtube", label: "YouTube", category: "streaming", seed: "Clip" },
+    { slug: "discord", label: "Discord", category: "social", seed: "Echo" },
+    { slug: "tiktok", label: "TikTok", category: "social", seed: "Trend" },
+    { slug: "instagram", label: "Instagram", category: "social", seed: "Aura" },
+    { slug: "reddit", label: "Reddit", category: "social", seed: "Thread" },
+    { slug: "kick", label: "Kick", category: "streaming", seed: "Prime" },
+    { slug: "twitter", label: "Twitter", category: "social", seed: "Tweet" },
+    { slug: "x", label: "X", category: "social", seed: "Pulse" },
+    { slug: "pokemon", label: "Pokemon", category: "fandom", seed: "Trainer" },
+    { slug: "naruto", label: "Naruto", category: "fandom", seed: "Shinobi" },
+    { slug: "one-piece", label: "One Piece", category: "fandom", seed: "Pirate" },
+    { slug: "dragon-ball", label: "Dragon Ball", category: "fandom", seed: "Saiyan" },
+    { slug: "anime", label: "Anime", category: "fandom", seed: "Kitsune" },
+    { slug: "dragon", label: "Dragon", category: "fantasy", seed: "Dragon" },
+    { slug: "demon", label: "Demon", category: "fantasy", seed: "Demon" },
+    { slug: "elf", label: "Elf", category: "fantasy", seed: "Elf" },
+    { slug: "wizard", label: "Wizard", category: "fantasy", seed: "Wizard" },
+    { slug: "knight", label: "Knight", category: "fantasy", seed: "Knight" },
+    { slug: "dnd", label: "D&D", category: "fantasy", seed: "Arcane" },
+    { slug: "elden-ring", label: "Elden Ring", category: "fantasy", seed: "Rune" },
+    { slug: "wow", label: "WoW", category: "fantasy", seed: "Azeroth" },
+    { slug: "fantasy", label: "Fantasy", category: "fantasy", seed: "Myth" },
+    { slug: "cool", label: "Cool", category: "style", seed: "Nova" },
+    { slug: "funny", label: "Funny", category: "style", seed: "Meme" },
+    { slug: "rare", label: "Rare", category: "style", seed: "Vyre" },
+    { slug: "short", label: "Short", category: "style", seed: "Zyro" },
+    { slug: "aesthetic", label: "Aesthetic", category: "style", seed: "Luna" },
+    { slug: "hacker", label: "Hacker", category: "style", seed: "Cipher" },
+    { slug: "streamer", label: "Streamer", category: "streaming", seed: "Raid" },
+    { slug: "clan", label: "Clan", category: "team", seed: "Legion" },
+    { slug: "duo", label: "Duo", category: "team", seed: "Twin" },
+    { slug: "tech", label: "Tech", category: "style", seed: "Byte" },
+    { slug: "dark", label: "Dark", category: "style", seed: "Void" },
+  ];
+
+  const variants: Array<{ slugSuffix: string; titleSuffix: string; descriptionNoun: string }> = [
+    { slugSuffix: "username-generator", titleSuffix: "Username Generator", descriptionNoun: "usernames" },
+    { slugSuffix: "name-generator", titleSuffix: "Name Generator", descriptionNoun: "name ideas" },
+    { slugSuffix: "gamertag-generator", titleSuffix: "Gamertag Generator", descriptionNoun: "gamertags" },
+    { slugSuffix: "handle-generator", titleSuffix: "Handle Generator", descriptionNoun: "handles" },
+    { slugSuffix: "alias-generator", titleSuffix: "Alias Generator", descriptionNoun: "aliases" },
+    { slugSuffix: "tag-generator", titleSuffix: "Tag Generator", descriptionNoun: "tags" },
+    { slugSuffix: "ideas-generator", titleSuffix: "Ideas Generator", descriptionNoun: "username ideas" },
+    { slugSuffix: "clan-name-generator", titleSuffix: "Clan Name Generator", descriptionNoun: "clan names" },
+    { slugSuffix: "duo-name-generator", titleSuffix: "Duo Name Generator", descriptionNoun: "duo names" },
+    { slugSuffix: "team-name-generator", titleSuffix: "Team Name Generator", descriptionNoun: "team names" },
   ];
 
   const entries: GeneratorDirectoryEntry[] = [];
 
-  for (const target of targets) {
-    for (const variant of target.variants) {
-      const slug = `${target.slug}-${variant.slugSuffix}`;
+  for (const theme of themes) {
+    for (const variant of variants) {
+      const slug = `${theme.slug}-${variant.slugSuffix}`;
       if (existingSlugs.has(slug)) continue;
       existingSlugs.add(slug);
 
       entries.push({
         slug,
-        title: `${target.label} ${variant.titleSuffix}`,
-        description: `Generate ${target.label} ${variant.descriptionNoun} for gaming, creator profiles, communities, and themed identities.`,
-        exampleNames: buildExpandedExamples(target.seed, target.label),
-        category: target.category,
+        title: `${theme.label} ${variant.titleSuffix}`,
+        description: `Generate ${theme.label} ${variant.descriptionNoun} for gaming profiles, social handles, teams, and creator branding on NameLaunchpad.`,
+        exampleNames: buildExpandedExamples(theme.seed, theme.label),
+        category: theme.category,
       });
     }
   }
 
-  return entries.slice(0, 200);
+  return entries.slice(0, 520);
 }
 
 function buildExpandedExamples(seed: string, label: string) {
@@ -967,6 +691,7 @@ export function getEntryCategorySlugs(entry: GeneratorDirectoryEntry): Generator
     combined.includes("steam") ||
     combined.includes("xbox") ||
     combined.includes("playstation") ||
+    combined.includes("psn") ||
     combined.includes("nintendo") ||
     combined.includes("apex") ||
     combined.includes("overwatch") ||
@@ -975,6 +700,13 @@ export function getEntryCategorySlugs(entry: GeneratorDirectoryEntry): Generator
     combined.includes("cs2") ||
     combined.includes("pubg") ||
     combined.includes("free fire") ||
+    combined.includes("halo") ||
+    combined.includes("rocket league") ||
+    combined.includes("gta") ||
+    combined.includes("rainbow six") ||
+    combined.includes("battlefield") ||
+    combined.includes("fifa") ||
+    combined.includes("ea fc") ||
     combined.includes("fps") ||
     combined.includes("survival game")
   ) {
@@ -988,12 +720,26 @@ export function getEntryCategorySlugs(entry: GeneratorDirectoryEntry): Generator
     combined.includes("reddit") ||
     combined.includes("social media") ||
     combined.includes("tiktok") ||
-    combined.includes("x username")
+    combined.includes("twitter") ||
+    combined.includes("x username") ||
+    combined.includes("handle")
   ) {
     matches.add("social-media");
   }
 
-  if (entry.category === "fantasy" || combined.includes("fantasy") || combined.includes("guild") || combined.includes("d&d")) {
+  if (
+    entry.category === "fantasy" ||
+    combined.includes("fantasy") ||
+    combined.includes("guild") ||
+    combined.includes("d&d") ||
+    combined.includes("dragon") ||
+    combined.includes("demon") ||
+    combined.includes("elf") ||
+    combined.includes("wizard") ||
+    combined.includes("knight") ||
+    combined.includes("elden ring") ||
+    combined.includes("wow")
+  ) {
     matches.add("fantasy");
   }
 
@@ -1003,27 +749,52 @@ export function getEntryCategorySlugs(entry: GeneratorDirectoryEntry): Generator
     combined.includes("dragon ball") ||
     combined.includes("one piece") ||
     combined.includes("pokemon") ||
-    combined.includes("k-pop") ||
     combined.includes("vtuber")
   ) {
     matches.add("anime");
   }
 
-  if (combined.includes("funny") || combined.includes("pet") || combined.includes("duo")) {
+  if (combined.includes("cool") || combined.includes("nova") || combined.includes("premium")) {
+    matches.add("cool");
+  }
+
+  if (combined.includes("funny") || combined.includes("pet") || combined.includes("meme")) {
     matches.add("funny");
   }
 
-  if (
-    entry.category === "streaming" ||
-    combined.includes("twitch") ||
-    combined.includes("youtube") ||
-    combined.includes("streamer") ||
-    combined.includes("vtuber")
-  ) {
+  if (combined.includes("rare") || combined.includes("og") || combined.includes("original")) {
+    matches.add("rare");
+  }
+
+  if (combined.includes("short") || combined.includes("4 letter") || combined.includes("5 letter")) {
+    matches.add("short");
+  }
+
+  if (combined.includes("aesthetic") || combined.includes("cute") || combined.includes("soft") || combined.includes("dream")) {
+    matches.add("aesthetic");
+  }
+
+  if (entry.category === "streaming" || combined.includes("twitch") || combined.includes("youtube") || combined.includes("streamer") || combined.includes("kick")) {
     matches.add("streamer");
   }
 
-  if (combined.includes("hacker")) {
+  if (entry.category === "team" || combined.includes("clan") || combined.includes("guild tag") || combined.includes("squad")) {
+    matches.add("clan");
+  }
+
+  if (combined.includes("duo") || combined.includes("pair") || combined.includes("twin")) {
+    matches.add("duo");
+  }
+
+  if (combined.includes("tech") || combined.includes("byte") || combined.includes("cyber") || combined.includes("digital") || combined.includes("software")) {
+    matches.add("tech");
+  }
+
+  if (combined.includes("dark") || combined.includes("void") || combined.includes("shadow") || combined.includes("abyss")) {
+    matches.add("dark");
+  }
+
+  if (combined.includes("hacker") || combined.includes("cipher") || combined.includes("glitch") || combined.includes("terminal")) {
     matches.add("hacker");
   }
 

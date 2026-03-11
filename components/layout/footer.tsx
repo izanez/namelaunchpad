@@ -57,6 +57,16 @@ export function Footer() {
               </Link>
             </li>
             <li>
+              <Link href="/explore-generators" className="hover:text-cyan-300">
+                Explore Generators
+              </Link>
+            </li>
+            <li>
+              <Link href="/all-generators" className="hover:text-cyan-300">
+                All Generators
+              </Link>
+            </li>
+            <li>
               <Link href="/username-generator" className="hover:text-cyan-300">
                 Username Generator
               </Link>

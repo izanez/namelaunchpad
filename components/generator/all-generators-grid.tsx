@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
-import { generatorDatabase } from "@/lib/generators";
+import { generatorCategories, generatorDatabase } from "@/lib/generators";
 
 function getGeneratorHref(slug: string) {
   const directRoutes = new Set([
@@ -20,15 +20,34 @@ function getGeneratorHref(slug: string) {
   return `/generators/${slug}`;
 }
 
-export function AllGeneratorsGrid() {
+export function AllGeneratorsGrid({
+  title = "All Generators",
+  description = "Browse every available generator page on NameLaunchpad. Each page includes a generator tool, example usernames, SEO content, and internal links to related generators.",
+  showCategoryLinks = true,
+}: {
+  title?: string;
+  description?: string;
+  showCategoryLinks?: boolean;
+}) {
   return (
     <section className="mx-auto w-full max-w-6xl px-4 py-12 md:px-6">
       <Card className="p-6 md:p-8">
-        <h1 className="text-3xl font-black text-white md:text-4xl">All Generators</h1>
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">
-          Browse every available generator page on NameLaunchpad. Each page includes a generator tool, example usernames,
-          SEO content, and internal links to related generators.
-        </p>
+        <h1 className="text-3xl font-black text-white md:text-4xl">{title}</h1>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">{description}</p>
+        {showCategoryLinks ? (
+          <div className="mt-5 flex flex-wrap gap-2">
+            {generatorCategories.map((category) => (
+              <Link
+                key={category.slug}
+                href={`/category/${category.slug}`}
+                className="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-semibold text-cyan-100 transition hover:border-cyan-300/60 hover:text-cyan-200"
+              >
+                {category.title}
+              </Link>
+            ))}
+          </div>
+        ) : null}
+        <div className="mt-5 text-xs uppercase tracking-wide text-slate-400">{generatorDatabase.length} generator pages</div>
         <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {generatorDatabase.map((generator) => (
             <Card key={generator.slug} className="p-5">

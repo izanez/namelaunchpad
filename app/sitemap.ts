@@ -28,6 +28,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/stats",
     "/search",
     "/all-generators",
+    "/explore-generators",
   ];
 
   const directGeneratorRoutes = generatorDatabase
