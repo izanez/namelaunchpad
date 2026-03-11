@@ -80,6 +80,13 @@ const lengthOptions: Array<{
   { value: "long", label: "Long", description: "11-15 characters", min: 11, max: 15 },
 ];
 
+const lengthFinderQuickFilters = [
+  { label: "4 letter usernames", min: 4, max: 4, style: "cool" as UsernameStyle },
+  { label: "5 letter usernames", min: 5, max: 5, style: "cool" as UsernameStyle },
+  { label: "6 letter usernames", min: 6, max: 6, style: "cool" as UsernameStyle },
+  { label: "short gamer tags", min: 4, max: 6, style: "dark" as UsernameStyle },
+];
+
 function getLengthRange(filter: UsernameLengthFilter) {
   return lengthOptions.find((option) => option.value === filter) ?? lengthOptions[1];
 }
@@ -305,6 +312,10 @@ export function UsernameEngine({
   const [style, setStyle] = useState<UsernameStyle>("cool");
   const [category, setCategory] = useState<UsernameCategory>("cool-usernames");
   const [results, setResults] = useState<string[]>([]);
+  const [lengthFinderMin, setLengthFinderMin] = useState(4);
+  const [lengthFinderMax, setLengthFinderMax] = useState(6);
+  const [lengthFinderResults, setLengthFinderResults] = useState<string[]>([]);
+  const [lengthFinderStyle, setLengthFinderStyle] = useState<UsernameStyle>("cool");
   const [massStyle, setMassStyle] = useState<UsernameStyle>("cool");
   const [massLengthFilter, setMassLengthFilter] = useState<UsernameLengthFilter>("medium");
   const [massTheme, setMassTheme] = useState<(typeof themeOptions)[number]>("neon");
@@ -317,6 +328,7 @@ export function UsernameEngine({
   const [availability, setAvailability] = useState<Record<string, AvailabilityRecord>>({});
   const [trending, setTrending] = useState<string[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isLengthFinding, setIsLengthFinding] = useState(false);
   const [isMassGenerating, setIsMassGenerating] = useState(false);
   const storageKey = useMemo(() => "namelaunchpad:favorites:username-engine", []);
 
@@ -355,6 +367,34 @@ export function UsernameEngine({
       return Array.from(uniqueNames).slice(existingNames.length, existingNames.length + amount);
     },
     [effectiveLengthRange.max, effectiveLengthRange.min, effectiveStyle, keywordsInput, selectedCategory.keywords]
+  );
+
+  const generateLengthFinderResults = useCallback(
+    (minLength: number, maxLength: number, finderStyle: UsernameStyle, amount = 24) => {
+      const safeMin = Math.max(4, Math.min(15, Math.floor(minLength)));
+      const safeMax = Math.max(safeMin, Math.min(15, Math.floor(maxLength)));
+      const keywords = parseKeywords(keywordsInput);
+      const combinedKeywords = Array.from(new Set([...selectedCategory.keywords, ...keywords]));
+      const uniqueNames = new Set<string>();
+      let attempts = 0;
+
+      while (uniqueNames.size < amount && attempts < 10) {
+        const names = generateUsernames({
+          keywords: combinedKeywords,
+          length: safeMax,
+          minLength: safeMin,
+          maxLength: safeMax,
+          style: finderStyle,
+          amount,
+        });
+
+        names.forEach((name) => uniqueNames.add(name));
+        attempts += 1;
+      }
+
+      return Array.from(uniqueNames).slice(0, amount);
+    },
+    [keywordsInput, selectedCategory.keywords]
   );
 
   const applyGeneratedNames = useCallback(
@@ -420,6 +460,14 @@ export function UsernameEngine({
 
   useEffect(() => {
     const initial = generateUsernames({ keywords: [], length: 10, minLength: 7, maxLength: 10, style: "cool", amount: 20 });
+    const initialLengthFinder = generateUsernames({
+      keywords: ["neo"],
+      length: 6,
+      minLength: 4,
+      maxLength: 6,
+      style: "cool",
+      amount: 24,
+    });
     const initialMass = generateUsernames({
       keywords: ["neon"],
       length: 10,
@@ -429,6 +477,7 @@ export function UsernameEngine({
       amount: 100,
     });
     setResults(initial);
+    setLengthFinderResults(initialLengthFinder);
     setMassResults(initialMass);
     setAvailability(buildAvailability(initial));
     setTrending(pickTrendingNames(initial));
@@ -567,6 +616,42 @@ export function UsernameEngine({
       setSimilarResults(similar);
     },
     [effectiveLengthRange.max, effectiveLengthRange.min, effectiveStyle]
+  );
+
+  const runLengthFinder = useCallback(() => {
+    setIsLengthFinding(true);
+    window.setTimeout(() => {
+      const names = generateLengthFinderResults(lengthFinderMin, lengthFinderMax, lengthFinderStyle);
+      startTransition(() => {
+        setLengthFinderResults(names);
+      });
+      incrementDailyGeneratedCount(names.length);
+      trackGeneratorUsage(`${generatorKey}-length-finder`, names.length);
+      trackGeneratedUsernames(names);
+      trackRecentGeneratedUsernames(names);
+      setIsLengthFinding(false);
+    }, 120);
+  }, [generateLengthFinderResults, generatorKey, lengthFinderMax, lengthFinderMin, lengthFinderStyle]);
+
+  const applyLengthQuickFilter = useCallback(
+    (min: number, max: number, finderStyle: UsernameStyle) => {
+      setLengthFinderMin(min);
+      setLengthFinderMax(max);
+      setLengthFinderStyle(finderStyle);
+      setIsLengthFinding(true);
+      window.setTimeout(() => {
+        const names = generateLengthFinderResults(min, max, finderStyle);
+        startTransition(() => {
+          setLengthFinderResults(names);
+        });
+        incrementDailyGeneratedCount(names.length);
+        trackGeneratorUsage(`${generatorKey}-length-finder`, names.length);
+        trackGeneratedUsernames(names);
+        trackRecentGeneratedUsernames(names);
+        setIsLengthFinding(false);
+      }, 120);
+    },
+    [generateLengthFinderResults, generatorKey]
   );
 
   return (
@@ -771,6 +856,101 @@ export function UsernameEngine({
               </div>
             </Card>
           ) : null}
+
+          <Card className="p-6">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <h2 className="text-xl font-bold text-white">Username Length Finder</h2>
+                <p className="mt-2 text-sm text-slate-400">
+                  Find usernames that match an exact minimum and maximum length range.
+                </p>
+              </div>
+              <span className="rounded-full border border-cyan-300/25 bg-cyan-400/10 px-3 py-1 text-xs font-semibold text-cyan-200">
+                {lengthFinderMin}-{lengthFinderMax} chars
+              </span>
+            </div>
+
+            <div className="mt-5 grid gap-3 md:grid-cols-3">
+              <div className="rounded-xl2 border border-white/15 bg-slate-900/55 px-4 py-3">
+                <label className="text-xs font-semibold uppercase tracking-wide text-slate-300">Minimum Length</label>
+                <input
+                  type="number"
+                  min={4}
+                  max={15}
+                  value={lengthFinderMin}
+                  onChange={(event) => setLengthFinderMin(Number(event.target.value))}
+                  className="mt-3 w-full rounded-xl2 border border-white/15 bg-slate-900/65 px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-300/70"
+                />
+              </div>
+              <div className="rounded-xl2 border border-white/15 bg-slate-900/55 px-4 py-3">
+                <label className="text-xs font-semibold uppercase tracking-wide text-slate-300">Maximum Length</label>
+                <input
+                  type="number"
+                  min={4}
+                  max={15}
+                  value={lengthFinderMax}
+                  onChange={(event) => setLengthFinderMax(Number(event.target.value))}
+                  className="mt-3 w-full rounded-xl2 border border-white/15 bg-slate-900/65 px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-300/70"
+                />
+              </div>
+              <div className="rounded-xl2 border border-white/15 bg-slate-900/55 px-4 py-3">
+                <label className="text-xs font-semibold uppercase tracking-wide text-slate-300">Style</label>
+                <select
+                  value={lengthFinderStyle}
+                  onChange={(event) => setLengthFinderStyle(event.target.value as UsernameStyle)}
+                  className="mt-3 w-full rounded-xl2 border border-white/15 bg-slate-900/65 px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-300/70"
+                >
+                  {styleOptions.map((styleName) => (
+                    <option key={`finder-${styleName}`} value={styleName}>
+                      {styleName.charAt(0).toUpperCase() + styleName.slice(1)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              {lengthFinderQuickFilters.map((filter) => (
+                <Button
+                  key={filter.label}
+                  variant="ghost"
+                  className="px-3 py-2 text-xs"
+                  onClick={() => applyLengthQuickFilter(filter.min, filter.max, filter.style)}
+                >
+                  {filter.label}
+                </Button>
+              ))}
+            </div>
+
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+              <Button onClick={runLengthFinder} disabled={isLengthFinding} className="sm:min-w-52">
+                {isLengthFinding ? "Finding..." : "Find Usernames"}
+              </Button>
+              <span className="self-center text-xs text-slate-400">Returns names matching the selected length range</span>
+            </div>
+
+            {isLengthFinding ? (
+              <div className="mt-5">
+                <LoadingGrid count={8} />
+              </div>
+            ) : (
+              <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {lengthFinderResults.map((name) => (
+                  <Card key={`finder-${name}`} className="p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <p className="break-words text-sm font-semibold text-slate-100">{name}</p>
+                      <span className="rounded-full border border-cyan-300/30 bg-cyan-300/10 px-2 py-0.5 text-[10px] font-semibold text-cyan-100">
+                        {name.length}
+                      </span>
+                    </div>
+                    <Button variant="ghost" className="mt-3 w-full px-3 py-2 text-xs" onClick={() => onCopy(name)}>
+                      Copy Username
+                    </Button>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </Card>
 
           <Card className="p-6">
             <div className="flex items-center justify-between gap-3">
