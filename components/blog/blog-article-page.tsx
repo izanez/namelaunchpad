@@ -43,6 +43,7 @@ export function BlogArticlePage({ article }: { article: BlogArticle }) {
   const [generatorBatch, setGeneratorBatch] = useState<string[]>(() => buildTryGeneratorBatch(article));
   const sections = useMemo(() => buildBlogArticleSections(article), [article]);
   const examples = useMemo(() => buildBlogArticleExamples(article), [article]);
+  const relatedArticles = useMemo(() => getRelatedBlogArticles(article, 4), [article]);
   const internalLinkSections = useMemo(
     () =>
       getSmartInternalLinkSections({
@@ -156,6 +157,65 @@ export function BlogArticlePage({ article }: { article: BlogArticle }) {
         </Card>
 
         <SmartInternalLinks sections={internalLinkSections} />
+
+        <Card className="p-6 md:p-8">
+          <h2 className="text-2xl font-black text-white">Related Generator Pages</h2>
+          <p className="mt-2 text-sm text-slate-400">
+            Use these generator pages to turn the article direction into more filtered, reusable username ideas.
+          </p>
+          <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {article.relatedGenerators.map((href) => (
+              <Link
+                key={href}
+                href={href}
+                className="rounded-3xl border border-white/10 bg-white/5 p-5 transition hover:border-cyan-300/30"
+              >
+                <h3 className="text-base font-semibold text-white">{getLinkLabel(href)}</h3>
+                <p className="mt-3 text-sm leading-7 text-slate-300">
+                  Open the dedicated tool or landing page to generate more names with the same topic and tone.
+                </p>
+              </Link>
+            ))}
+          </div>
+        </Card>
+
+        <Card className="p-6 md:p-8">
+          <h2 className="text-2xl font-black text-white">Related Username Ideas</h2>
+          <p className="mt-2 text-sm text-slate-400">
+            These filtered list pages help you move sideways into adjacent name patterns without losing the topic.
+          </p>
+          <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {article.relatedUsernameLists.map((href) => (
+              <Link
+                key={href}
+                href={href}
+                className="rounded-3xl border border-white/10 bg-white/5 p-5 transition hover:border-cyan-300/30"
+              >
+                <h3 className="text-base font-semibold text-white">{getLinkLabel(href)}</h3>
+                <p className="mt-3 text-sm leading-7 text-slate-300">
+                  Browse a filtered username list with copy buttons, tighter patterns, and more relevant examples.
+                </p>
+              </Link>
+            ))}
+          </div>
+        </Card>
+
+        <Card className="p-6 md:p-8">
+          <h2 className="text-2xl font-black text-white">Related Articles</h2>
+          <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {relatedArticles.map((related) => (
+              <Link
+                key={related.slug}
+                href={`/blog/${related.slug}`}
+                className="rounded-3xl border border-white/10 bg-white/5 p-5 transition hover:border-cyan-300/30"
+              >
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-200">{related.category}</p>
+                <h3 className="mt-3 text-base font-semibold text-white">{related.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-slate-300">{related.description}</p>
+              </Link>
+            ))}
+          </div>
+        </Card>
 
         <Card className="p-6 md:p-8">
           <h2 className="text-2xl font-black text-white">Call to Action</h2>

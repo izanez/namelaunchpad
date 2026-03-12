@@ -149,6 +149,27 @@ export function UsernameListingPageView({ page, usernames, seoContent }: Usernam
           </div>
         </Card>
 
+        <Card className="p-6 md:p-8">
+          <h2 className="text-2xl font-black text-white">Related Pages</h2>
+          <p className="mt-2 text-sm text-slate-400">
+            Move from this filtered list into adjacent generators and discovery pages without losing the naming pattern.
+          </p>
+          <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {page.relatedLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="rounded-3xl border border-white/10 bg-white/5 p-5 transition hover:border-cyan-300/30"
+              >
+                <h3 className="text-base font-semibold text-white">{link.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-slate-300">
+                  Use this page to expand the same style, length, or rarity direction with more generator results and examples.
+                </p>
+              </Link>
+            ))}
+          </div>
+        </Card>
+
         <SmartInternalLinks sections={internalLinkSections} />
       </div>
 

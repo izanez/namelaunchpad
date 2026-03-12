@@ -127,6 +127,26 @@ function buildSeoContent(entry: GeneratorDirectoryEntry) {
   ];
 }
 
+function buildGeneratorFaqs(entry: GeneratorDirectoryEntry) {
+  const lowerTitle = entry.title.toLowerCase();
+  return [
+    {
+      question: `What does the ${lowerTitle} do?`,
+      answer: `The ${lowerTitle} creates themed name ideas based on the page topic, example naming patterns, and a small optional keyword input so users can get more targeted results than with a generic generator.`,
+    },
+    {
+      question: `How do you choose better names from the ${lowerTitle}?`,
+      answer:
+        "Look for names that stay readable, fit the tone of the platform or game, and still sound natural when used outside the generator in a profile, lobby, or social handle.",
+    },
+    {
+      question: `Why use a dedicated page instead of a general username generator?`,
+      answer:
+        "Dedicated generator pages keep the naming direction tighter, which usually produces examples and keyword combinations that feel more relevant to the exact search intent.",
+    },
+  ];
+}
+
 type KeywordLandingGeneratorProps = {
   page: GeneratorDirectoryEntry;
 };
@@ -151,6 +171,7 @@ export function KeywordLandingGenerator({ page }: KeywordLandingGeneratorProps) 
       }),
     [page]
   );
+  const faqItems = useMemo(() => buildGeneratorFaqs(page), [page]);
 
   useEffect(() => {
     setResults(generateKeywordNames(page, "", 24));
@@ -294,6 +315,18 @@ export function KeywordLandingGenerator({ page }: KeywordLandingGeneratorProps) 
                         : `Choosing better ${page.title.toLowerCase()} names`}
                   </h3>
                   <p className="mt-2 text-sm leading-7 text-slate-300">{section}</p>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          <Card className="p-6 md:p-8">
+            <h2 className="text-2xl font-black text-white md:text-3xl">Frequently Asked Questions</h2>
+            <div className="mt-5 grid gap-5 md:grid-cols-3">
+              {faqItems.map((item) => (
+                <div key={item.question}>
+                  <h3 className="text-lg font-bold text-white">{item.question}</h3>
+                  <p className="mt-3 text-sm leading-7 text-slate-300">{item.answer}</p>
                 </div>
               ))}
             </div>

@@ -3,10 +3,12 @@
 import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
+import { SmartInternalLinks } from "@/components/seo/smart-internal-links";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { generateUsernames } from "@/lib/generators";
 import type { ProgrammaticSeoPage } from "@/lib/programmatic-seo-pages";
+import { getSmartInternalLinkSections } from "@/lib/smart-internal-links";
 
 function buildUsernameList(page: ProgrammaticSeoPage) {
   const output = new Set<string>();
@@ -32,6 +34,17 @@ function buildUsernameList(page: ProgrammaticSeoPage) {
 export function ProgrammaticSeoPageView({ page }: { page: ProgrammaticSeoPage }) {
   const [toast, setToast] = useState<string | null>(null);
   const usernames = useMemo(() => buildUsernameList(page), [page]);
+  const internalLinkSections = useMemo(
+    () =>
+      getSmartInternalLinkSections({
+        pageType: "article",
+        slug: page.slug,
+        title: page.title,
+        style: page.style,
+        keywords: page.keywords,
+      }),
+    [page]
+  );
 
   const onCopy = useCallback(async (value: string) => {
     try {
@@ -162,6 +175,32 @@ export function ProgrammaticSeoPageView({ page }: { page: ProgrammaticSeoPage })
             ))}
           </div>
         </Card>
+
+        <Card className="p-6 md:p-8">
+          <h2 className="text-2xl font-black text-white">Why This Page Helps</h2>
+          <div className="mt-5 grid gap-5 md:grid-cols-3">
+            <div>
+              <h3 className="text-lg font-bold text-white">Relevant examples</h3>
+              <p className="mt-3 text-sm leading-7 text-slate-300">
+                The username list is generated from the same topic keywords and style as the page itself, so the examples stay close to the actual search intent.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-white">Generator depth</h3>
+              <p className="mt-3 text-sm leading-7 text-slate-300">
+                Related generator links let users move from a static inspiration page into a live tool where they can keep refining style, tone, and length.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-white">Better discovery</h3>
+              <p className="mt-3 text-sm leading-7 text-slate-300">
+                The internal links connect this topic to adjacent naming pages, which improves crawl depth and makes the site more useful for comparison searches.
+              </p>
+            </div>
+          </div>
+        </Card>
+
+        <SmartInternalLinks sections={internalLinkSections} />
       </div>
 
       {toast ? (

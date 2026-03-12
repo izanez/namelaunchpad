@@ -5,7 +5,7 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { ProgrammaticSeoPageView } from "@/components/seo/programmatic-seo-page";
 import { UsernameListingPageView } from "@/components/seo/username-listing-page";
 import { absoluteUrl } from "@/app/metadata";
-import { createBreadcrumbSchema, createGeneratorSchema } from "@/lib/seo";
+import { createArticleSchema, createBreadcrumbSchema, createFaqSchema, createGeneratorSchema, createSeoMetadata } from "@/lib/seo";
 import { getKeywordLandingPage, landingPageSlugs } from "@/lib/keyword-landing-pages";
 import { getProgrammaticSeoPage, programmaticSeoSlugs } from "@/lib/programmatic-seo-pages";
 import {
@@ -34,9 +34,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!page && !seoPage && !usernameListingPage) return {};
 
   if (usernameListingPage) {
-    return {
+    return createSeoMetadata({
       title: usernameListingPage.seoTitle,
       description: usernameListingPage.metaDescription,
+      path: `/${usernameListingPage.slug}`,
       keywords: [
         usernameListingPage.slug.replace(/-/g, " "),
         usernameListingPage.title.toLowerCase(),
@@ -44,22 +45,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         "username database",
         "NameLaunchpad",
       ],
-      openGraph: {
-        title: usernameListingPage.seoTitle,
-        description: usernameListingPage.metaDescription,
-        type: "website",
-        url: absoluteUrl(`/${usernameListingPage.slug}`),
-      },
-      alternates: {
-        canonical: `/${usernameListingPage.slug}`,
-      },
-    };
+    });
   }
 
   if (seoPage) {
-    return {
+    return createSeoMetadata({
       title: seoPage.seoTitle,
       description: seoPage.metaDescription,
+      path: `/${seoPage.slug}`,
       keywords: [
         slug.replace(/-/g, " "),
         seoPage.title.toLowerCase(),
@@ -67,37 +60,23 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         "gamer tags",
         "NameLaunchpad",
       ],
-      openGraph: {
-        title: seoPage.seoTitle,
-        description: seoPage.metaDescription,
-        type: "website",
-      },
-      alternates: {
-        canonical: `/${seoPage.slug}`,
-      },
-    };
+      type: "article",
+    });
   }
 
   if (!page) return {};
 
-  return {
+  return createSeoMetadata({
     title: page.seoTitle,
     description: page.metaDescription,
+    path: `/${page.slug}`,
     keywords: [
       `${page.platform.toLowerCase()} name generator`,
       `${page.platform.toLowerCase()} username generator`,
       `${page.platform.toLowerCase()} gamertags`,
       "username generator",
     ],
-    openGraph: {
-      title: page.seoTitle,
-      description: page.metaDescription,
-      type: "website",
-    },
-    alternates: {
-      canonical: `/${page.slug}`,
-    },
-  };
+  });
 }
 
 export default async function KeywordLandingPage({ params }: PageProps) {
@@ -127,6 +106,20 @@ export default async function KeywordLandingPage({ params }: PageProps) {
             { name: usernameListingPage.title, path: `/${usernameListingPage.slug}` },
           ])}
         />
+        <JsonLd
+          data={createFaqSchema([
+            {
+              question: `What are ${usernameListingPage.title.toLowerCase()} best for?`,
+              answer:
+                "These pages help users narrow the larger username database down to a more useful pattern such as length, rarity, starting letter, category, or style.",
+            },
+            {
+              question: `How should you use ${usernameListingPage.title.toLowerCase()}?`,
+              answer:
+                "Use the filtered list to spot patterns you actually like, then use the generator widget and related pages to expand that direction instead of restarting from generic name ideas.",
+            },
+          ])}
+        />
         <UsernameListingPageView page={usernameListingPage} usernames={usernames} seoContent={seoContent} />
       </>
     );
@@ -148,6 +141,15 @@ export default async function KeywordLandingPage({ params }: PageProps) {
             { name: "Home", path: "/" },
             { name: seoPage.title, path: `/${seoPage.slug}` },
           ])}
+        />
+        <JsonLd
+          data={createArticleSchema({
+            title: seoPage.title,
+            description: seoPage.metaDescription,
+            path: `/${seoPage.slug}`,
+            keywords: seoPage.keywords,
+            section: "SEO Guides",
+          })}
         />
         <ProgrammaticSeoPageView page={seoPage} />
       </>
