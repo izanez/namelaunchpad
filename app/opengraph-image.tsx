@@ -39,18 +39,36 @@ export default function OpenGraphImage() {
             left: 64,
             display: "flex",
             alignItems: "center",
-            gap: 14,
+            gap: 20,
           }}
         >
           <div
             style={{
-              width: 18,
-              height: 18,
-              borderRadius: 999,
-              background: "linear-gradient(135deg, #22d3ee, #3b82f6, #a855f7)",
-              boxShadow: "0 0 24px rgba(34,211,238,0.45)",
+              width: 64,
+              height: 64,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: 18,
+              border: "2px solid rgba(125,211,252,0.45)",
+              background: "linear-gradient(145deg, rgba(15,23,42,0.96), rgba(2,6,23,0.96))",
+              boxShadow: "0 0 28px rgba(34,211,238,0.18)",
+              fontSize: 28,
+              fontWeight: 800,
+              letterSpacing: "-0.06em",
+              color: "#ffffff",
             }}
-          />
+          >
+            <span
+              style={{
+                backgroundImage: "linear-gradient(90deg, #e0f2fe, #7dd3fc, #d8b4fe)",
+                backgroundClip: "text",
+                color: "transparent",
+              }}
+            >
+              NL
+            </span>
+          </div>
           <div style={{ display: "flex", fontSize: 26, fontWeight: 700, letterSpacing: "-0.03em" }}>
             <span style={{ color: "#ffffff" }}>Name</span>
             <span
@@ -101,14 +119,14 @@ export default function OpenGraphImage() {
           </div>
           <div
             style={{
-              maxWidth: 860,
-              fontSize: 70,
+              maxWidth: 880,
+              fontSize: 68,
               lineHeight: 1.02,
               letterSpacing: "-0.05em",
               fontWeight: 800,
             }}
           >
-            NameLaunchpad
+            Launch a stronger username identity
           </div>
           <div
             style={{
@@ -119,7 +137,32 @@ export default function OpenGraphImage() {
               color: "rgba(226,232,240,0.9)",
             }}
           >
-            Generate cool usernames for gaming, social media and streaming.
+            NameLaunchpad generates gamer tags, social handles, clan names and platform-ready usernames with a premium neon gaming brand.
+          </div>
+          <div
+            style={{
+              display: "flex",
+              gap: 14,
+              marginTop: 28,
+            }}
+          >
+            {["Gaming", "Social Media", "Fantasy", "Streaming"].map((tag) => (
+              <div
+                key={tag}
+                style={{
+                  display: "flex",
+                  border: "1px solid rgba(255,255,255,0.12)",
+                  background: "rgba(255,255,255,0.05)",
+                  borderRadius: 999,
+                  padding: "10px 18px",
+                  fontSize: 20,
+                  fontWeight: 600,
+                  color: "rgba(226,232,240,0.92)",
+                }}
+              >
+                {tag}
+              </div>
+            ))}
           </div>
         </div>
       </div>
