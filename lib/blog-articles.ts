@@ -79,12 +79,16 @@ function buildArticleVariants(family: ArticleFamily) {
   ];
 }
 
-function buildDescription(_family: ArticleFamily, title: string) {
-  return `Explore ${title.toLowerCase()} with examples, tips, related generators, and practical advice for choosing a stronger username on NameLaunchpad.`;
+function buildDescription(family: ArticleFamily, title: string) {
+  const theme = family.examplesSeed.slice(0, 2).join(" and ");
+  const audience = family.audienceTwo.toLowerCase();
+  return `Explore ${title.toLowerCase()} with practical naming advice, ${family.platform ?? family.category.toLowerCase()} examples, ${theme}-style ideas, and generator links for ${audience}.`;
 }
 
 function buildShortIntro(family: ArticleFamily, title: string) {
-  return `${title} on NameLaunchpad is built for users who want names that feel usable, memorable, and aligned with ${family.category.toLowerCase()} naming trends instead of random filler combinations.`;
+  const platformText = family.platform ? `for ${family.platform} players` : `for ${family.category.toLowerCase()} naming`;
+  const seedPreview = family.examplesSeed.slice(0, 3).join(", ");
+  return `${title} on NameLaunchpad focuses on names that feel usable in real profiles, not throwaway filler. The page is tuned ${platformText} and uses naming cues like ${seedPreview} so the ideas feel closer to what people actually search for.`;
 }
 
 function buildArticleKeywords(family: ArticleFamily, title: string, index: number) {
@@ -137,31 +141,46 @@ export function getRelatedBlogArticles(article: BlogArticle, amount = 4) {
 export function buildBlogArticleSections(article: BlogArticle) {
   const keywordPhrase = article.keywords.slice(0, 4).join(", ");
   const generatorCta = article.ctaHref;
+  const examples = article.examplesSeed.join(", ");
+  const audience = (article.audience ?? "players and creators").toLowerCase();
+  const platform = article.platform ?? article.category;
+  const styleAngle =
+    article.style === "dark"
+      ? "sharper, lower-noise wording with stronger contrast"
+      : article.style === "aesthetic"
+        ? "softer wording, cleaner pacing, and more visual vocabulary"
+        : article.style === "anime"
+          ? "stylized vocabulary that still sounds readable in English handles"
+          : article.style === "fantasy"
+            ? "heavier mythic language and more dramatic endings"
+            : article.style === "streamer"
+              ? "brandable words that still work in overlays and bios"
+              : "clean gaming language with memorable rhythm";
 
   return [
     {
-      heading: `What makes ${article.title.toLowerCase()} work`,
-      body: `Good ${article.title.toLowerCase()} are usually built around clarity, tone, and consistency. A strong name should feel like it belongs in the spaces where you actually use it, whether that is a game lobby, a Discord server, a TikTok bio, or a Twitch overlay. That is why NameLaunchpad leans on patterns that feel readable and brandable instead of stacking random syllables together. Names with clear visual rhythm are easier to remember after a single match or stream, and they usually hold up better when you want to reuse them across multiple platforms.\n\nFor this topic, the most useful patterns usually come from combinations around ${keywordPhrase}. Those roots are recognizable, but they still leave room for variation in pacing, mood, and uniqueness. A better username is not just unusual. It is usable. If a name sounds awkward when you say it out loud, looks cluttered in a profile header, or needs too many symbols to feel distinctive, it usually will not age well. The goal is a clean identity that still has enough edge to stand out.`,
+      heading: `Why ${article.title.toLowerCase()} keep getting searched`,
+      body: `${article.title} stay relevant because users usually want a name that works immediately inside a recognizable theme. On NameLaunchpad, this page is tuned for ${audience}, which means the advice is not just about sounding cool in isolation. It is about whether the handle still fits in a lobby list, social bio, clip title, or server roster. A name with clean rhythm usually performs better than one that only looks unusual for a second.\n\nFor this topic, useful naming roots come from ${keywordPhrase}. Those words already carry a clear signal, so they do a lot of work before you even add a suffix or second concept. That makes it easier to build names that feel grounded in the page topic instead of random. The best results are usually readable first and distinctive second, not the other way around.`,
     },
     {
-      heading: "How to choose a username that fits your use case",
-      body: `The right name depends on where you plan to use it. If your main goal is gaming, readability under pressure matters more than decorative flair. If the name is meant for content or streaming, it also needs to look clean in thumbnails, titles, and overlays. This is why users often overvalue novelty and undervalue flexibility. A flexible username is one that can work in gameplay, in social handles, and in creator branding without feeling like it belongs to a different persona each time.\n\nWhen building options, it helps to think in layers. Start with a mood, then a theme, then a format. Mood covers whether the name should feel cool, dark, funny, aesthetic, or fantasy-driven. Theme covers the vocabulary you want to borrow from, like storm, pixel, shadow, rogue, or luna. Format controls whether the final name should be short and premium, longer and more descriptive, or balanced somewhere in between. That is the logic behind the generator and also the easiest way to judge whether a username actually fits you.`,
+      heading: `Name patterns that fit ${platform.toLowerCase()}`,
+      body: `Different themes need different structures. A name made for ${platform.toLowerCase()} can get away with vocabulary that would feel awkward on another page, because users already expect a certain tone. For this topic, the strongest patterns usually lean on ${styleAngle}. That is why names based on ${examples} feel more believable here than on a broader generator page.\n\nA practical way to judge the pattern is to strip it down to two parts: the anchor word and the finishing word. The anchor gives the name its theme. The finish gives it motion, status, or edge. If both parts point in the same direction, the name usually feels coherent. If they pull in different directions, the result looks invented rather than chosen.`,
     },
     {
-      heading: "Username examples and naming patterns",
-      body: `High-quality examples are useful because they show the structure behind good names. Some names work because a strong prefix creates immediate tone. Others work because the ending gives motion, rank, or impact. In practice, the best combinations are often simple. They use one recognisable anchor and one supporting word rather than three unrelated ideas fighting for attention. That is why names generated around this article topic often feel cleaner than the average list you find online.\n\nA practical rule is to test whether the name still feels natural when you remove numbers and symbols. If the base version is already strong, the name has a better chance of staying memorable. If it only works once you add random digits, underscores, or extra letters, it is probably not the best candidate. That applies to ${article.title.toLowerCase()} especially, because users searching for this topic usually want names that feel intentional rather than improvised.`,
+      heading: "How to read the example list properly",
+      body: `The example usernames on this page are more useful when you treat them as patterns instead of fixed answers. Look at which names feel direct, which feel more descriptive, and which feel like they could scale into a larger identity. Some users will want a clip-ready tag that is short and punchy. Others will want something slightly longer that leaves room for personality. That difference matters more than chasing a name that simply happens to be available.\n\nFor ${article.title.toLowerCase()}, the strongest examples tend to show one clear concept rather than stacking too many. If the base word already feels right, a light suffix or stylistic variation is usually enough. Once the name needs too many repairs to feel usable, it is probably the wrong starting point.`,
     },
     {
-      heading: "Common mistakes to avoid",
-      body: `One of the biggest mistakes is making a name too complicated in an attempt to look unique. Overloaded spellings, stacked symbols, or mismatched themes usually make the username weaker, not stronger. Another issue is chasing short-term trends too aggressively. A meme-based name can feel fresh today, but it may look dated after a few weeks. If you are building a tag you want to keep, you should bias toward words and structures that still feel solid after the current trend cycle fades.\n\nAnother frequent problem is ignoring availability and portability. A name that only works on one platform is often less useful than a slightly less perfect option that can follow you across multiple profiles. That is where NameLaunchpad helps. Instead of just giving a random batch, it makes it easier to compare styles, lengths, and related generator pages so you can keep iterating without losing direction.`,
+      heading: `Mistakes that make ${article.title.toLowerCase()} feel generic`,
+      body: `The most common mistake is copying the surface vocabulary without matching the structure. Users often pick the right theme word and then bolt on a weak suffix, a random number, or a clumsy spelling change. That usually produces a name that technically fits the niche but still feels forgettable. Another mistake is using references that are too narrow or too trend-driven. If the reference expires, the name usually loses value with it.\n\nIt also helps to avoid handles that only make sense in one very specific context. A better name still works when you move from gameplay to chat, or from a username to a creator handle. If the identity collapses the moment you imagine it on another platform, it needs more refinement.`,
     },
     {
-      heading: "Tips for getting better results from the generator",
-      body: `Use the generator like a direction tool, not just a one-click answer. Start with a theme or a keyword that reflects the kind of identity you want. Then adjust style and length until the results start clustering around the tone you actually like. If you want cleaner names, reduce complexity and keep the length tighter. If you want more expressive names, allow slightly longer combinations with stronger fantasy, dark, or streamer cues. The best results usually come from two or three focused iterations, not a single blind batch.\n\nIt also helps to compare your generated names against other nearby article topics and username list pages. That is why this article links to related generators and related username collections. If one category is too broad, a nearby list can narrow your taste quickly. Once you find a pattern you like, open ${generatorCta} and iterate from there with better constraints. That workflow produces stronger names than copying the first thing that looks acceptable.`,
+      heading: "How to use the generator without getting generic output",
+      body: `The fastest way to improve quality is to give the generator a more opinionated direction. Instead of entering a vague keyword, lean into a word cluster that already belongs to the page topic. On this page, seeds such as ${examples} create stronger output because they already match the search intent. Then keep the length close to the kind of names you would actually use. Cleaner output usually comes from tighter length limits and fewer mixed themes.\n\nOnce you have a batch, compare the best three or four names side by side. Check whether they still feel natural in text, easy to say, and usable beyond one platform. Then open ${generatorCta} and keep iterating from the strongest pattern, not from scratch. That workflow is usually what turns a decent name into a keeper.`,
     },
     {
-      heading: "Final advice before you lock in a name",
-      body: `Before you settle on a final username, test it in the exact contexts where you plan to use it. Read it as a teammate would read it in voice chat. Picture it in a Twitch title, in a Discord member list, or in an in-game kill feed. Good names survive context changes. Weak names fall apart once you move them outside the one setting where they first looked interesting. That final stress test is usually enough to separate a throwaway idea from a username you can actually keep.\n\nIf you are still undecided, use this article as a starting point rather than a final verdict. The examples and tips here are meant to narrow your taste and sharpen your filters. From there, the fastest next move is to open the linked generator, generate another batch with clearer inputs, and compare the strongest options side by side. That is the practical path to finding a username that feels both original and usable.`,
+      heading: "Final check before you commit to one name",
+      body: `Before locking in a final handle, test whether it still feels right without any context around it. If the name only works because you remember the article topic, it may not be strong enough on its own. Good names carry their tone even when someone sees them cold in a search result, a member list, or a highlight title. That is the test that usually separates useful names from disposable ones.\n\nUse this page as a narrowing tool. The examples, sections, and internal links should help you see which direction fits your taste, not trap you in one fixed list. Once you know the pattern you want, use the generator, compare a few clean candidates, and choose the one that still feels durable outside the trend of the moment.`,
     },
   ];
 }

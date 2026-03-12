@@ -256,9 +256,22 @@ export function getUsernameListingRecords(page: UsernameListingPage, limit = 120
 }
 
 export function buildUsernameListingSeoContent(page: UsernameListingPage) {
+  const filterSummary = [
+    page.filters.startsWith ? `names starting with ${page.filters.startsWith.toUpperCase()}` : null,
+    page.filters.exactLengths ? `${page.filters.exactLengths.join(" or ")} character usernames` : null,
+    typeof page.filters.maxLength === "number" ? `names up to ${page.filters.maxLength} characters` : null,
+    page.filters.styles?.length ? `${page.filters.styles.join(", ")} style usernames` : null,
+    page.filters.rarities?.length ? `${page.filters.rarities.join(", ")} rarity results` : null,
+    page.filters.categories?.length ? `${page.filters.categories.join(", ")} category names` : null,
+  ]
+    .filter(Boolean)
+    .join(", ");
+  const keywordSummary = page.generator.keywords.join(", ");
+  const relatedSummary = page.relatedLinks.map((link) => link.title).slice(0, 3).join(", ");
+
   return [
-    `${page.title} pages are useful because they turn a large username database into a tighter list that matches a specific naming pattern. Instead of forcing users to scroll through unrelated handles, this page focuses on one clear angle and makes the results easier to compare quickly. That matters when someone wants names that share a structure, tone, or length constraint but still need to feel usable for gaming, streaming, Discord, TikTok, Twitch, YouTube, or broader social branding. A filtered page like this helps reduce noise and highlights names that look more intentional in profile spaces.`,
-    `When choosing from ${page.title.toLowerCase()}, the best approach is to compare readability, memorability, and flexibility. A strong username should still look clean in a profile header, make sense in a lobby or chat list, and feel recognizable if reused on another platform later. Users often pick names too quickly based on novelty alone, but better results usually come from checking whether the name still sounds good out loud, still feels easy to type, and still matches the tone they want to project. That is especially important for gamers and creators who plan to reuse one handle across several communities.`,
-    `This page uses the NameLaunchpad username database as its source, which means the names shown here come from the same broader system that powers the generator tools and database browser. That creates a more consistent workflow. You can browse filtered username ideas here, copy the ones you like, and then use the related generator widget below to create more variations with the same naming direction. Combined with the internal links to related pages, that makes the page useful both for discovery and refinement rather than acting like a dead-end list of names.`
+    `${page.title} pages are most useful when the filter itself is the reason you are searching. This page narrows the larger NameLaunchpad database down to ${filterSummary || "one clear naming pattern"}, which makes the results more practical than a broad dump of unrelated usernames. Users looking for this kind of page usually already know something about the shape they want. They may want a shorter handle, a rarer structure, or a style that better fits gaming, streaming, or social branding. Filtering by a clear pattern helps surface names that feel intentional rather than accidental.`,
+    `When comparing ${page.title.toLowerCase()}, look at how the names behave in real contexts, not just in a list. The strongest options still read cleanly in profile headers, overlays, friend lists, and chat panels. This page leans on generator seeds such as ${keywordSummary}, so the names feel closer to the intent behind the filter instead of drifting into generic combinations. That matters because good usernames tend to be memorable through rhythm and clarity, not through noise or random decoration.`,
+    `This page also works best as part of a workflow. You can use the filtered list to identify the pattern you actually like, then use the built-in generator widget to expand from that direction. If the current list is too narrow, the related pages such as ${relatedSummary} help you step sideways into adjacent naming styles without starting over. That makes the page more than a thin list. It becomes a practical bridge between discovery, comparison, and refinement.`
   ].join(" ");
 }

@@ -6,10 +6,12 @@ import { AdSlot } from "@/components/ads/ad-slot";
 import { LoadingGrid } from "@/components/generator/loading-grid";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { RelatedGenerators } from "@/components/seo/related-generators";
+import { SmartInternalLinks } from "@/components/seo/smart-internal-links";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { trackGeneratorUsage } from "@/lib/generator-stats";
 import { getRelatedGenerators, type GeneratorDirectoryEntry } from "@/lib/generators";
+import { getSmartInternalLinkSections } from "@/lib/smart-internal-links";
 
 function randomFrom<T>(items: T[]): T {
   return items[Math.floor(Math.random() * items.length)];
@@ -111,12 +113,18 @@ function buildSeoContent(entry: GeneratorDirectoryEntry) {
   const generatorName = entry.title;
   const categoryLabel = getCategoryLabel(entry.category);
   const examples = entry.exampleNames.slice(0, 3).join(", ");
+  const keywordSeed = entry.exampleNames
+    .flatMap((example) => example.split(/(?=[A-Z])|[^a-zA-Z0-9]+/))
+    .filter((word) => word.length > 2)
+    .slice(0, 5)
+    .join(", ");
+  const platformAngle = entry.slug.replace(/-generator$/i, "").replace(/-/g, " ");
 
   return [
-    `${generatorName} helps users discover name ideas for ${categoryLabel}. Instead of guessing random words one by one, the tool combines naming patterns that fit the page topic and turns them into usernames that feel more relevant to the platform, game, or style being targeted. That matters because people searching for a generator usually do not want a generic handle. They want a name that looks natural in a profile, stands out in a lobby or feed, and is easy to remember later. This page is built to support exactly that use case. It uses structured examples such as ${examples} to show the tone the generator aims for and then creates many more combinations from similar patterns.`,
-    `To create a good username, start by deciding what kind of identity you want. Some people want a clean and competitive name, while others want something playful, dark, aesthetic, or community-driven. Strong usernames are usually short enough to read quickly, distinctive enough to avoid blending into hundreds of similar profiles, and flexible enough to work across more than one platform. It is also a good idea to test how a name looks in different contexts. A tag that feels strong in a game lobby should also look reasonable in a social bio, on a streaming overlay, or in a Discord server member list. When comparing generated options, pay attention to readability, rhythm, and whether the name still feels good when spoken out loud.`,
-    `Gamers choosing names should think long term. A username often becomes part of a wider brand identity, especially if it is reused on Twitch, TikTok, YouTube, Discord, Steam, Xbox, or PlayStation. Names that are overloaded with numbers or hard-to-read spellings may feel unique at first, but they are often harder for other players to remember. The best results usually balance style with clarity. Pick something that matches your personality, fits the genre or community you care about, and still gives you room to grow if your content or favorite game changes later. This ${generatorName.toLowerCase()} page is designed to make that process faster by combining a reusable generator tool, example usernames, and SEO-friendly guidance in one place.`,
-  ].join(" ");
+    `${generatorName} is built for users who want name ideas tied to ${categoryLabel} rather than a generic batch of random handles. The page uses examples such as ${examples} to show the actual tone of the generator before you even click the button. That matters because someone searching for ${platformAngle} names usually wants output that already feels close to the platform, game, or style they care about.`,
+    `The strongest names from this generator usually pull from themes such as ${keywordSeed}. Those words work because they already carry the mood the page is aiming for, so the results feel more believable in a profile, lobby, stream title, or community space. When comparing names, focus on whether the handle still sounds good out loud and whether it keeps its clarity when you imagine it outside the generator.`,
+    `A good username should also stay useful after the first impression. If a name only looks interesting because it is unusual, it often becomes forgettable fast. Better results usually balance style with readability and make room for reuse across other channels later. This ${generatorName.toLowerCase()} page is designed to speed that up by combining a themed generator, example names, and related internal links in one workflow.`,
+  ];
 }
 
 type KeywordLandingGeneratorProps = {
@@ -132,9 +140,16 @@ export function KeywordLandingGenerator({ page }: KeywordLandingGeneratorProps) 
   const storageKey = useMemo(() => `namelaunchpad:landing:${page.slug}:favorites`, [page.slug]);
   const seoContent = useMemo(() => buildSeoContent(page), [page]);
   const exampleGallery = useMemo(() => buildExampleGallery(page), [page]);
-  const internalLinks = useMemo(
-    () => getRelatedGenerators(page.slug, 5).map((entry) => ({ href: getGeneratorPath(entry.slug), label: entry.title })),
-    [page.slug]
+  const internalLinkSections = useMemo(
+    () =>
+      getSmartInternalLinkSections({
+        pageType: "generator",
+        slug: page.slug,
+        title: page.title,
+        category: page.category,
+        keywords: page.exampleNames,
+      }),
+    [page]
   );
 
   useEffect(() => {
@@ -268,7 +283,20 @@ export function KeywordLandingGenerator({ page }: KeywordLandingGeneratorProps) 
 
           <Card className="p-6 md:p-8">
             <h2 className="text-2xl font-black text-white md:text-3xl">What is a {page.title}?</h2>
-            <p className="mt-3 text-sm leading-7 text-slate-300">{seoContent}</p>
+            <div className="mt-5 grid gap-5 md:grid-cols-3">
+              {seoContent.map((section, index) => (
+                <div key={`${page.slug}-seo-${index}`}>
+                  <h3 className="text-lg font-bold text-cyan-200">
+                    {index === 0
+                      ? `Why people use ${page.title}`
+                      : index === 1
+                        ? `How ${page.title.toLowerCase()} results are shaped`
+                        : `Choosing better ${page.title.toLowerCase()} names`}
+                  </h3>
+                  <p className="mt-2 text-sm leading-7 text-slate-300">{section}</p>
+                </div>
+              ))}
+            </div>
           </Card>
 
           <Card className="p-6 md:p-8">
@@ -291,26 +319,7 @@ export function KeywordLandingGenerator({ page }: KeywordLandingGeneratorProps) 
             </div>
           </Card>
 
-            <Card className="p-6 md:p-8">
-              <h2 className="text-2xl font-black text-white">Related Generators</h2>
-              <p className="mt-2 text-sm leading-7 text-slate-300">
-                Internal links help users compare naming styles across platforms and help search engines discover related
-                pages across the site.
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {internalLinks
-                  .filter((link) => link.href !== getGeneratorPath(page.slug))
-                  .map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      className="rounded-full border border-white/15 bg-white/5 px-3 py-2 text-sm text-slate-100 transition hover:border-cyan-300/70 hover:text-cyan-200"
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
-              </div>
-            </Card>
+            <SmartInternalLinks sections={internalLinkSections} />
           </div>
 
           <div className="xl:sticky xl:top-24 xl:self-start">
