@@ -3,16 +3,15 @@ import { absoluteUrl } from "@/app/metadata";
 import { GeneratorSearch } from "@/components/generator/generator-search";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { JsonLd } from "@/components/seo/json-ld";
-import { createBreadcrumbSchema, createGeneratorSchema } from "@/lib/seo";
+import { createBreadcrumbSchema, createFaqSchema, createGeneratorSchema, createSeoMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createSeoMetadata({
   title: "Search Generators",
   description:
     "Search NameLaunchpad generator pages instantly for Fortnite, anime, cool usernames, short names, clan tags, and more.",
-  alternates: {
-    canonical: "/search",
-  },
-};
+  path: "/search",
+  keywords: ["search generators", "Fortnite generator", "anime usernames", "cool usernames", "clan names"],
+});
 
 type SearchPageProps = {
   searchParams?: Promise<{
@@ -38,6 +37,20 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         data={createBreadcrumbSchema([
           { name: "Home", path: "/" },
           { name: "Search", path: "/search" },
+        ])}
+      />
+      <JsonLd
+        data={createFaqSchema([
+          {
+            question: "What can you search on NameLaunchpad?",
+            answer:
+              "You can search generator pages by game, platform, username style, name category, or niche themes such as short usernames, anime usernames, clan names, and streamer handles.",
+          },
+          {
+            question: "Why use the global search page instead of browsing manually?",
+            answer:
+              "The search page helps you jump directly into the most relevant generator or landing page when you already know the topic you want, which is faster than browsing every category manually.",
+          },
         ])}
       />
 

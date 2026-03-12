@@ -3,24 +3,16 @@ import { absoluteUrl } from "@/app/metadata";
 import { UsernameDatabaseBrowser } from "@/components/username-database/username-database-browser";
 import { JsonLd } from "@/components/seo/json-ld";
 import { SmartInternalLinks } from "@/components/seo/smart-internal-links";
-import { createBreadcrumbSchema, createGeneratorSchema } from "@/lib/seo";
+import { createBreadcrumbSchema, createFaqSchema, createGeneratorSchema, createSeoMetadata } from "@/lib/seo";
 import { getSmartInternalLinkSections } from "@/lib/smart-internal-links";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createSeoMetadata({
   title: "Username Database",
   description:
     "Search the NameLaunchpad username database with more than 50,000 unique usernames filtered by category, style, rarity, and length.",
-  alternates: {
-    canonical: "/username-database",
-  },
-  openGraph: {
-    title: "Username Database | NameLaunchpad",
-    description:
-      "Search more than 50,000 unique usernames on NameLaunchpad with filters for style, category, rarity, and length.",
-    type: "website",
-    url: absoluteUrl("/username-database"),
-  },
-};
+  path: "/username-database",
+  keywords: ["username database", "50,000 usernames", "rare usernames", "short usernames", "anime usernames"],
+});
 
 export default function UsernameDatabasePage() {
   const internalLinkSections = getSmartInternalLinkSections({
@@ -45,6 +37,20 @@ export default function UsernameDatabasePage() {
         data={createBreadcrumbSchema([
           { name: "Home", path: "/" },
           { name: "Username Database", path: "/username-database" },
+        ])}
+      />
+      <JsonLd
+        data={createFaqSchema([
+          {
+            question: "What is the NameLaunchpad username database?",
+            answer:
+              "It is a searchable database of more than 50,000 usernames classified by category, style, rarity, and length so users can browse names with much tighter filters than a generic generator.",
+          },
+          {
+            question: "When should you use the username database instead of a generator?",
+            answer:
+              "The database is best when you want to browse and compare patterns first. The generator is better when you already know the style or theme you want to expand.",
+          },
         ])}
       />
       <UsernameDatabaseBrowser />
