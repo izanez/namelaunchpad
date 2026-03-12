@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Card } from "@/components/ui/card";
+import { SmartInternalLinks } from "@/components/seo/smart-internal-links";
 import {
   generatorCategories,
   getGeneratorCategory,
@@ -11,6 +12,7 @@ import {
 import { JsonLd } from "@/components/seo/json-ld";
 import { absoluteUrl } from "@/app/metadata";
 import { createBreadcrumbSchema } from "@/lib/seo";
+import { getSmartInternalLinkSections } from "@/lib/smart-internal-links";
 
 type PageProps = {
   params: Promise<{
@@ -56,6 +58,13 @@ export default async function CategoryPage({ params }: PageProps) {
   if (!category) notFound();
 
   const entries = getGeneratorsByCategory(category.slug);
+  const internalLinkSections = getSmartInternalLinkSections({
+    pageType: "category",
+    slug: category.slug,
+    title: category.title,
+    category: category.title,
+    keywords: entries.slice(0, 5).map((entry) => entry.title),
+  });
 
   return (
     <>
@@ -113,6 +122,10 @@ export default async function CategoryPage({ params }: PageProps) {
               </Card>
             ))}
           </div>
+        </section>
+
+        <section className="mt-10">
+          <SmartInternalLinks sections={internalLinkSections} />
         </section>
       </section>
     </>

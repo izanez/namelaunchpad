@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { absoluteUrl } from "@/app/metadata";
 import { UsernameDatabaseBrowser } from "@/components/username-database/username-database-browser";
 import { JsonLd } from "@/components/seo/json-ld";
+import { SmartInternalLinks } from "@/components/seo/smart-internal-links";
 import { createBreadcrumbSchema, createGeneratorSchema } from "@/lib/seo";
+import { getSmartInternalLinkSections } from "@/lib/smart-internal-links";
 
 export const metadata: Metadata = {
   title: "Username Database",
@@ -21,6 +23,14 @@ export const metadata: Metadata = {
 };
 
 export default function UsernameDatabasePage() {
+  const internalLinkSections = getSmartInternalLinkSections({
+    pageType: "database",
+    slug: "username-database",
+    title: "Username Database",
+    category: "database",
+    keywords: ["username", "database", "rare", "short", "anime", "gaming"],
+  });
+
   return (
     <>
       <JsonLd
@@ -38,6 +48,9 @@ export default function UsernameDatabasePage() {
         ])}
       />
       <UsernameDatabaseBrowser />
+      <section className="mx-auto mt-8 w-full max-w-6xl px-4 pb-6 md:px-6">
+        <SmartInternalLinks sections={internalLinkSections} />
+      </section>
     </>
   );
 }

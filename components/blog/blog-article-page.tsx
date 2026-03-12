@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useState } from "react";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
+import { SmartInternalLinks } from "@/components/seo/smart-internal-links";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,6 +13,7 @@ import {
   type BlogArticle,
 } from "@/lib/blog-articles";
 import { generateUsernames } from "@/lib/generators";
+import { getSmartInternalLinkSections } from "@/lib/smart-internal-links";
 
 function renderParagraphs(body: string) {
   return body.split("\n\n").map((paragraph) => (
@@ -41,7 +43,18 @@ export function BlogArticlePage({ article }: { article: BlogArticle }) {
   const [generatorBatch, setGeneratorBatch] = useState<string[]>(() => buildTryGeneratorBatch(article));
   const sections = useMemo(() => buildBlogArticleSections(article), [article]);
   const examples = useMemo(() => buildBlogArticleExamples(article), [article]);
-  const relatedArticles = useMemo(() => getRelatedBlogArticles(article, 6), [article]);
+  const internalLinkSections = useMemo(
+    () =>
+      getSmartInternalLinkSections({
+        pageType: "article",
+        slug: article.slug,
+        title: article.title,
+        category: article.category,
+        style: article.style,
+        keywords: article.keywords,
+      }),
+    [article]
+  );
 
   const onCopy = useCallback(async (value: string) => {
     try {
@@ -142,31 +155,7 @@ export function BlogArticlePage({ article }: { article: BlogArticle }) {
           </div>
         </Card>
 
-        <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-          <Card className="p-6 md:p-8">
-            <h2 className="text-2xl font-black text-white">Relevant Generator Pages</h2>
-            <p className="mt-2 text-sm text-slate-400">Each article surfaces 3 to 8 closely related tools to improve crawl depth and user flow.</p>
-            <div className="mt-5 grid gap-3 md:grid-cols-2">
-              {article.relatedGenerators.map((href) => (
-                <Link key={href} href={href} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-sm font-semibold text-slate-100 transition hover:border-cyan-300/30 hover:text-cyan-200">
-                  {getLinkLabel(href)}
-                </Link>
-              ))}
-            </div>
-          </Card>
-
-          <Card className="p-6 md:p-8">
-            <h2 className="text-2xl font-black text-white">Related Username Ideas</h2>
-            <p className="mt-2 text-sm text-slate-400">These filtered lists keep users inside the naming cluster around this article topic.</p>
-            <div className="mt-5 grid gap-3">
-              {article.relatedUsernameLists.map((href) => (
-                <Link key={href} href={href} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-sm font-semibold text-slate-100 transition hover:border-cyan-300/30 hover:text-cyan-200">
-                  {getLinkLabel(href)}
-                </Link>
-              ))}
-            </div>
-          </Card>
-        </div>
+        <SmartInternalLinks sections={internalLinkSections} />
 
         <Card className="p-6 md:p-8">
           <h2 className="text-2xl font-black text-white">Call to Action</h2>
@@ -186,18 +175,6 @@ export function BlogArticlePage({ article }: { article: BlogArticle }) {
           </div>
         </Card>
 
-        <Card className="p-6 md:p-8">
-          <h2 className="text-2xl font-black text-white">Related Articles</h2>
-          <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {relatedArticles.map((relatedArticle) => (
-              <Link key={relatedArticle.slug} href={`/blog/${relatedArticle.slug}`} className="rounded-3xl border border-white/10 bg-white/5 p-5 transition hover:border-cyan-300/30">
-                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-200">{relatedArticle.category}</p>
-                <h3 className="mt-3 text-lg font-semibold text-white">{relatedArticle.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-slate-300">{relatedArticle.description}</p>
-              </Link>
-            ))}
-          </div>
-        </Card>
       </div>
 
       {toast ? (

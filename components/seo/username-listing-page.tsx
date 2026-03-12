@@ -3,9 +3,11 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
+import { SmartInternalLinks } from "@/components/seo/smart-internal-links";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { generateUsernames, type UsernameStyle } from "@/lib/generators";
+import { getSmartInternalLinkSections } from "@/lib/smart-internal-links";
 import type { UsernameRecord } from "@/lib/username-database";
 import type { UsernameListingPage } from "@/lib/username-listing-pages";
 
@@ -28,6 +30,17 @@ export function UsernameListingPageView({ page, usernames, seoContent }: Usernam
   const [toast, setToast] = useState<string | null>(null);
   const [generated, setGenerated] = useState<string[]>([]);
   const seoSections = useMemo(() => splitContent(seoContent), [seoContent]);
+  const internalLinkSections = useMemo(
+    () =>
+      getSmartInternalLinkSections({
+        pageType: "listing",
+        slug: page.slug,
+        title: page.title,
+        style: page.generator.style,
+        keywords: page.generator.keywords,
+      }),
+    [page]
+  );
 
   const onCopy = async (value: string) => {
     try {
@@ -136,20 +149,7 @@ export function UsernameListingPageView({ page, usernames, seoContent }: Usernam
           </div>
         </Card>
 
-        <Card className="p-6 md:p-8">
-          <h2 className="text-2xl font-black text-white">Related Pages</h2>
-          <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {page.relatedLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-sm font-semibold text-slate-100 transition hover:border-cyan-300/50 hover:text-cyan-200"
-              >
-                {link.title}
-              </Link>
-            ))}
-          </div>
-        </Card>
+        <SmartInternalLinks sections={internalLinkSections} />
       </div>
 
       {toast ? (
