@@ -1,4 +1,4 @@
-﻿import {
+import {
   getAllUsernameDatabaseRecords,
   type UsernameDatabaseCategory,
   type UsernameDatabaseStyle,
@@ -49,40 +49,53 @@ const commonLinks = {
   rareUsernames: { title: "Rare Usernames", href: "/rare-usernames" },
 };
 
-export const usernameListingPages: UsernameListingPage[] = [
-  {
-    slug: "usernames-starting-with-a",
-    title: "Usernames Starting With A",
-    seoTitle: "Usernames Starting With A - A Letter Username Ideas",
-    metaDescription: "Browse usernames starting with A from the NameLaunchpad database with copy buttons, related tools, and SEO-friendly naming tips.",
-    intro: "This page lists usernames starting with A for users who want alphabetical username ideas that still feel usable for gaming, social media, and streaming.",
-    h1: "Usernames Starting With A",
-    filters: { startsWith: "a" },
-    generator: { style: "cool", keywords: ["alpha", "aero"], minLength: 6, maxLength: 11 },
-    relatedLinks: [commonLinks.usernameGenerator, commonLinks.ogFinder, commonLinks.usernameDatabase, commonLinks.exploreGenerators],
-  },
-  {
-    slug: "usernames-starting-with-b",
-    title: "Usernames Starting With B",
-    seoTitle: "Usernames Starting With B - B Letter Username Ideas",
-    metaDescription: "Find usernames starting with B from the NameLaunchpad database with filtered name lists, copy buttons, and related links.",
-    intro: "This page collects usernames starting with B for users who want an alphabetical starting point with cleaner, reusable name ideas.",
-    h1: "Usernames Starting With B",
-    filters: { startsWith: "b" },
-    generator: { style: "cool", keywords: ["blaze", "byte"], minLength: 6, maxLength: 11 },
-    relatedLinks: [commonLinks.usernameGenerator, commonLinks.usernameIdeas, commonLinks.usernameDatabase, commonLinks.exploreGenerators],
-  },
-  {
-    slug: "usernames-starting-with-c",
-    title: "Usernames Starting With C",
-    seoTitle: "Usernames Starting With C - C Letter Username Ideas",
-    metaDescription: "Browse usernames starting with C from the NameLaunchpad database with filtered results, generator tools, and internal links.",
-    intro: "This page focuses on usernames starting with C and gives users a curated alphabetical list backed by the full username database.",
-    h1: "Usernames Starting With C",
-    filters: { startsWith: "c" },
-    generator: { style: "cool", keywords: ["cyber", "crimson"], minLength: 6, maxLength: 11 },
-    relatedLinks: [commonLinks.usernameGenerator, commonLinks.darkGenerator, commonLinks.usernameDatabase, commonLinks.exploreGenerators],
-  },
+const letterKeywords: Record<string, string[]> = {
+  a: ["alpha", "aero"],
+  b: ["blaze", "byte"],
+  c: ["cyber", "crimson"],
+  d: ["dark", "drift"],
+  e: ["echo", "ember"],
+  f: ["frost", "flare"],
+  g: ["ghost", "glow"],
+  h: ["hex", "hunter"],
+  i: ["iron", "ice"],
+  j: ["jade", "jolt"],
+  k: ["kiro", "knight"],
+  l: ["luna", "legend"],
+  m: ["myth", "morph"],
+  n: ["nova", "night"],
+  o: ["onyx", "orbit"],
+  p: ["pixel", "pulse"],
+  q: ["quartz", "quest"],
+  r: ["rogue", "rune"],
+  s: ["storm", "shadow"],
+  t: ["turbo", "titan"],
+  u: ["ultra", "umbra"],
+  v: ["void", "viper"],
+  w: ["wolf", "wave"],
+  x: ["xeno", "xipho"],
+  y: ["yurei", "yotta"],
+  z: ["zyro", "zen"],
+};
+
+function createLetterPage(letter: string): UsernameListingPage {
+  const upper = letter.toUpperCase();
+  const keywords = letterKeywords[letter];
+
+  return {
+    slug: `usernames-starting-with-${letter}`,
+    title: `Usernames Starting With ${upper}`,
+    seoTitle: `Usernames Starting With ${upper} - ${upper} Letter Username Ideas`,
+    metaDescription: `Browse usernames starting with ${upper} from the NameLaunchpad database with copy buttons, generator tools, and related links.`,
+    intro: `This page lists usernames starting with ${upper} for users who want alphabetical username ideas that still feel usable for gaming, social media, and streaming.`,
+    h1: `Usernames Starting With ${upper}`,
+    filters: { startsWith: letter },
+    generator: { style: "cool", keywords, minLength: 6, maxLength: 11 },
+    relatedLinks: [commonLinks.usernameGenerator, commonLinks.usernameDatabase, commonLinks.usernameIdeas, commonLinks.exploreGenerators],
+  };
+}
+
+const specialListingPages: UsernameListingPage[] = [
   {
     slug: "4-letter-usernames",
     title: "4 Letter Usernames",
@@ -132,7 +145,7 @@ export const usernameListingPages: UsernameListingPage[] = [
     title: "Rare Usernames",
     seoTitle: "Rare Usernames - Rare, Clean, and Premium Username Ideas",
     metaDescription: "Explore rare usernames from the NameLaunchpad database with copy buttons, related tools, and long-form SEO content.",
-    intro: "Rare usernames are attractive because they feel more premium, less generic, and more useful for long-term branding across gaming and creator platforms.",
+    intro: "Rare usernames feel more premium, less generic, and more useful for long-term branding across gaming and creator platforms.",
     h1: "Rare Usernames",
     filters: { categories: ["rare"], rarities: ["rare", "epic", "legendary"] },
     generator: { style: "dark", keywords: ["rare", "void"], minLength: 4, maxLength: 8 },
@@ -148,6 +161,28 @@ export const usernameListingPages: UsernameListingPage[] = [
     filters: { rarities: ["legendary"] },
     generator: { style: "fantasy", keywords: ["legend", "myth"], minLength: 4, maxLength: 9 },
     relatedLinks: [commonLinks.usernameDatabase, commonLinks.ogFinder, commonLinks.fantasyGenerator, commonLinks.usernameGenerator],
+  },
+  {
+    slug: "epic-usernames",
+    title: "Epic Usernames",
+    seoTitle: "Epic Usernames - Epic Rarity Username Ideas",
+    metaDescription: "Browse epic usernames from the NameLaunchpad database with copy buttons, generator widgets, and rarity-focused SEO content.",
+    intro: "Epic usernames sit between common and legendary naming patterns, which makes them useful for users who want stronger names without losing readability.",
+    h1: "Epic Usernames",
+    filters: { rarities: ["epic"] },
+    generator: { style: "fantasy", keywords: ["epic", "storm"], minLength: 5, maxLength: 10 },
+    relatedLinks: [commonLinks.rareUsernames, commonLinks.usernameDatabase, commonLinks.fantasyGenerator, commonLinks.usernameGenerator],
+  },
+  {
+    slug: "common-usernames",
+    title: "Common Usernames",
+    seoTitle: "Common Usernames - Familiar and Readable Username Ideas",
+    metaDescription: "Browse common usernames from the NameLaunchpad database with copy buttons, generator suggestions, and practical naming guidance.",
+    intro: "Common usernames are useful when you want names that feel familiar, readable, and broadly usable before refining into rarer directions.",
+    h1: "Common Usernames",
+    filters: { rarities: ["common"] },
+    generator: { style: "cool", keywords: ["clean", "core"], minLength: 6, maxLength: 10 },
+    relatedLinks: [commonLinks.usernameGenerator, commonLinks.usernameDatabase, commonLinks.usernameIdeas, commonLinks.exploreGenerators],
   },
   {
     slug: "anime-usernames",
@@ -226,6 +261,77 @@ export const usernameListingPages: UsernameListingPage[] = [
     generator: { style: "cool", keywords: ["duo", "sync"], minLength: 7, maxLength: 12 },
     relatedLinks: [commonLinks.duoGenerator, commonLinks.clanGenerator, commonLinks.usernameDatabase, commonLinks.usernameGenerator],
   },
+  {
+    slug: "cute-usernames",
+    title: "Cute Usernames",
+    seoTitle: "Cute Usernames - Soft, Cute, and Friendly Username Ideas",
+    metaDescription: "Browse cute usernames from the NameLaunchpad database with copy buttons, generator widgets, and related soft-style pages.",
+    intro: "Cute usernames are useful for users who want softer handles that still feel memorable and usable across social and gaming profiles.",
+    h1: "Cute Usernames",
+    filters: { categories: ["cute"], styles: ["aesthetic"] },
+    generator: { style: "aesthetic", keywords: ["berry", "luna"], minLength: 5, maxLength: 11 },
+    relatedLinks: [commonLinks.aestheticGenerator, commonLinks.usernameGenerator, commonLinks.usernameDatabase, commonLinks.usernameIdeas],
+  },
+  {
+    slug: "cool-usernames",
+    title: "Cool Usernames",
+    seoTitle: "Cool Usernames - Cool Gamer Tags and Username Ideas",
+    metaDescription: "Browse cool usernames from the NameLaunchpad database with copy buttons, related generators, and strong naming patterns.",
+    intro: "Cool usernames remain popular because they stay flexible across gaming, social media, and creator branding without feeling too niche.",
+    h1: "Cool Usernames",
+    filters: { styles: ["cool"], categories: ["gaming", "social"] },
+    generator: { style: "cool", keywords: ["nova", "ghost"], minLength: 6, maxLength: 12 },
+    relatedLinks: [commonLinks.usernameGenerator, commonLinks.usernameIdeas, commonLinks.usernameDatabase, commonLinks.exploreGenerators],
+  },
+  {
+    slug: "funny-usernames",
+    title: "Funny Usernames",
+    seoTitle: "Funny Usernames - Funny and Playful Username Ideas",
+    metaDescription: "Browse funny usernames from the NameLaunchpad database with copy buttons, related generators, and playful naming ideas.",
+    intro: "Funny usernames are useful when the goal is memorability through humor rather than pure edge or rarity.",
+    h1: "Funny Usernames",
+    filters: { styles: ["funny"] },
+    generator: { style: "funny", keywords: ["meme", "goofy"], minLength: 6, maxLength: 12 },
+    relatedLinks: [commonLinks.usernameGenerator, commonLinks.usernameDatabase, commonLinks.usernameIdeas, commonLinks.exploreGenerators],
+  },
+  {
+    slug: "hacker-usernames",
+    title: "Hacker Usernames",
+    seoTitle: "Hacker Usernames - Tech and Glitch Username Ideas",
+    metaDescription: "Browse hacker usernames from the NameLaunchpad database with copy buttons, generator links, and tech-style naming guidance.",
+    intro: "Hacker usernames work best when they use glitch, code, and terminal-flavored words without collapsing into unreadable nonsense.",
+    h1: "Hacker Usernames",
+    filters: { styles: ["hacker"] },
+    generator: { style: "hacker", keywords: ["glitch", "cipher"], minLength: 6, maxLength: 11 },
+    relatedLinks: [commonLinks.usernameGenerator, commonLinks.usernameDatabase, commonLinks.darkGenerator, commonLinks.exploreGenerators],
+  },
+  {
+    slug: "gaming-usernames",
+    title: "Gaming Usernames",
+    seoTitle: "Gaming Usernames - Gaming Handle and Gamertag Ideas",
+    metaDescription: "Browse gaming usernames from the NameLaunchpad database with copy buttons, related generators, and category-focused naming ideas.",
+    intro: "Gaming usernames help users compare broader gamer-handle directions before narrowing into a specific game or platform.",
+    h1: "Gaming Usernames",
+    filters: { categories: ["gaming"] },
+    generator: { style: "cool", keywords: ["gaming", "rider"], minLength: 6, maxLength: 12 },
+    relatedLinks: [commonLinks.usernameGenerator, commonLinks.usernameDatabase, commonLinks.usernameIdeas, commonLinks.exploreGenerators],
+  },
+  {
+    slug: "social-usernames",
+    title: "Social Usernames",
+    seoTitle: "Social Usernames - Social Media Handle Ideas",
+    metaDescription: "Browse social usernames from the NameLaunchpad database with copy buttons, related generators, and social-first naming ideas.",
+    intro: "Social usernames prioritize readability, memorability, and visual clarity for bios, profiles, and creator handles.",
+    h1: "Social Usernames",
+    filters: { categories: ["social"] },
+    generator: { style: "aesthetic", keywords: ["social", "glow"], minLength: 6, maxLength: 12 },
+    relatedLinks: [commonLinks.usernameGenerator, commonLinks.usernameDatabase, commonLinks.streamerGenerator, commonLinks.exploreGenerators],
+  },
+];
+
+export const usernameListingPages: UsernameListingPage[] = [
+  ...Object.keys(letterKeywords).map(createLetterPage),
+  ...specialListingPages,
 ];
 
 export const usernameListingSlugs = usernameListingPages.map((page) => page.slug);
@@ -270,8 +376,8 @@ export function buildUsernameListingSeoContent(page: UsernameListingPage) {
   const relatedSummary = page.relatedLinks.map((link) => link.title).slice(0, 3).join(", ");
 
   return [
-    `${page.title} pages are most useful when the filter itself is the reason you are searching. This page narrows the larger NameLaunchpad database down to ${filterSummary || "one clear naming pattern"}, which makes the results more practical than a broad dump of unrelated usernames. Users looking for this kind of page usually already know something about the shape they want. They may want a shorter handle, a rarer structure, or a style that better fits gaming, streaming, or social branding. Filtering by a clear pattern helps surface names that feel intentional rather than accidental.`,
-    `When comparing ${page.title.toLowerCase()}, look at how the names behave in real contexts, not just in a list. The strongest options still read cleanly in profile headers, overlays, friend lists, and chat panels. This page leans on generator seeds such as ${keywordSummary}, so the names feel closer to the intent behind the filter instead of drifting into generic combinations. That matters because good usernames tend to be memorable through rhythm and clarity, not through noise or random decoration.`,
-    `This page also works best as part of a workflow. You can use the filtered list to identify the pattern you actually like, then use the built-in generator widget to expand from that direction. If the current list is too narrow, the related pages such as ${relatedSummary} help you step sideways into adjacent naming styles without starting over. That makes the page more than a thin list. It becomes a practical bridge between discovery, comparison, and refinement.`
+    `${page.title} pages are most useful when the filter itself is the reason you are searching. This page narrows the larger NameLaunchpad database down to ${filterSummary || "one clear naming pattern"}, which makes the results more practical than a broad dump of unrelated usernames. Users looking for this kind of page usually already know something about the shape they want.`,
+    `When comparing ${page.title.toLowerCase()}, look at how the names behave in real contexts, not just in a list. The strongest options still read cleanly in profile headers, overlays, friend lists, and chat panels. This page leans on generator seeds such as ${keywordSummary}, so the names feel closer to the intent behind the filter instead of drifting into generic combinations.`,
+    `This page also works best as part of a workflow. You can use the filtered list to identify the pattern you actually like, then use the built-in generator widget to expand from that direction. If the current list is too narrow, the related pages such as ${relatedSummary} help you step sideways into adjacent naming styles without starting over.`,
   ].join(" ");
 }
