@@ -20,16 +20,19 @@ function buildSocialImageUrl({
   description,
   type,
   keywords = [],
+  theme = "default",
 }: {
   title: string;
   description: string;
   type: "website" | "article";
   keywords?: string[];
+  theme?: "default" | "generator" | "article" | "listing" | "database";
 }) {
   const params = new URLSearchParams({
     title,
     subtitle: description,
     eyebrow: type === "article" ? "NameLaunchpad Guide" : "NameLaunchpad Generator",
+    theme,
   });
 
   if (keywords.length > 0) {
@@ -93,7 +96,13 @@ export function createSeoMetadata({
   type = "website",
 }: SeoMetadataInput): Metadata {
   const url = absoluteUrl(path);
-  const imageUrl = buildSocialImageUrl({ title, description, type, keywords });
+  let theme: "default" | "generator" | "article" | "listing" | "database" = "default";
+  if (path.startsWith("/blog/") || type === "article") theme = "article";
+  else if (path.startsWith("/generators/") || path.endsWith("-generator")) theme = "generator";
+  else if (path.includes("username-database")) theme = "database";
+  else if (path.includes("usernames") || path.startsWith("/4-letter") || path.startsWith("/5-letter") || path.startsWith("/6-letter")) theme = "listing";
+
+  const imageUrl = buildSocialImageUrl({ title, description, type, keywords, theme });
 
   return {
     title,

@@ -3,6 +3,7 @@ type SocialImageProps = {
   subtitle: string;
   eyebrow?: string;
   chips?: string[];
+  theme?: "default" | "generator" | "article" | "listing" | "database";
 };
 
 export const socialImageSize = {
@@ -12,7 +13,52 @@ export const socialImageSize = {
 
 export const socialImageContentType = "image/png";
 
-export function SocialImage({ title, subtitle, eyebrow = "NameLaunchpad", chips = [] }: SocialImageProps) {
+const themeStyles = {
+  default: {
+    background:
+      "radial-gradient(circle at 18% 20%, rgba(34,211,238,0.22), transparent 28%), radial-gradient(circle at 82% 18%, rgba(168,85,247,0.28), transparent 26%), radial-gradient(circle at 55% 88%, rgba(59,130,246,0.18), transparent 25%), linear-gradient(160deg, #0f172a, #020617)",
+    badgeBorder: "1px solid rgba(34,211,238,0.26)",
+    badgeBackground: "rgba(34,211,238,0.08)",
+    badgeColor: "#a5f3fc",
+  },
+  generator: {
+    background:
+      "radial-gradient(circle at 18% 20%, rgba(34,211,238,0.24), transparent 28%), radial-gradient(circle at 80% 18%, rgba(59,130,246,0.28), transparent 24%), radial-gradient(circle at 55% 88%, rgba(168,85,247,0.16), transparent 24%), linear-gradient(160deg, #0f172a, #020617)",
+    badgeBorder: "1px solid rgba(34,211,238,0.26)",
+    badgeBackground: "rgba(34,211,238,0.08)",
+    badgeColor: "#a5f3fc",
+  },
+  article: {
+    background:
+      "radial-gradient(circle at 20% 18%, rgba(168,85,247,0.24), transparent 30%), radial-gradient(circle at 84% 20%, rgba(34,211,238,0.18), transparent 24%), radial-gradient(circle at 55% 88%, rgba(96,165,250,0.18), transparent 25%), linear-gradient(160deg, #111827, #020617)",
+    badgeBorder: "1px solid rgba(192,132,252,0.28)",
+    badgeBackground: "rgba(168,85,247,0.1)",
+    badgeColor: "#e9d5ff",
+  },
+  listing: {
+    background:
+      "radial-gradient(circle at 18% 22%, rgba(59,130,246,0.24), transparent 28%), radial-gradient(circle at 84% 18%, rgba(34,211,238,0.18), transparent 24%), radial-gradient(circle at 52% 86%, rgba(148,163,184,0.12), transparent 26%), linear-gradient(160deg, #0b1220, #020617)",
+    badgeBorder: "1px solid rgba(96,165,250,0.28)",
+    badgeBackground: "rgba(59,130,246,0.1)",
+    badgeColor: "#bfdbfe",
+  },
+  database: {
+    background:
+      "radial-gradient(circle at 18% 18%, rgba(16,185,129,0.2), transparent 28%), radial-gradient(circle at 82% 16%, rgba(34,211,238,0.18), transparent 24%), radial-gradient(circle at 50% 86%, rgba(59,130,246,0.16), transparent 24%), linear-gradient(160deg, #07131b, #020617)",
+    badgeBorder: "1px solid rgba(16,185,129,0.26)",
+    badgeBackground: "rgba(16,185,129,0.08)",
+    badgeColor: "#a7f3d0",
+  },
+} as const;
+
+export function SocialImage({
+  title,
+  subtitle,
+  eyebrow = "NameLaunchpad",
+  chips = [],
+  theme = "default",
+}: SocialImageProps) {
+  const palette = themeStyles[theme];
   return (
     <div
       style={{
@@ -21,8 +67,7 @@ export function SocialImage({ title, subtitle, eyebrow = "NameLaunchpad", chips 
         display: "flex",
         position: "relative",
         overflow: "hidden",
-        background:
-          "radial-gradient(circle at 18% 20%, rgba(34,211,238,0.22), transparent 28%), radial-gradient(circle at 82% 18%, rgba(168,85,247,0.28), transparent 26%), radial-gradient(circle at 55% 88%, rgba(59,130,246,0.18), transparent 25%), linear-gradient(160deg, #0f172a, #020617)",
+        background: palette.background,
         color: "white",
         fontFamily: "Segoe UI, Arial, sans-serif",
       }}
@@ -109,11 +154,11 @@ export function SocialImage({ title, subtitle, eyebrow = "NameLaunchpad", chips 
             display: "flex",
             alignItems: "center",
             alignSelf: "flex-start",
-            border: "1px solid rgba(34,211,238,0.26)",
-            background: "rgba(34,211,238,0.08)",
+            border: palette.badgeBorder,
+            background: palette.badgeBackground,
             borderRadius: 999,
             padding: "10px 18px",
-            color: "#a5f3fc",
+            color: palette.badgeColor,
             fontSize: 22,
             fontWeight: 700,
             marginBottom: 26,

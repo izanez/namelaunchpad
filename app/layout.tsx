@@ -78,6 +78,16 @@ export const metadata: Metadata = {
         google: siteConfig.googleSiteVerification,
       }
     : undefined,
+  appleWebApp: {
+    capable: true,
+    title: siteConfig.name,
+    statusBarStyle: "black-translucent",
+  },
+  formatDetection: {
+    telephone: false,
+    address: false,
+    email: false,
+  },
   twitter: {
     card: "summary_large_image",
     title: siteConfig.defaultTitle,
