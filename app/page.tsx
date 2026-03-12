@@ -1,9 +1,27 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import type { Metadata } from "next";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { JsonLd } from "@/components/seo/json-ld";
-import { createBreadcrumbSchema, createWebApplicationSchema, createWebsiteSchema } from "@/lib/seo";
+import { createBreadcrumbSchema, createFaqSchema, createSeoMetadata, createWebApplicationSchema, createWebsiteSchema } from "@/lib/seo";
+
+export const metadata: Metadata = createSeoMetadata({
+  title: "NameLaunchpad - AI Username, Gamer Tag & Name Generators",
+  description:
+    "Generate usernames, gamer tags, clan names, fantasy names, and platform-specific handles with NameLaunchpad. Explore SEO landing pages, articles, lists, and generator tools.",
+  path: "/",
+  keywords: [
+    "NameLaunchpad",
+    "username generator",
+    "gamer tag generator",
+    "clan name generator",
+    "fantasy name generator",
+    "Fortnite name generator",
+    "Roblox username generator",
+    "username ideas",
+  ],
+});
 
 const TrendingUsernamesSection = dynamic(
   () => import("@/components/generator/trending-usernames-section").then((mod) => mod.TrendingUsernamesSection),
@@ -198,6 +216,20 @@ export default function HomePage() {
           { name: "Home", path: "/" },
         ])}
       />
+      <JsonLd
+        data={createFaqSchema([
+          {
+            question: "What can you generate on NameLaunchpad?",
+            answer:
+              "NameLaunchpad helps users generate usernames, gamer tags, clan names, fantasy names, and platform-specific handles for games, streaming, and social media.",
+          },
+          {
+            question: "Why is NameLaunchpad useful for SEO and discovery?",
+            answer:
+              "The site is structured with generator pages, article pages, username lists, categories, and internal links so users and search engines can move through related naming topics efficiently.",
+          },
+        ])}
+      />
       <div className="mx-auto w-full max-w-6xl px-4 pb-8 pt-12 md:px-6">
         <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-7 backdrop-blur-xl md:p-12">
           <div className="max-w-3xl animate-fadeUp">
@@ -312,6 +344,20 @@ export default function HomePage() {
               <p className="mt-2 text-sm leading-7">
                 Whether you need a new handle for Twitch, Discord, TikTok, YouTube, Xbox, PlayStation, or PC gaming,
                 NameLaunchpad helps you compare styles, save favorites, and test names before you use them publicly.
+              </p>
+            </div>
+          </div>
+          <div className="mt-8 grid gap-5 md:grid-cols-2">
+            <div>
+              <h3 className="text-lg font-bold text-cyan-200">Why users choose NameLaunchpad</h3>
+              <p className="mt-2 text-sm leading-7">
+                Users do not just need random names. They need names that fit a game, platform, style, or audience. NameLaunchpad connects broad generators with niche landing pages, comparison articles, and filtered username lists so people can narrow down the right direction faster.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-cyan-200">How to get better username ideas</h3>
+              <p className="mt-2 text-sm leading-7">
+                Start with a broader generator if your taste is still open, then move into game-specific pages, article guides, or filtered username lists once you know whether you want something short, rare, dark, anime-inspired, aesthetic, or competitive.
               </p>
             </div>
           </div>

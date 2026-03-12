@@ -4,21 +4,15 @@ import { RelatedGenerators } from "@/components/seo/related-generators";
 import { SeoContent } from "@/components/seo/seo-content";
 import { JsonLd } from "@/components/seo/json-ld";
 import { absoluteUrl } from "@/app/metadata";
-import { createBreadcrumbSchema, createGeneratorSchema } from "@/lib/seo";
+import { createBreadcrumbSchema, createFaqSchema, createGeneratorSchema, createSeoMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createSeoMetadata({
   title: "Fortnite Name Generator - Cool Fortnite Gamertags",
-  description: "Generate cool Fortnite gamertags with 30 unique names per click.",
-  keywords: ["Fortnite name generator", "Fortnite gamertags", "cool Fortnite names", "Fortnite usernames"],
-  openGraph: {
-    title: "Fortnite Name Generator - Cool Fortnite Gamertags",
-    description: "Generate cool Fortnite gamertags with battle-ready name ideas.",
-    type: "website",
-  },
-  alternates: {
-    canonical: "/fortnite-name-generator",
-  },
-};
+  description:
+    "Generate cool Fortnite gamertags, sweaty usernames, and battle-ready name ideas with 30 unique names per click on NameLaunchpad.",
+  path: "/fortnite-name-generator",
+  keywords: ["Fortnite name generator", "Fortnite gamertags", "cool Fortnite names", "Fortnite usernames", "sweaty Fortnite names"],
+});
 
 export default function FortniteGenerator() {
   return (
@@ -35,6 +29,20 @@ export default function FortniteGenerator() {
         data={createBreadcrumbSchema([
           { name: "Home", path: "/" },
           { name: "Fortnite Name Generator", path: "/fortnite-name-generator" },
+        ])}
+      />
+      <JsonLd
+        data={createFaqSchema([
+          {
+            question: "What makes a good Fortnite username?",
+            answer:
+              "Good Fortnite usernames feel quick, competitive, and readable. They often use battle royale language like storm, loot, edits, sniper, victory, or movement themes.",
+          },
+          {
+            question: "Should a Fortnite name also work on Twitch or TikTok?",
+            answer:
+              "Yes. If you stream or post clips, a Fortnite name is stronger when it still works as a creator handle on Twitch, TikTok, Discord, or YouTube.",
+          },
         ])}
       />
       <FortniteEngine />
@@ -56,6 +64,18 @@ export default function FortniteGenerator() {
           { href: "/twitch-username-generator", label: "Twitch Username Generator" },
           { href: "/username-generator", label: "Username Generator" },
           { href: "/gamer-tag-generator", label: "NameLaunchpad" },
+        ]}
+        faqItems={[
+          {
+            question: "Are sweaty Fortnite names better than clean ones?",
+            answer:
+              "Not always. Sweaty names can feel competitive, but clean names often age better and work more easily across gaming and creator platforms.",
+          },
+          {
+            question: "How do you choose a Fortnite gamertag you can keep?",
+            answer:
+              "Pick a name that still looks strong in a clip title, a squad list, and a creator profile instead of only sounding good for one season or meme.",
+          },
         ]}
       />
       <RelatedGenerators currentSlug="fortnite-name-generator" />

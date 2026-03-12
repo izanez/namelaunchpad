@@ -12,9 +12,13 @@ type SeoContentProps = {
     href: string;
     label: string;
   }>;
+  faqItems?: Array<{
+    question: string;
+    answer: string;
+  }>;
 };
 
-export function SeoContent({ title, intro, sections, internalLinks }: SeoContentProps) {
+export function SeoContent({ title, intro, sections, internalLinks, faqItems }: SeoContentProps) {
   return (
     <section className="mx-auto mt-8 w-full max-w-6xl px-4 pb-6 md:px-6">
       <Card className="p-6 md:p-8">
@@ -40,6 +44,19 @@ export function SeoContent({ title, intro, sections, internalLinks }: SeoContent
                 >
                   {link.label}
                 </Link>
+              ))}
+            </div>
+          </div>
+        ) : null}
+        {faqItems && faqItems.length > 0 ? (
+          <div className="mt-8">
+            <h3 className="text-lg font-bold text-white">Frequently Asked Questions</h3>
+            <div className="mt-4 grid gap-5 md:grid-cols-2">
+              {faqItems.map((item) => (
+                <div key={item.question}>
+                  <h4 className="text-base font-semibold text-cyan-200">{item.question}</h4>
+                  <p className="mt-2 text-sm leading-7 text-slate-300">{item.answer}</p>
+                </div>
               ))}
             </div>
           </div>

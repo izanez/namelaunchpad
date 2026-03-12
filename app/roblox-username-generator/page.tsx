@@ -4,27 +4,21 @@ import { RelatedGenerators } from "@/components/seo/related-generators";
 import { SeoContent } from "@/components/seo/seo-content";
 import { JsonLd } from "@/components/seo/json-ld";
 import { absoluteUrl } from "@/app/metadata";
-import { createBreadcrumbSchema, createGeneratorSchema } from "@/lib/seo";
+import { createBreadcrumbSchema, createFaqSchema, createGeneratorSchema, createSeoMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createSeoMetadata({
   title: "Roblox Username Generator - Kid Friendly Roblox Usernames",
   description:
-    "Generate kid friendly Roblox usernames with safe, playful name ideas. Create unique Roblox gamertags instantly.",
+    "Generate safe, kid-friendly, and playful Roblox usernames with creative name ideas for obbies, builders, adventure games, and Roblox profiles.",
+  path: "/roblox-username-generator",
   keywords: [
     "Roblox username generator",
     "kid friendly Roblox usernames",
     "safe Roblox names",
     "Roblox gamertags",
+    "Roblox username ideas",
   ],
-  openGraph: {
-    title: "Roblox Username Generator - Kid Friendly Roblox Usernames",
-    description: "Build fun, creative, and safe Roblox usernames with one click.",
-    type: "website",
-  },
-  alternates: {
-    canonical: "/roblox-username-generator",
-  },
-};
+});
 
 export default function RobloxGenerator() {
   return (
@@ -41,6 +35,20 @@ export default function RobloxGenerator() {
         data={createBreadcrumbSchema([
           { name: "Home", path: "/" },
           { name: "Roblox Username Generator", path: "/roblox-username-generator" },
+        ])}
+      />
+      <JsonLd
+        data={createFaqSchema([
+          {
+            question: "What makes a good Roblox username?",
+            answer:
+              "A good Roblox username should be safe, readable, playful, and flexible enough to fit different game styles such as obbies, builders, adventure games, and social experiences.",
+          },
+          {
+            question: "Why should Roblox usernames stay kid friendly?",
+            answer:
+              "Roblox communities often include younger players and public-facing social spaces, so safer names tend to be more reusable and more suitable across profiles, groups, and creator channels.",
+          },
         ])}
       />
       <RobloxEngine />
@@ -62,6 +70,18 @@ export default function RobloxGenerator() {
           { href: "/username-generator", label: "Username Generator" },
           { href: "/discord-name-generator", label: "Discord Name Generator" },
           { href: "/fortnite-name-generator", label: "Fortnite Name Generator" },
+        ]}
+        faqItems={[
+          {
+            question: "Should a Roblox name be funny or clean?",
+            answer:
+              "Either can work, but clean playful names are usually more flexible across many Roblox game types and stay useful for longer.",
+          },
+          {
+            question: "Can a Roblox username also work on YouTube or Discord?",
+            answer:
+              "Yes. The best Roblox usernames are clear enough to reuse on Discord, YouTube, TikTok, or Roblox group branding without needing major changes.",
+          },
         ]}
       />
       <RelatedGenerators currentSlug="roblox-username-generator" />

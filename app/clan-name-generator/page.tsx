@@ -4,21 +4,15 @@ import { RelatedGenerators } from "@/components/seo/related-generators";
 import { SeoContent } from "@/components/seo/seo-content";
 import { JsonLd } from "@/components/seo/json-ld";
 import { absoluteUrl } from "@/app/metadata";
-import { createBreadcrumbSchema, createGeneratorSchema } from "@/lib/seo";
+import { createBreadcrumbSchema, createFaqSchema, createGeneratorSchema, createSeoMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createSeoMetadata({
   title: "Clan Name Generator - Team and Gaming Clan Names",
-  description: "Generate powerful clan names for gaming teams, communities, squads, and esports groups.",
-  keywords: ["clan name generator", "team name generator", "gaming clan names", "esports team names"],
-  openGraph: {
-    title: "Clan Name Generator - Team and Gaming Clan Names",
-    description: "Generate powerful clan names for gaming teams, communities, and squads.",
-    type: "website",
-  },
-  alternates: {
-    canonical: "/clan-name-generator",
-  },
-};
+  description:
+    "Generate powerful clan names for gaming teams, communities, squads, esports groups, and Discord communities with NameLaunchpad.",
+  path: "/clan-name-generator",
+  keywords: ["clan name generator", "team name generator", "gaming clan names", "esports team names", "squad name ideas"],
+});
 
 export default function ClanGenerator() {
   return (
@@ -35,6 +29,20 @@ export default function ClanGenerator() {
         data={createBreadcrumbSchema([
           { name: "Home", path: "/" },
           { name: "Clan Name Generator", path: "/clan-name-generator" },
+        ])}
+      />
+      <JsonLd
+        data={createFaqSchema([
+          {
+            question: "What makes a strong clan name?",
+            answer:
+              "A strong clan name is easy to repeat, looks organized, and gives the group a shared identity that can work in game lobbies, Discord servers, tournament lists, and social bios.",
+          },
+          {
+            question: "Should clan names be short or dramatic?",
+            answer:
+              "Both can work, but the best clan names usually balance force and readability so they are memorable without becoming hard to say or type.",
+          },
         ])}
       />
       <GeneratorPage
@@ -60,6 +68,18 @@ export default function ClanGenerator() {
           { href: "/valorant-name-generator", label: "Valorant Name Generator" },
           { href: "/fortnite-name-generator", label: "Fortnite Name Generator" },
           { href: "/gamer-tag-generator", label: "NameLaunchpad" },
+        ]}
+        faqItems={[
+          {
+            question: "Can a clan name also work as a creator community name?",
+            answer:
+              "Yes. The strongest clan names are flexible enough to work for gaming teams, Discord communities, social profiles, and creator-led squads.",
+          },
+          {
+            question: "How do you avoid a generic team name?",
+            answer:
+              "Use a clear group identity, avoid overused filler words, and choose a name that still sounds distinct when you see it outside the generator.",
+          },
         ]}
       />
       <RelatedGenerators currentSlug="clan-name-generator" />

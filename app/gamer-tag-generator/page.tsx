@@ -6,20 +6,15 @@ import { RelatedGenerators } from "@/components/seo/related-generators";
 import { SeoContent } from "@/components/seo/seo-content";
 import { JsonLd } from "@/components/seo/json-ld";
 import { createGeneratorSchema } from "@/lib/seo";
+import { createBreadcrumbSchema, createFaqSchema, createSeoMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "NameLaunchpad - Cross-Platform Username Ideas",
-  description: "Use NameLaunchpad to generate cross-platform username ideas for Xbox, PlayStation, PC, Discord, Twitch, TikTok, and more.",
-  keywords: ["NameLaunchpad", "username ideas", "gaming username generator", "cross-platform usernames"],
-  openGraph: {
-    title: "NameLaunchpad - Cross-Platform Username Ideas",
-    description: "Use NameLaunchpad to generate cross-platform username ideas for games, creators, and social profiles.",
-    type: "website",
-  },
-  alternates: {
-    canonical: "/gamer-tag-generator",
-  },
-};
+export const metadata: Metadata = createSeoMetadata({
+  title: "Gamer Tag Generator - Cross-Platform Username Ideas",
+  description:
+    "Generate cross-platform gamer tags and username ideas for Xbox, PlayStation, PC, Discord, Twitch, TikTok, YouTube, and social profiles.",
+  path: "/gamer-tag-generator",
+  keywords: ["gamer tag generator", "cross-platform usernames", "gaming username generator", "NameLaunchpad", "console gamertags"],
+});
 
 export default function GamerTagGeneratorPage() {
   return (
@@ -32,8 +27,28 @@ export default function GamerTagGeneratorPage() {
           category: "UtilitiesApplication",
         })}
       />
+      <JsonLd
+        data={createBreadcrumbSchema([
+          { name: "Home", path: "/" },
+          { name: "Gamer Tag Generator", path: "/gamer-tag-generator" },
+        ])}
+      />
+      <JsonLd
+        data={createFaqSchema([
+          {
+            question: "What makes a strong cross-platform gamer tag?",
+            answer:
+              "A strong cross-platform gamer tag should be readable, memorable, and flexible enough to work across console profiles, Discord, streaming platforms, and social media.",
+          },
+          {
+            question: "Why use one gamer tag across platforms?",
+            answer:
+              "Using one identity across platforms makes you easier to recognize and helps your gaming, creator, and social profiles feel more consistent over time.",
+          },
+        ])}
+      />
       <Suspense fallback={null}>
-        <UsernameEngine generatorKey="gamer-tag-generator" breadcrumbTitle="NameLaunchpad" />
+        <UsernameEngine generatorKey="gamer-tag-generator" breadcrumbTitle="Gamer Tag Generator" />
       </Suspense>
       <SeoContent
         title="NameLaunchpad for Cross-Platform Username Ideas"
@@ -53,6 +68,18 @@ export default function GamerTagGeneratorPage() {
           { href: "/twitch-username-generator", label: "Twitch Username Generator" },
           { href: "/discord-name-generator", label: "Discord Name Generator" },
           { href: "/valorant-name-generator", label: "Valorant Name Generator" },
+        ]}
+        faqItems={[
+          {
+            question: "Should a gamer tag match one game or stay broader?",
+            answer:
+              "Broader gamer tags are usually better if you play multiple games or post content, because they stay usable when your focus changes.",
+          },
+          {
+            question: "How do you test if a gamer tag is strong enough?",
+            answer:
+              "Check whether it still looks good in a lobby, sounds natural out loud, and feels usable on Discord, Twitch, TikTok, or YouTube before committing to it.",
+          },
         ]}
       />
       <RelatedGenerators currentSlug="gamer-tag-generator" />
