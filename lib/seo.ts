@@ -15,6 +15,30 @@ type FaqItem = {
   answer: string;
 };
 
+function buildSocialImageUrl({
+  title,
+  description,
+  type,
+  keywords = [],
+}: {
+  title: string;
+  description: string;
+  type: "website" | "article";
+  keywords?: string[];
+}) {
+  const params = new URLSearchParams({
+    title,
+    subtitle: description,
+    eyebrow: type === "article" ? "NameLaunchpad Guide" : "NameLaunchpad Generator",
+  });
+
+  if (keywords.length > 0) {
+    params.set("chips", keywords.slice(0, 4).join(","));
+  }
+
+  return absoluteUrl(`/api/og?${params.toString()}`);
+}
+
 export function createGeneratorSchema({
   title,
   description,
@@ -69,6 +93,7 @@ export function createSeoMetadata({
   type = "website",
 }: SeoMetadataInput): Metadata {
   const url = absoluteUrl(path);
+  const imageUrl = buildSocialImageUrl({ title, description, type, keywords });
 
   return {
     title,
@@ -83,7 +108,7 @@ export function createSeoMetadata({
       locale: "en_US",
       images: [
         {
-          url: absoluteUrl("/opengraph-image"),
+          url: imageUrl,
           width: 1200,
           height: 630,
           alt: `${siteConfig.name} social preview`,
@@ -94,7 +119,7 @@ export function createSeoMetadata({
       card: "summary_large_image",
       title,
       description,
-      images: [absoluteUrl("/twitter-image")],
+      images: [imageUrl],
     },
     alternates: {
       canonical: path,
