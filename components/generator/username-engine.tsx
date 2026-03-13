@@ -3,7 +3,6 @@
 import { memo, startTransition, useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { AdSlot } from "@/components/ads/ad-slot";
 import { LoadingGrid } from "@/components/generator/loading-grid";
 import { LiveCounter } from "@/components/generator/live-counter";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
@@ -968,9 +967,7 @@ export function UsernameEngine({
 
   return (
     <section className="generator-shell mx-auto w-full max-w-6xl animate-fadeUp px-4 pb-28 pt-10 md:px-6 md:pb-10">
-      <AdSlot slot="top-banner" className="mb-7" />
-
-      <div className="grid gap-7 xl:grid-cols-[minmax(0,1fr)_300px]">
+      <div className="grid gap-7">
         <div className="space-y-7">
           <Card id="generator" className="p-6 md:p-8">
             <Breadcrumbs
@@ -1187,8 +1184,6 @@ export function UsernameEngine({
                   ))}
                 </div>
 
-                <AdSlot slot="between-results" className="mt-6" />
-
                 <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                   {bottomResults.map((name) => (
                     <ResultCard
@@ -1359,50 +1354,56 @@ export function UsernameEngine({
               </span>
             </div>
 
-            <div className="mt-5 grid gap-3 lg:grid-cols-3">
-              <select
-                value={massStyle}
-                onChange={(event) => setMassStyle(event.target.value as UsernameStyle)}
-                className="h-12 w-full self-start rounded-xl2 border border-white/15 bg-slate-900/65 px-4 py-0 text-slate-100 outline-none transition focus:border-cyan-300/70"
-              >
-                {styleOptions.map((styleName) => (
-                  <option key={`mass-${styleName}`} value={styleName}>
-                    {styleName.charAt(0).toUpperCase() + styleName.slice(1)}
-                  </option>
-                ))}
-              </select>
-
-              <select
-                value={massTheme}
-                onChange={(event) => setMassTheme(event.target.value as (typeof themeOptions)[number])}
-                className="h-12 w-full self-start rounded-xl2 border border-white/15 bg-slate-900/65 px-4 py-0 text-slate-100 outline-none transition focus:border-cyan-300/70"
-              >
-                {themeOptions.map((themeName) => (
-                  <option key={themeName} value={themeName}>
-                    {themeName.charAt(0).toUpperCase() + themeName.slice(1)}
-                  </option>
-                ))}
-              </select>
-
-              <div className="rounded-xl2 border border-white/15 bg-slate-900/55 px-4 py-3 lg:col-span-1">
-                <p className="text-xs font-semibold uppercase tracking-wide text-slate-300">Username Length</p>
-                <div className="mt-3 grid gap-2 sm:grid-cols-3 lg:grid-cols-1">
-                  {lengthOptions.map((option) => (
-                    <button
-                      key={`mass-${option.value}`}
-                      type="button"
-                      onClick={() => setMassLengthFilter(option.value)}
-                      className={`rounded-xl border px-3 py-2 text-left transition ${
-                        massLengthFilter === option.value
-                          ? "border-cyan-300/60 bg-cyan-300/12 text-cyan-100"
-                          : "border-white/10 bg-white/5 text-slate-300 hover:border-cyan-300/35 hover:text-white"
-                      }`}
-                    >
-                      <span className="block text-sm font-semibold">{option.label}</span>
-                      <span className="block text-xs text-slate-400">{option.description}</span>
-                    </button>
+            <div className="mt-5 grid gap-3 md:grid-cols-2">
+              <div className="rounded-xl2 border border-white/15 bg-slate-900/55 px-4 py-3">
+                <label className="text-xs font-semibold uppercase tracking-wide text-slate-300">Style</label>
+                <select
+                  value={massStyle}
+                  onChange={(event) => setMassStyle(event.target.value as UsernameStyle)}
+                  className="mt-3 h-12 w-full rounded-xl2 border border-white/15 bg-slate-900/65 px-4 py-0 text-slate-100 outline-none transition focus:border-cyan-300/70"
+                >
+                  {styleOptions.map((styleName) => (
+                    <option key={`mass-${styleName}`} value={styleName}>
+                      {styleName.charAt(0).toUpperCase() + styleName.slice(1)}
+                    </option>
                   ))}
-                </div>
+                </select>
+              </div>
+
+              <div className="rounded-xl2 border border-white/15 bg-slate-900/55 px-4 py-3">
+                <label className="text-xs font-semibold uppercase tracking-wide text-slate-300">Theme</label>
+                <select
+                  value={massTheme}
+                  onChange={(event) => setMassTheme(event.target.value as (typeof themeOptions)[number])}
+                  className="mt-3 h-12 w-full rounded-xl2 border border-white/15 bg-slate-900/65 px-4 py-0 text-slate-100 outline-none transition focus:border-cyan-300/70"
+                >
+                  {themeOptions.map((themeName) => (
+                    <option key={themeName} value={themeName}>
+                      {themeName.charAt(0).toUpperCase() + themeName.slice(1)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="mt-3 rounded-xl2 border border-white/15 bg-slate-900/55 px-4 py-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-300">Username Length</p>
+              <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                {lengthOptions.map((option) => (
+                  <button
+                    key={`mass-${option.value}`}
+                    type="button"
+                    onClick={() => setMassLengthFilter(option.value)}
+                    className={`rounded-xl border px-3 py-2 text-left transition ${
+                      massLengthFilter === option.value
+                        ? "border-cyan-300/60 bg-cyan-300/12 text-cyan-100"
+                        : "border-white/10 bg-white/5 text-slate-300 hover:border-cyan-300/35 hover:text-white"
+                    }`}
+                  >
+                    <span className="block text-sm font-semibold">{option.label}</span>
+                    <span className="block text-xs text-slate-400">{option.description}</span>
+                  </button>
+                ))}
               </div>
             </div>
 
@@ -1516,9 +1517,6 @@ export function UsernameEngine({
           </Card>
         </div>
 
-        <div className="xl:sticky xl:top-24 xl:self-start">
-          <AdSlot slot="sidebar" />
-        </div>
       </div>
 
       {toast ? (
