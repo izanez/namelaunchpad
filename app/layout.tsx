@@ -3,7 +3,6 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Rajdhani, Space_Grotesk } from "next/font/google";
 import "./globals.css";
-import { AdSenseScript } from "@/components/ads/adsense-script";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import type { ReactNode } from "react";
@@ -28,7 +27,6 @@ export const metadata: Metadata = {
   manifest: "/manifest.webmanifest",
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "any" },
       { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
       { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
       { url: "/icon.svg", type: "image/svg+xml" },
@@ -37,7 +35,7 @@ export const metadata: Metadata = {
       { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
       { url: "/apple-icon.svg", type: "image/svg+xml" },
     ],
-    shortcut: ["/favicon.ico"],
+    shortcut: ["/icon-192.png"],
   },
   title: {
     default: siteConfig.defaultTitle,
@@ -105,7 +103,11 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
   return (
     <html lang="en">
       <head>
-        <AdSenseScript />
+        <script
+          async
+          crossOrigin="anonymous"
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9467067959029899"
+        />
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#67e8f9" />
       </head>
       <body className={`${bodyFont.variable} ${displayFont.variable} relative`}>
