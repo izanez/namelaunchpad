@@ -1336,7 +1336,7 @@ export function UsernameEngine({
               <select
                 value={massStyle}
                 onChange={(event) => setMassStyle(event.target.value as UsernameStyle)}
-                className="w-full rounded-xl2 border border-white/15 bg-slate-900/65 px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-300/70"
+                className="h-12 w-full self-start rounded-xl2 border border-white/15 bg-slate-900/65 px-4 py-0 text-slate-100 outline-none transition focus:border-cyan-300/70"
               >
                 {styleOptions.map((styleName) => (
                   <option key={`mass-${styleName}`} value={styleName}>
@@ -1348,7 +1348,7 @@ export function UsernameEngine({
               <select
                 value={massTheme}
                 onChange={(event) => setMassTheme(event.target.value as (typeof themeOptions)[number])}
-                className="w-full rounded-xl2 border border-white/15 bg-slate-900/65 px-4 py-3 text-slate-100 outline-none transition focus:border-cyan-300/70"
+                className="h-12 w-full self-start rounded-xl2 border border-white/15 bg-slate-900/65 px-4 py-0 text-slate-100 outline-none transition focus:border-cyan-300/70"
               >
                 {themeOptions.map((themeName) => (
                   <option key={themeName} value={themeName}>
