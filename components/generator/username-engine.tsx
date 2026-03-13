@@ -20,6 +20,7 @@ import { trackGeneratorUsage, trackGlobalGenerationEvent } from "@/lib/generator
 import { trackRecentGeneratedUsernames } from "@/lib/recent-generated-usernames";
 import { trackGeneratedUsernames } from "@/lib/trending-usernames";
 import { buildUnverifiedAvailability, type AvailabilityRecord } from "@/lib/username-availability";
+import { trackFunnelEvent } from "@/lib/funnel-analytics";
 
 const styleOptions: UsernameStyle[] = [
   "cool",
@@ -105,6 +106,22 @@ type Platform = keyof AvailabilityRecord;
 
 const platforms: Platform[] = ["Twitch", "TikTok", "Instagram"];
 type GuidedStep = "idle" | "generated" | "copied" | "checked";
+type FavoriteCollection = "uncategorized" | "fortnite" | "clean" | "short";
+type SessionContext = {
+  keywordsInput: string;
+  style: UsernameStyle;
+  lengthFilter: UsernameLengthFilter;
+  category: UsernameCategory;
+  lastCopiedName: string | null;
+  updatedAt: number;
+};
+
+const favoriteCollectionOptions: Array<{ value: FavoriteCollection; label: string }> = [
+  { value: "uncategorized", label: "Unsorted" },
+  { value: "fortnite", label: "Fortnite" },
+  { value: "clean", label: "Clean" },
+  { value: "short", label: "Short" },
+];
 
 const trendingSeeds = [
   "ShadowNova",
@@ -271,17 +288,32 @@ const MassResultCard = memo(function MassResultCard({
 
 const FavoriteRow = memo(function FavoriteRow({
   value,
+  collection,
   onCopy,
   onDelete,
+  onSetCollection,
 }: {
   value: string;
+  collection: FavoriteCollection;
   onCopy: (value: string) => void;
   onDelete: (value: string) => void;
+  onSetCollection: (value: string, collection: FavoriteCollection) => void;
 }) {
   return (
-    <div className="flex items-center justify-between rounded-xl2 border border-cyan-300/25 bg-cyan-400/5 px-3 py-2">
+    <div className="flex flex-col gap-2 rounded-xl2 border border-cyan-300/25 bg-cyan-400/5 px-3 py-2 md:flex-row md:items-center md:justify-between">
       <span className="text-sm text-cyan-100">{value}</span>
-      <div className="flex gap-2">
+      <div className="flex flex-wrap items-center gap-2">
+        <select
+          value={collection}
+          onChange={(event) => onSetCollection(value, event.target.value as FavoriteCollection)}
+          className="rounded-lg border border-cyan-300/30 bg-slate-900/70 px-2 py-1 text-xs text-cyan-100 outline-none transition focus:border-cyan-300/70"
+        >
+          {favoriteCollectionOptions.map((option) => (
+            <option key={`${value}-${option.value}`} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
         <Button variant="ghost" className="px-3 py-1.5 text-xs" onClick={() => onCopy(value)}>
           Copy Username
         </Button>
@@ -328,6 +360,15 @@ export function UsernameEngine({
   const [guidedStep, setGuidedStep] = useState<GuidedStep>("idle");
   const [lastCopiedName, setLastCopiedName] = useState<string | null>(null);
   const storageKey = useMemo(() => "namelaunchpad:favorites:username-engine", []);
+  const collectionsKey = useMemo(() => "namelaunchpad:favorites:collections", []);
+  const recentGeneratedKey = useMemo(() => "namelaunchpad:recent-generated", []);
+  const recentCopiedKey = useMemo(() => "namelaunchpad:recent-copied", []);
+  const sessionContextKey = useMemo(() => "namelaunchpad:last-session-context", []);
+  const [favoriteCollections, setFavoriteCollections] = useState<Record<string, FavoriteCollection>>({});
+  const [recentGenerated, setRecentGenerated] = useState<string[]>([]);
+  const [recentCopied, setRecentCopied] = useState<string[]>([]);
+  const [resumeContext, setResumeContext] = useState<SessionContext | null>(null);
+  const [availabilityNotice, setAvailabilityNotice] = useState<string | null>(null);
 
   const topResults = useMemo(() => results.slice(0, 8), [results]);
   const bottomResults = useMemo(() => results.slice(8), [results]);
@@ -339,6 +380,26 @@ export function UsernameEngine({
   const activeMassLengthRange = useMemo(() => getLengthRange(massLengthFilter), [massLengthFilter]);
   const effectiveStyle = style;
   const effectiveLengthRange = activeLengthRange;
+  const personalizedTrending = useMemo(() => {
+    const keywordSignals = selectedCategory.keywords.map((keyword) => keyword.toLowerCase());
+    const boosted = trending.filter((name) => keywordSignals.some((signal) => name.toLowerCase().includes(signal)));
+    return Array.from(new Set([...boosted, ...trending])).slice(0, 10);
+  }, [selectedCategory.keywords, trending]);
+  const collectionCounts = useMemo(() => {
+    return favorites.reduce<Record<FavoriteCollection, number>>(
+      (acc, fav) => {
+        const key = favoriteCollections[fav] ?? "uncategorized";
+        acc[key] += 1;
+        return acc;
+      },
+      {
+        uncategorized: 0,
+        fortnite: 0,
+        clean: 0,
+        short: 0,
+      }
+    );
+  }, [favoriteCollections, favorites]);
 
   const generateBatch = useCallback(
     (existingNames: string[] = [], amount = 20) => {
@@ -412,6 +473,8 @@ export function UsernameEngine({
       trackGlobalGenerationEvent({ generatorSlug: generatorKey, amount: names.length, usernames: names });
       trackGeneratedUsernames(names);
       trackRecentGeneratedUsernames(names);
+      trackFunnelEvent("generate");
+      setRecentGenerated((current) => Array.from(new Set([...names.slice(0, 5), ...current])).slice(0, 12));
       setGuidedStep("generated");
     },
     [generatorKey, results]
@@ -459,6 +522,7 @@ export function UsernameEngine({
   }, [activeMassLengthRange.max, activeMassLengthRange.min, generatorKey, massStyle, massTheme]);
 
   useEffect(() => {
+    trackFunnelEvent("landing");
     const initial = generateUsernames({ keywords: [], length: 10, minLength: 7, maxLength: 10, style: "cool", amount: 20 });
     const initialLengthFinder = generateUsernames({
       keywords: ["neo"],
@@ -489,7 +553,49 @@ export function UsernameEngine({
     } catch {
       setFavorites([]);
     }
-  }, [storageKey]);
+
+    const collectionsRaw = window.localStorage.getItem(collectionsKey);
+    if (collectionsRaw) {
+      try {
+        const parsedCollections = JSON.parse(collectionsRaw) as Record<string, FavoriteCollection>;
+        setFavoriteCollections(parsedCollections);
+      } catch {
+        setFavoriteCollections({});
+      }
+    }
+
+    const recentGeneratedRaw = window.localStorage.getItem(recentGeneratedKey);
+    if (recentGeneratedRaw) {
+      try {
+        const parsedRecentGenerated = JSON.parse(recentGeneratedRaw) as string[];
+        if (Array.isArray(parsedRecentGenerated)) setRecentGenerated(parsedRecentGenerated.slice(0, 12));
+      } catch {
+        setRecentGenerated([]);
+      }
+    }
+
+    const recentCopiedRaw = window.localStorage.getItem(recentCopiedKey);
+    if (recentCopiedRaw) {
+      try {
+        const parsedRecentCopied = JSON.parse(recentCopiedRaw) as string[];
+        if (Array.isArray(parsedRecentCopied)) setRecentCopied(parsedRecentCopied.slice(0, 12));
+      } catch {
+        setRecentCopied([]);
+      }
+    }
+
+    const sessionRaw = window.localStorage.getItem(sessionContextKey);
+    if (sessionRaw) {
+      try {
+        const parsedSession = JSON.parse(sessionRaw) as SessionContext;
+        if (parsedSession?.updatedAt && Date.now() - parsedSession.updatedAt < 1000 * 60 * 60 * 24) {
+          setResumeContext(parsedSession);
+        }
+      } catch {
+        setResumeContext(null);
+      }
+    }
+  }, [collectionsKey, recentCopiedKey, recentGeneratedKey, sessionContextKey, storageKey]);
 
   useEffect(() => {
     const keywordsFromUrl = searchParams.get("keywords");
@@ -523,6 +629,30 @@ export function UsernameEngine({
   }, [favorites, storageKey]);
 
   useEffect(() => {
+    window.localStorage.setItem(collectionsKey, JSON.stringify(favoriteCollections));
+  }, [collectionsKey, favoriteCollections]);
+
+  useEffect(() => {
+    window.localStorage.setItem(recentGeneratedKey, JSON.stringify(recentGenerated));
+  }, [recentGenerated, recentGeneratedKey]);
+
+  useEffect(() => {
+    window.localStorage.setItem(recentCopiedKey, JSON.stringify(recentCopied));
+  }, [recentCopied, recentCopiedKey]);
+
+  useEffect(() => {
+    const context: SessionContext = {
+      keywordsInput,
+      style,
+      lengthFilter,
+      category,
+      lastCopiedName,
+      updatedAt: Date.now(),
+    };
+    window.localStorage.setItem(sessionContextKey, JSON.stringify(context));
+  }, [category, keywordsInput, lastCopiedName, lengthFilter, sessionContextKey, style]);
+
+  useEffect(() => {
     if (results.length === 0) return;
     const interval = window.setInterval(() => {
       setTrending(pickTrendingNames(results));
@@ -534,6 +664,7 @@ export function UsernameEngine({
     if (results.length === 0) return;
 
     setIsCheckingAvailability(true);
+    setAvailabilityNotice("Checking availability. Results are estimated from public profile responses.");
 
     void fetch("/api/check-username-availability", {
       method: "POST",
@@ -558,12 +689,15 @@ export function UsernameEngine({
             ...current,
             ...data.availability,
           }));
+          trackFunnelEvent("availability");
           setGuidedStep("checked");
+          setAvailabilityNotice("Availability updated. Estimated status only.");
           setToast("Availability updated.");
           window.setTimeout(() => setToast(null), 1800);
         }
       })
       .catch(() => {
+        setAvailabilityNotice("Availability check failed. Try again in a few seconds.");
         setToast("Availability check could not be completed.");
         window.setTimeout(() => setToast(null), 1800);
       })
@@ -577,12 +711,23 @@ export function UsernameEngine({
       await navigator.clipboard.writeText(value);
       setGuidedStep("copied");
       setLastCopiedName(value);
+      trackFunnelEvent("copy");
+      setRecentCopied((current) => Array.from(new Set([value, ...current])).slice(0, 12));
+      const similar = generateSimilarUsernames({
+        baseName: value,
+        style: effectiveStyle,
+        amount: 10,
+        minLength: effectiveLengthRange.min,
+        maxLength: effectiveLengthRange.max,
+      });
+      setSelectedBaseName(value);
+      setSimilarResults(similar);
       setToast("Username copied.");
       window.setTimeout(() => setToast(null), 1800);
     } catch {
       setToast(null);
     }
-  }, []);
+  }, [effectiveLengthRange.max, effectiveLengthRange.min, effectiveStyle]);
 
   const nextStepCard = useMemo(() => {
     if (guidedStep === "generated") {
@@ -672,14 +817,52 @@ export function UsernameEngine({
   }, []);
 
   const onToggleFavorite = useCallback((value: string) => {
-    setFavorites((current) =>
-      current.includes(value) ? current.filter((item) => item !== value) : [value, ...current].slice(0, 40)
-    );
+    setFavorites((current) => {
+      const next = current.includes(value) ? current.filter((item) => item !== value) : [value, ...current].slice(0, 40);
+      if (!current.includes(value)) {
+        trackFunnelEvent("favorite");
+        setFavoriteCollections((collections) => ({
+          ...collections,
+          [value]: collections[value] ?? "uncategorized",
+        }));
+      }
+      if (current.includes(value)) {
+        setFavoriteCollections((collections) => {
+          const nextCollections = { ...collections };
+          delete nextCollections[value];
+          return nextCollections;
+        });
+      }
+      return next;
+    });
   }, []);
 
   const onDeleteFavorite = useCallback((value: string) => {
     setFavorites((current) => current.filter((item) => item !== value));
+    setFavoriteCollections((collections) => {
+      const next = { ...collections };
+      delete next[value];
+      return next;
+    });
   }, []);
+
+  const onSetFavoriteCollection = useCallback((value: string, collection: FavoriteCollection) => {
+    setFavoriteCollections((current) => ({
+      ...current,
+      [value]: collection,
+    }));
+  }, []);
+
+  const onResumeLastSession = useCallback(() => {
+    if (!resumeContext) return;
+    setKeywordsInput(resumeContext.keywordsInput);
+    setStyle(resumeContext.style);
+    setLengthFilter(resumeContext.lengthFilter);
+    setCategory(resumeContext.category);
+    setLastCopiedName(resumeContext.lastCopiedName);
+    setToast("Previous session restored.");
+    window.setTimeout(() => setToast(null), 1800);
+  }, [resumeContext]);
 
   const onExportFavoritesTxt = useCallback(() => {
     if (favorites.length === 0) return;
@@ -781,6 +964,63 @@ export function UsernameEngine({
             </p>
             <LiveCounter />
 
+            {resumeContext ? (
+              <div className="mt-4 rounded-xl2 border border-cyan-300/25 bg-cyan-400/10 p-4">
+                <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-cyan-100">Continue where you left off</p>
+                    <p className="mt-1 text-xs text-slate-300">
+                      Last setup: {resumeContext.style} style, {resumeContext.lengthFilter} length, {resumeContext.category.replace(/-/g, " ")}.
+                    </p>
+                  </div>
+                  <Button variant="ghost" className="px-3 py-2 text-xs" onClick={onResumeLastSession}>
+                    Resume Session
+                  </Button>
+                </div>
+              </div>
+            ) : null}
+
+            <div className="mt-4 grid gap-3 md:grid-cols-2">
+              <div className="rounded-xl2 border border-white/15 bg-white/5 p-3">
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-300">Recently generated</p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {recentGenerated.length === 0 ? (
+                    <span className="text-xs text-slate-500">No recent generated names yet.</span>
+                  ) : (
+                    recentGenerated.slice(0, 6).map((name) => (
+                      <button
+                        key={`recent-generated-${name}`}
+                        type="button"
+                        onClick={() => onCopy(name)}
+                        className="rounded-full border border-cyan-300/30 bg-cyan-300/10 px-2 py-1 text-xs text-cyan-100 hover:border-cyan-300/60"
+                      >
+                        {name}
+                      </button>
+                    ))
+                  )}
+                </div>
+              </div>
+              <div className="rounded-xl2 border border-white/15 bg-white/5 p-3">
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-300">Recently copied</p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {recentCopied.length === 0 ? (
+                    <span className="text-xs text-slate-500">No copied usernames yet.</span>
+                  ) : (
+                    recentCopied.slice(0, 6).map((name) => (
+                      <button
+                        key={`recent-copied-${name}`}
+                        type="button"
+                        onClick={() => onGenerateSimilar(name)}
+                        className="rounded-full border border-emerald-300/30 bg-emerald-400/10 px-2 py-1 text-xs text-emerald-100 hover:border-emerald-300/60"
+                      >
+                        {name}
+                      </button>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+
             <div className="mt-6 grid gap-3 md:grid-cols-3">
               <input
                 value={keywordsInput}
@@ -870,6 +1110,12 @@ export function UsernameEngine({
                   {isGenerating ? "Generating More..." : "Generate More"}
                 </Button>
               </div>
+              <p className="mt-2 text-xs text-slate-400">
+                Availability is estimated from public profile responses and can change quickly.
+              </p>
+              {availabilityNotice ? (
+                <p className="mt-1 text-xs text-cyan-200">{availabilityNotice}</p>
+              ) : null}
             </div>
 
             <div id="results" className="mt-6 flex items-center justify-between text-xs text-slate-400">
@@ -1171,14 +1417,14 @@ export function UsernameEngine({
 
           <Card className="p-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-bold text-white">Trending Usernames</h2>
+              <h2 className="text-xl font-bold text-white">Today Popular for {selectedCategory.label}</h2>
               <Button variant="ghost" className="px-3 py-1.5 text-xs" onClick={() => setTrending(pickTrendingNames(results))}>
                 Refresh
               </Button>
             </div>
-            <p className="mt-2 text-xs text-slate-400">Live popular picks. Auto-updates every few seconds.</p>
+            <p className="mt-2 text-xs text-slate-400">Personalized by your selected category and refreshed from your latest generated results.</p>
             <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
-              {trending.map((name, index) => (
+              {personalizedTrending.map((name, index) => (
                 <div
                   key={`${name}-${index}`}
                   className="flex items-center justify-between rounded-xl2 border border-white/15 bg-white/5 px-3 py-2"
@@ -1195,6 +1441,20 @@ export function UsernameEngine({
               <div className="flex items-center justify-between gap-3">
                 <h2 className="text-xl font-bold text-white">Favorites</h2>
                 <span className="text-xs text-slate-400">{favorites.length} saved</span>
+              </div>
+              <div className="flex flex-wrap items-center gap-2 text-[11px]">
+                <span className="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-slate-300">
+                  Unsorted: {collectionCounts.uncategorized}
+                </span>
+                <span className="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-slate-300">
+                  Fortnite: {collectionCounts.fortnite}
+                </span>
+                <span className="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-slate-300">
+                  Clean: {collectionCounts.clean}
+                </span>
+                <span className="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-slate-300">
+                  Short: {collectionCounts.short}
+                </span>
               </div>
               {favorites.length > 0 ? (
                 <div className="flex flex-wrap gap-2">
@@ -1215,7 +1475,14 @@ export function UsernameEngine({
             ) : (
               <div className="mt-4 grid gap-2">
                 {favorites.map((fav) => (
-                  <FavoriteRow key={fav} value={fav} onCopy={onCopy} onDelete={onDeleteFavorite} />
+                  <FavoriteRow
+                    key={fav}
+                    value={fav}
+                    collection={favoriteCollections[fav] ?? "uncategorized"}
+                    onSetCollection={onSetFavoriteCollection}
+                    onCopy={onCopy}
+                    onDelete={onDeleteFavorite}
+                  />
                 ))}
               </div>
             )}

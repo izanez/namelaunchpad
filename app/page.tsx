@@ -275,12 +275,6 @@ export default function HomePage() {
               <Link href="/username-generator#generator">
                 <Button>Start Generating</Button>
               </Link>
-              <Link href="/username-generator?keywords=ShadowNova#results">
-                <Button variant="ghost">Copy a Result</Button>
-              </Link>
-              <Link href="/username-generator#availability">
-                <Button variant="ghost">Check Availability</Button>
-              </Link>
             </div>
           </div>
         </section>
