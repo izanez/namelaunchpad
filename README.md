@@ -18,6 +18,7 @@ Premium username platform built with Next.js App Router, TypeScript, and Tailwin
 - Sharing and copy actions
 - SEO metadata, schema, sitemap, category pages, and internal linking
 - AdSense-ready ad slots
+- Health check page at `/health` for icons, manifest, robots, sitemap, and AdSense script presence
 
 ## Local development
 
@@ -34,6 +35,16 @@ npm run build
 npm run start
 ```
 
+## Deployment discipline
+
+Before every push/deploy run:
+
+```bash
+npm run verify
+```
+
+This runs lint + production build and catches most regressions early.
+
 ## Environment variables
 
 Copy `.env.example` to `.env.local` and fill in values if needed.
@@ -48,6 +59,15 @@ NameLaunchpad now supports shared generator statistics and trending usernames th
 4. Restart the app
 
 Without Supabase configured, the app falls back to the previous browser-local statistics behavior.
+If you do not need shared global stats yet, you can skip all Supabase variables.
+
+## Live release checklist
+
+1. Domain points to Vercel and resolves (`namelaunchpad.com`)
+2. Open `/health` and confirm all checks are green
+3. Verify AdSense script is present in `<head>`
+4. Confirm no 500 errors in browser devtools network tab
+5. Deploy from `main`
 
 ## Vercel deploy
 

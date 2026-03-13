@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack --port 3029",
     "build": "next build",
     "start": "next start --port 3029",
-    "lint": "next lint"
+    "lint": "next lint",
+    "verify": "npm run lint && npm run build"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.0",

@@ -206,6 +206,34 @@ const generatorCategories = [
   { href: "/category/hacker", title: "Hacker", copy: "Cyber, glitch, hacker, and terminal-style username generators." },
 ];
 
+const priorityLandingPages = [
+  {
+    href: "/generators/fortnite-name-generator",
+    title: "Fortnite Name Generator",
+    reason: "Highest gaming demand and clear search intent.",
+  },
+  {
+    href: "/generators/roblox-username-generator",
+    title: "Roblox Username Generator",
+    reason: "Strong recurring volume and kid-friendly naming intent.",
+  },
+  {
+    href: "/generators/valorant-name-generator",
+    title: "Valorant Name Generator",
+    reason: "Competitive niche with high naming turnover.",
+  },
+  {
+    href: "/generators/discord-username-generator",
+    title: "Discord Username Generator",
+    reason: "Cross-platform social identity demand.",
+  },
+  {
+    href: "/generators/aesthetic-username-generator",
+    title: "Aesthetic Username Generator",
+    reason: "High creator and social profile relevance.",
+  },
+];
+
 export default function HomePage() {
   return (
     <>
@@ -244,13 +272,49 @@ export default function HomePage() {
             </p>
             <LiveCounter />
             <div className="mt-7 flex flex-wrap gap-3">
-              <Link href="/username-generator">
+              <Link href="/username-generator#generator">
                 <Button>Start Generating</Button>
               </Link>
-              <Link href="#browse-generators">
-                <Button variant="ghost">Browse Generators</Button>
+              <Link href="/username-generator?keywords=ShadowNova#results">
+                <Button variant="ghost">Copy a Result</Button>
+              </Link>
+              <Link href="/username-generator#availability">
+                <Button variant="ghost">Check Availability</Button>
               </Link>
             </div>
+          </div>
+        </section>
+
+        <section className="content-auto mt-8 rounded-3xl border border-cyan-300/20 bg-cyan-400/5 p-5 backdrop-blur-xl">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <h2 className="text-xl font-bold text-white md:text-2xl">Fast 3-Step Flow</h2>
+            <span className="text-xs uppercase tracking-wide text-slate-400">Generate {"->"} Copy {"->"} Check</span>
+          </div>
+          <div className="grid gap-3 md:grid-cols-3">
+            <Card className="p-4">
+              <p className="text-xs uppercase tracking-wide text-cyan-300">Step 1</p>
+              <h3 className="mt-1 text-lg font-semibold text-white">Generate</h3>
+              <p className="mt-2 text-sm text-slate-300">Create a fresh batch of names in one click.</p>
+              <Link href="/username-generator#generator" className="mt-3 inline-block text-sm font-semibold text-cyan-300 hover:text-cyan-200">
+                Open Generator {"->"}
+              </Link>
+            </Card>
+            <Card className="p-4">
+              <p className="text-xs uppercase tracking-wide text-cyan-300">Step 2</p>
+              <h3 className="mt-1 text-lg font-semibold text-white">Copy</h3>
+              <p className="mt-2 text-sm text-slate-300">Pick your favorite and copy it instantly.</p>
+              <Link href="/username-generator?keywords=ShadowNova#results" className="mt-3 inline-block text-sm font-semibold text-cyan-300 hover:text-cyan-200">
+                See Results {"->"}
+              </Link>
+            </Card>
+            <Card className="p-4">
+              <p className="text-xs uppercase tracking-wide text-cyan-300">Step 3</p>
+              <h3 className="mt-1 text-lg font-semibold text-white">Check</h3>
+              <p className="mt-2 text-sm text-slate-300">Run the availability checker before you publish.</p>
+              <Link href="/username-generator#availability" className="mt-3 inline-block text-sm font-semibold text-cyan-300 hover:text-cyan-200">
+                Check Now {"->"}
+              </Link>
+            </Card>
           </div>
         </section>
 
@@ -276,6 +340,24 @@ export default function HomePage() {
                   className="mt-4 inline-block text-sm font-semibold text-cyan-300 transition hover:text-cyan-200"
                 >
                   {"View Page ->"}
+                </Link>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        <section className="content-auto mt-10">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-2xl font-bold text-white md:text-3xl">SEO Priority Pages</h2>
+            <span className="text-xs uppercase tracking-wide text-slate-400">Focus this sprint</span>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+            {priorityLandingPages.map((item) => (
+              <Card key={item.href} className="p-5">
+                <h3 className="text-lg font-semibold text-white">{item.title}</h3>
+                <p className="mt-2 text-sm text-slate-300">{item.reason}</p>
+                <Link href={item.href} className="mt-4 inline-block text-sm font-semibold text-cyan-300 transition hover:text-cyan-200">
+                  Optimize Page {"->"}
                 </Link>
               </Card>
             ))}
@@ -366,4 +448,3 @@ export default function HomePage() {
     </>
   );
 }
-

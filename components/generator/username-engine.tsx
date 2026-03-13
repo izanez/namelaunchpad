@@ -721,7 +721,7 @@ export function UsernameEngine({
 
       <div className="grid gap-7 xl:grid-cols-[minmax(0,1fr)_300px]">
         <div className="space-y-7">
-          <Card className="p-6 md:p-8">
+          <Card id="generator" className="p-6 md:p-8">
             <Breadcrumbs
               items={[
                 { label: "Home", href: "/" },
@@ -810,7 +810,7 @@ export function UsernameEngine({
                 {isGenerating ? "Refreshing..." : "Regenerate"}
               </Button>
             </div>
-            <div className="mt-3">
+            <div id="availability" className="mt-3">
               <div className="flex flex-col gap-3 md:flex-row">
                 <Button
                   variant="ghost"
@@ -826,7 +826,7 @@ export function UsernameEngine({
               </div>
             </div>
 
-            <div className="mt-6 flex items-center justify-between text-xs text-slate-400">
+            <div id="results" className="mt-6 flex items-center justify-between text-xs text-slate-400">
               <span>Output: {results.length} usernames</span>
               <span>
                 Category: {selectedCategory.label} | Style: {effectiveStyle} | Length: {effectiveLengthRange.label} ({effectiveLengthRange.description})
