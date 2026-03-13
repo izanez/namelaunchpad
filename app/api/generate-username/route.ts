@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import { generateUsernames, type UsernameLengthFilter, type UsernameStyle } from "@/lib/generators";
+import { applyRateLimit, getClientIp } from "@/lib/rate-limit";
 
 const validStyles: UsernameStyle[] = ["cool", "aesthetic", "dark", "funny", "fantasy", "hacker", "anime", "streamer"];
 const validLengthFilters: UsernameLengthFilter[] = ["short", "medium", "long"];
+const API_RATE_LIMIT = 100;
 
 const lengthRanges: Record<UsernameLengthFilter, { min: number; max: number }> = {
   short: { min: 4, max: 6 },
@@ -34,6 +36,29 @@ function parseAmount(value: string | null) {
 }
 
 export async function GET(request: Request) {
+  const rateLimitKey = `generate-username:${getClientIp(request.headers)}`;
+  const rateLimit = applyRateLimit({
+    key: rateLimitKey,
+    limit: API_RATE_LIMIT,
+  });
+
+  if (!rateLimit.allowed) {
+    return NextResponse.json(
+      {
+        error: "Rate limit exceeded. Try again later.",
+      },
+      {
+        status: 429,
+        headers: {
+          "x-ratelimit-limit": String(rateLimit.limit),
+          "x-ratelimit-remaining": String(rateLimit.remaining),
+          "x-ratelimit-reset": String(Math.ceil(rateLimit.resetAt / 1000)),
+          "retry-after": String(Math.max(1, Math.ceil((rateLimit.resetAt - Date.now()) / 1000))),
+        },
+      }
+    );
+  }
+
   const { searchParams } = new URL(request.url);
   const style = parseStyle(searchParams.get("style"));
   const lengthFilter = parseLengthFilter(searchParams.get("lengthFilter"));
@@ -50,5 +75,14 @@ export async function GET(request: Request) {
     maxLength: range.max,
   });
 
-  return NextResponse.json({ usernames });
+  return NextResponse.json(
+    { usernames },
+    {
+      headers: {
+        "x-ratelimit-limit": String(rateLimit.limit),
+        "x-ratelimit-remaining": String(rateLimit.remaining),
+        "x-ratelimit-reset": String(Math.ceil(rateLimit.resetAt / 1000)),
+      },
+    }
+  );
 }
