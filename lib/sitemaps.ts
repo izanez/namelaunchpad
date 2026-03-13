@@ -75,11 +75,15 @@ export function getArticleSitemapEntries(): SitemapEntry[] {
 }
 
 export function getUsernameSitemapEntries(): SitemapEntry[] {
+  return makeEntries(usernameListingSlugs.map((slug) => `/${slug}`), "weekly", 0.75);
+}
+
+export function getUsernameDetailSitemapEntries(): SitemapEntry[] {
   const detailPaths = getAllUsernameDatabaseRecords()
     .slice(0, 10000)
     .map((record) => `/usernames/${record.slug}`);
 
-  return makeEntries([...usernameListingSlugs.map((slug) => `/${slug}`), ...detailPaths], "weekly", 0.75);
+  return makeEntries(detailPaths, "weekly", 0.72);
 }
 
 export function getCategorySitemapEntries(): SitemapEntry[] {
@@ -99,6 +103,7 @@ export function getSitemapIndexEntries() {
     absoluteUrl("/sitemap-generators.xml"),
     absoluteUrl("/sitemap-articles.xml"),
     absoluteUrl("/sitemap-usernames.xml"),
+    absoluteUrl("/sitemap-username-details.xml"),
     absoluteUrl("/sitemap-categories.xml"),
     absoluteUrl("/sitemap-database.xml"),
   ].map((url) => ({ url, lastModified: now }));
