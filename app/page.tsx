@@ -7,9 +7,9 @@ import { JsonLd } from "@/components/seo/json-ld";
 import { createBreadcrumbSchema, createFaqSchema, createSeoMetadata, createWebApplicationSchema, createWebsiteSchema } from "@/lib/seo";
 
 export const metadata: Metadata = createSeoMetadata({
-  title: "NameLaunchpad - AI Username, Gamer Tag & Name Generators",
+  title: "NameLaunchpad 2026 - Username Generator, Copy, and Availability Check",
   description:
-    "Generate usernames, gamer tags, clan names, fantasy names, and platform-specific handles with NameLaunchpad. Explore SEO landing pages, articles, lists, and generator tools.",
+    "Generate usernames, copy favorites, and run availability checks in one flow. NameLaunchpad covers gamer tags, clan names, fantasy names, and platform handles.",
   path: "/",
   keywords: [
     "NameLaunchpad",

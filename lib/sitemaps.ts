@@ -8,6 +8,7 @@ import { getAllUsernameDatabaseRecords } from "@/lib/username-database";
 import { usernameListingSlugs } from "@/lib/username-listing-pages";
 import { intentClusterSlugs } from "@/lib/intent-clusters";
 import { comparisonIntentSlugs } from "@/lib/comparison-intents";
+import { intentTemplateSlugs } from "@/lib/intent-template-pages";
 
 export type SitemapEntry = {
   url: string;
@@ -64,6 +65,7 @@ export function getCoreSitemapEntries(): SitemapEntry[] {
     "/assets",
     "/funnel",
     "/best-clan-names-2026",
+    "/intent",
   ], "weekly", 0.8);
 }
 
@@ -82,6 +84,7 @@ export function getArticleSitemapEntries(): SitemapEntry[] {
     ...programmaticSeoSlugs.map((slug) => `/${slug}`),
     ...comparisonIntentSlugs.map((slug) => `/compare/${slug}`),
     ...intentClusterSlugs.map((slug) => `/collections/${slug}`),
+    ...intentTemplateSlugs.map((slug) => `/intent/${slug}`),
   ], "weekly", 0.75);
 }
 

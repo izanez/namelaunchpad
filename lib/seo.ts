@@ -149,18 +149,18 @@ export function createSeoMetadata({
 
 function buildGeneratorSeoTitle(entry: GeneratorDirectoryEntry) {
   if (entry.slug === "fortnite-name-generator") {
-    return "Fortnite Name Generator - Cool Fortnite Names";
+    return "Fortnite Name Generator 2026 - Clean, Sweaty, and Rare Name Ideas";
   }
 
   if (entry.slug === "gamer-tag-generator") {
-    return "NameLaunchpad - Cross-Platform Username Ideas";
+    return "Gamer Tag Generator 2026 - Cross-Platform Username Ideas";
   }
 
   if (entry.title.toLowerCase().includes("username generator")) {
-    return `${entry.title} - Unique Username Ideas`;
+    return `${entry.title} 2026 - Unique Username Ideas`;
   }
 
-  return `${entry.title} - ${siteConfig.name}`;
+  return `${entry.title} 2026 - ${siteConfig.name}`;
 }
 
 export function createGeneratorMetadata(entry: GeneratorDirectoryEntry, path: string): Metadata {

@@ -42,6 +42,7 @@ export function Footer() {
             <li><Link href="/username-database" className="hover:text-cyan-300">Username Database</Link></li>
             <li><Link href="/daily-top" className="hover:text-cyan-300">Daily Top 25</Link></li>
             <li><Link href="/compare" className="hover:text-cyan-300">Username Comparisons</Link></li>
+            <li><Link href="/intent" className="hover:text-cyan-300">Intent Pages</Link></li>
             <li><Link href="/assets" className="hover:text-cyan-300">Linkable Assets</Link></li>
             <li><Link href="/username-generator" className="hover:text-cyan-300">Username Generator</Link></li>
             <li><Link href="/roblox-username-generator" className="hover:text-cyan-300">Roblox Username Generator</Link></li>

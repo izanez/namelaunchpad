@@ -21,6 +21,8 @@ import { trackGeneratedUsernames } from "@/lib/trending-usernames";
 import { buildUnverifiedAvailability, type AvailabilityRecord } from "@/lib/username-availability";
 import { trackFunnelEvent } from "@/lib/funnel-analytics";
 import { createShareHash } from "@/lib/share-output";
+import { trackQueryInsight } from "@/lib/query-insights";
+import { createCollectionSyncToken, parseCollectionSyncToken } from "@/lib/collection-sync";
 
 const styleOptions: UsernameStyle[] = [
   "cool",
@@ -174,7 +176,7 @@ type ResultCardProps = {
   isShareOpen: boolean;
   onCopy: (value: string) => void;
   onOpenShare: (value: string | null) => void;
-  onShareAction: (platform: "copy-link" | "twitter" | "discord" | "reddit", value: string) => void;
+  onShareAction: (platform: "copy-link" | "twitter" | "discord" | "reddit" | "download-card", value: string) => void;
   onGenerateSimilar: (value: string) => void;
   onToggleFavorite: (value: string) => void;
 };
@@ -261,6 +263,13 @@ const ResultCard = memo(function ResultCard({
               className="rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-200 transition hover:bg-white/8 hover:text-cyan-200"
             >
               Discord
+            </button>
+            <button
+              type="button"
+              onClick={() => onShareAction("download-card", name)}
+              className="rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-200 transition hover:bg-white/8 hover:text-cyan-200"
+            >
+              Download card
             </button>
           </div>
         </div>
@@ -369,6 +378,11 @@ export function UsernameEngine({
   const [recentCopied, setRecentCopied] = useState<string[]>([]);
   const [resumeContext, setResumeContext] = useState<SessionContext | null>(null);
   const [availabilityNotice, setAvailabilityNotice] = useState<string | null>(null);
+  const [lastAvailabilityCheckedAt, setLastAvailabilityCheckedAt] = useState<number | null>(null);
+  const [autoCheckAfterCopy, setAutoCheckAfterCopy] = useState(true);
+  const [syncEmail, setSyncEmail] = useState("");
+  const [syncLink, setSyncLink] = useState<string | null>(null);
+  const autoCheckKey = useMemo(() => "namelaunchpad:auto-check-after-copy", []);
 
   const topResults = useMemo(() => results.slice(0, 8), [results]);
   const bottomResults = useMemo(() => results.slice(8), [results]);
@@ -400,6 +414,20 @@ export function UsernameEngine({
       }
     );
   }, [favoriteCollections, favorites]);
+  const progressState = useMemo(() => {
+    const generated = guidedStep !== "idle";
+    const copied = Boolean(lastCopiedName);
+    const checked = Boolean(lastAvailabilityCheckedAt);
+    const saved = favorites.length > 0;
+    const completed = [generated, copied, checked, saved].filter(Boolean).length;
+    return {
+      generated,
+      copied,
+      checked,
+      saved,
+      percent: Math.round((completed / 4) * 100),
+    };
+  }, [favorites.length, guidedStep, lastAvailabilityCheckedAt, lastCopiedName]);
 
   const generateBatch = useCallback(
     (existingNames: string[] = [], amount = 20) => {
@@ -474,10 +502,17 @@ export function UsernameEngine({
       trackGeneratedUsernames(names);
       trackRecentGeneratedUsernames(names);
       trackFunnelEvent("generate");
+      trackQueryInsight({
+        source: "generator",
+        keywords: [...selectedCategory.keywords, ...parseKeywords(keywordsInput)],
+        style: effectiveStyle,
+        length: effectiveLengthRange.value,
+        category,
+      });
       setRecentGenerated((current) => Array.from(new Set([...names.slice(0, 5), ...current])).slice(0, 12));
       setGuidedStep("generated");
     },
-    [generatorKey, results]
+    [category, effectiveLengthRange.value, effectiveStyle, generatorKey, keywordsInput, results, selectedCategory.keywords]
   );
 
   const generate = useCallback(() => {
@@ -517,9 +552,16 @@ export function UsernameEngine({
       trackGlobalGenerationEvent({ generatorSlug: generatorKey, amount: names.length, usernames: names });
       trackGeneratedUsernames(names);
       trackRecentGeneratedUsernames(names);
+      trackQueryInsight({
+        source: "mass",
+        keywords: [massTheme],
+        style: massStyle,
+        length: activeMassLengthRange.value,
+        category,
+      });
       setIsMassGenerating(false);
     }, 120);
-  }, [activeMassLengthRange.max, activeMassLengthRange.min, generatorKey, massStyle, massTheme]);
+  }, [activeMassLengthRange.max, activeMassLengthRange.min, activeMassLengthRange.value, category, generatorKey, massStyle, massTheme]);
 
   useEffect(() => {
     trackFunnelEvent("landing");
@@ -546,12 +588,13 @@ export function UsernameEngine({
     setAvailability(buildUnverifiedAvailability(initial));
     setTrending(pickTrendingNames(initial));
     const cached = window.localStorage.getItem(storageKey);
-    if (!cached) return;
-    try {
-      const parsed = JSON.parse(cached) as string[];
-      if (Array.isArray(parsed)) setFavorites(parsed.slice(0, 40));
-    } catch {
-      setFavorites([]);
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached) as string[];
+        if (Array.isArray(parsed)) setFavorites(parsed.slice(0, 40));
+      } catch {
+        setFavorites([]);
+      }
     }
 
     const collectionsRaw = window.localStorage.getItem(collectionsKey);
@@ -595,7 +638,10 @@ export function UsernameEngine({
         setResumeContext(null);
       }
     }
-  }, [collectionsKey, recentCopiedKey, recentGeneratedKey, sessionContextKey, storageKey]);
+
+    const autoCheckRaw = window.localStorage.getItem(autoCheckKey);
+    if (autoCheckRaw === "0") setAutoCheckAfterCopy(false);
+  }, [autoCheckKey, collectionsKey, recentCopiedKey, recentGeneratedKey, sessionContextKey, storageKey]);
 
   useEffect(() => {
     const keywordsFromUrl = searchParams.get("keywords");
@@ -625,6 +671,22 @@ export function UsernameEngine({
   }, [effectiveLengthRange.max, effectiveLengthRange.min, effectiveStyle, searchParams, selectedCategory.keywords]);
 
   useEffect(() => {
+    const restoreToken = searchParams.get("restore");
+    if (!restoreToken) return;
+    const payload = parseCollectionSyncToken(restoreToken);
+    if (!payload) {
+      setToast("Invalid restore link.");
+      window.setTimeout(() => setToast(null), 1800);
+      return;
+    }
+    setFavorites(payload.f.slice(0, 40));
+    setFavoriteCollections(payload.c as Record<string, FavoriteCollection>);
+    if (payload.e) setSyncEmail(payload.e);
+    setToast("Collections restored from magic link.");
+    window.setTimeout(() => setToast(null), 1800);
+  }, [searchParams]);
+
+  useEffect(() => {
     window.localStorage.setItem(storageKey, JSON.stringify(favorites));
   }, [favorites, storageKey]);
 
@@ -639,6 +701,10 @@ export function UsernameEngine({
   useEffect(() => {
     window.localStorage.setItem(recentCopiedKey, JSON.stringify(recentCopied));
   }, [recentCopied, recentCopiedKey]);
+
+  useEffect(() => {
+    window.localStorage.setItem(autoCheckKey, autoCheckAfterCopy ? "1" : "0");
+  }, [autoCheckAfterCopy, autoCheckKey]);
 
   useEffect(() => {
     const context: SessionContext = {
@@ -689,6 +755,7 @@ export function UsernameEngine({
             ...current,
             ...data.availability,
           }));
+          setLastAvailabilityCheckedAt(Date.now());
           trackFunnelEvent("availability");
           setGuidedStep("checked");
           setAvailabilityNotice("Availability updated. Estimated status only.");
@@ -723,11 +790,16 @@ export function UsernameEngine({
       setSelectedBaseName(value);
       setSimilarResults(similar);
       setToast("Username copied.");
+      if (autoCheckAfterCopy) {
+        window.setTimeout(() => {
+          void checkAvailability();
+        }, 300);
+      }
       window.setTimeout(() => setToast(null), 1800);
     } catch {
       setToast(null);
     }
-  }, [effectiveLengthRange.max, effectiveLengthRange.min, effectiveStyle]);
+  }, [autoCheckAfterCopy, checkAvailability, effectiveLengthRange.max, effectiveLengthRange.min, effectiveStyle]);
 
   const nextStepCard = useMemo(() => {
     if (guidedStep === "generated") {
@@ -767,7 +839,7 @@ export function UsernameEngine({
     };
   }, [guidedStep, lastCopiedName]);
 
-  const onShareAction = useCallback(async (platform: "copy-link" | "twitter" | "discord" | "reddit", value: string) => {
+  const onShareAction = useCallback(async (platform: "copy-link" | "twitter" | "discord" | "reddit" | "download-card", value: string) => {
     const shareLink = createShareLink(value);
     const encodedText = encodeURIComponent(`Check out this username: ${value}`);
     const encodedLink = encodeURIComponent(shareLink);
@@ -800,6 +872,29 @@ export function UsernameEngine({
         "_blank",
         "noopener,noreferrer"
       );
+      setActiveShareName(null);
+      return;
+    }
+
+    if (platform === "download-card") {
+      try {
+        const response = await fetch(
+          `/api/og?title=${encodeURIComponent(value)}&subtitle=${encodeURIComponent("Username pick from NameLaunchpad")}&eyebrow=Top Username&theme=listing`,
+          { cache: "no-store" }
+        );
+        if (!response.ok) throw new Error("download failed");
+        const blob = await response.blob();
+        const objectUrl = URL.createObjectURL(blob);
+        const anchor = document.createElement("a");
+        anchor.href = objectUrl;
+        anchor.download = `${value.toLowerCase()}-card.png`;
+        anchor.click();
+        URL.revokeObjectURL(objectUrl);
+        setToast("Share card downloaded.");
+      } catch {
+        setToast("Could not download share card.");
+      }
+      window.setTimeout(() => setToast(null), 1800);
       setActiveShareName(null);
       return;
     }
@@ -857,6 +952,32 @@ export function UsernameEngine({
     }
     window.setTimeout(() => setToast(null), 1800);
   }, [category, effectiveStyle, keywordsInput, results]);
+
+  const onCreateMagicLink = useCallback(async () => {
+    if (favorites.length === 0) {
+      setToast("Save at least one favorite first.");
+      window.setTimeout(() => setToast(null), 1800);
+      return;
+    }
+
+    const token = createCollectionSyncToken({
+      f: favorites,
+      c: favoriteCollections,
+      e: syncEmail.trim() || undefined,
+      t: Date.now(),
+    });
+
+    const url = typeof window === "undefined" ? `/username-generator?restore=${token}` : `${window.location.origin}/username-generator?restore=${token}`;
+    setSyncLink(url);
+
+    try {
+      await navigator.clipboard.writeText(url);
+      setToast("Magic link copied.");
+    } catch {
+      setToast("Magic link created.");
+    }
+    window.setTimeout(() => setToast(null), 1800);
+  }, [favoriteCollections, favorites, syncEmail]);
 
   const onDeleteFavorite = useCallback((value: string) => {
     setFavorites((current) => current.filter((item) => item !== value));
@@ -939,9 +1060,16 @@ export function UsernameEngine({
       trackGlobalGenerationEvent({ generatorSlug: `${generatorKey}-length-finder`, amount: names.length, usernames: names });
       trackGeneratedUsernames(names);
       trackRecentGeneratedUsernames(names);
+      trackQueryInsight({
+        source: "length-finder",
+        keywords: [...selectedCategory.keywords, ...parseKeywords(keywordsInput)],
+        style: lengthFinderStyle,
+        length: `${lengthFinderMin}-${lengthFinderMax}`,
+        category,
+      });
       setIsLengthFinding(false);
     }, 120);
-  }, [generateLengthFinderResults, generatorKey, lengthFinderMax, lengthFinderMin, lengthFinderStyle]);
+  }, [category, generateLengthFinderResults, generatorKey, keywordsInput, lengthFinderMax, lengthFinderMin, lengthFinderStyle, selectedCategory.keywords]);
 
   const applyLengthQuickFilter = useCallback(
     (min: number, max: number, finderStyle: UsernameStyle) => {
@@ -959,10 +1087,17 @@ export function UsernameEngine({
         trackGlobalGenerationEvent({ generatorSlug: `${generatorKey}-length-finder`, amount: names.length, usernames: names });
         trackGeneratedUsernames(names);
         trackRecentGeneratedUsernames(names);
+        trackQueryInsight({
+          source: "length-finder",
+          keywords: [...selectedCategory.keywords, ...parseKeywords(keywordsInput)],
+          style: finderStyle,
+          length: `${min}-${max}`,
+          category,
+        });
         setIsLengthFinding(false);
       }, 120);
     },
-    [generateLengthFinderResults, generatorKey]
+    [category, generateLengthFinderResults, generatorKey, keywordsInput, selectedCategory.keywords]
   );
 
   return (
@@ -982,6 +1117,22 @@ export function UsernameEngine({
               Generate 20 powerful usernames instantly. Mix keywords, pick style, and tune the exact name length.
             </p>
             <LiveCounter />
+
+            <div className="mt-4 rounded-xl2 border border-white/15 bg-white/5 p-4">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-300">Session Goal</p>
+                <span className="text-xs font-semibold text-cyan-200">{progressState.percent}% complete</span>
+              </div>
+              <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-slate-800/80">
+                <div className="h-full rounded-full bg-gradient-to-r from-violet-500 to-cyan-400" style={{ width: `${progressState.percent}%` }} />
+              </div>
+              <div className="mt-3 grid gap-2 sm:grid-cols-4 text-xs">
+                <span className={progressState.generated ? "text-cyan-200" : "text-slate-400"}>1. Generated</span>
+                <span className={progressState.copied ? "text-cyan-200" : "text-slate-400"}>2. Copied</span>
+                <span className={progressState.checked ? "text-cyan-200" : "text-slate-400"}>3. Checked</span>
+                <span className={progressState.saved ? "text-cyan-200" : "text-slate-400"}>4. Saved</span>
+              </div>
+            </div>
 
             {resumeContext ? (
               <div className="mt-4 rounded-xl2 border border-cyan-300/25 bg-cyan-400/10 p-4">
@@ -1129,9 +1280,23 @@ export function UsernameEngine({
                   {isGenerating ? "Generating More..." : "Generate More"}
                 </Button>
               </div>
+              <label className="mt-2 inline-flex items-center gap-2 text-xs text-slate-300">
+                <input
+                  type="checkbox"
+                  checked={autoCheckAfterCopy}
+                  onChange={(event) => setAutoCheckAfterCopy(event.target.checked)}
+                  className="h-4 w-4 rounded border-white/20 bg-slate-900/70"
+                />
+                Auto-check availability after copy
+              </label>
               <p className="mt-2 text-xs text-slate-400">
                 Availability is estimated from public profile responses and can change quickly.
               </p>
+              {lastAvailabilityCheckedAt ? (
+                <p className="mt-1 text-xs text-slate-300">
+                  Last checked: {new Date(lastAvailabilityCheckedAt).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })} (estimated)
+                </p>
+              ) : null}
               {availabilityNotice ? (
                 <p className="mt-1 text-xs text-cyan-200">{availabilityNotice}</p>
               ) : null}
@@ -1423,7 +1588,7 @@ export function UsernameEngine({
 
             <div className="mt-3 flex flex-col gap-1 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
               <span>
-                Theme: {massTheme} • Length: {activeMassLengthRange.label} ({activeMassLengthRange.description})
+                Theme: {massTheme} | Length: {activeMassLengthRange.label} ({activeMassLengthRange.description})
               </span>
               <span>Scrollable batch grid with one-click copy</span>
             </div>
@@ -1462,6 +1627,36 @@ export function UsernameEngine({
                 </div>
               ))}
             </div>
+          </Card>
+
+          <Card className="p-6">
+            <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+              <div>
+                <h2 className="text-xl font-bold text-white">Collections Sync (Magic Link)</h2>
+                <p className="mt-1 text-xs text-slate-400">
+                  Account-light sync: create a private restore link for your saved collections.
+                </p>
+              </div>
+              <span className="rounded-full border border-cyan-300/25 bg-cyan-400/10 px-3 py-1 text-xs font-semibold text-cyan-200">
+                Passwordless beta
+              </span>
+            </div>
+            <div className="mt-4 grid gap-2 md:grid-cols-[1fr_auto]">
+              <input
+                value={syncEmail}
+                onChange={(event) => setSyncEmail(event.target.value)}
+                placeholder="Email (optional, for your own tracking)"
+                className="w-full rounded-xl2 border border-white/15 bg-slate-900/65 px-4 py-3 text-sm text-slate-100 outline-none transition placeholder:text-slate-500 focus:border-cyan-300/70"
+              />
+              <Button variant="ghost" className="h-11 px-4 py-0 text-sm font-semibold" onClick={onCreateMagicLink}>
+                Create Magic Link
+              </Button>
+            </div>
+            {syncLink ? (
+              <div className="mt-3 rounded-xl border border-white/15 bg-white/5 px-3 py-2">
+                <p className="truncate text-xs text-cyan-200">{syncLink}</p>
+              </div>
+            ) : null}
           </Card>
 
           <Card className="p-6">

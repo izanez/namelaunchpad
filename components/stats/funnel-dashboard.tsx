@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { getFunnelSnapshot, type FunnelEventName } from "@/lib/funnel-analytics";
+import { getQueryInsightsSnapshot } from "@/lib/query-insights";
 
 const steps: FunnelEventName[] = ["landing", "generate", "copy", "availability", "favorite"];
 
@@ -58,10 +59,12 @@ function readReturnStats(): ReturnStats {
 export function FunnelDashboard() {
   const [snapshot, setSnapshot] = useState(() => getFunnelSnapshot());
   const [returnStats, setReturnStats] = useState<ReturnStats>({ totalVisits: 0, returnedWithin24h: 0 });
+  const [queryInsights, setQueryInsights] = useState(() => getQueryInsightsSnapshot());
 
   useEffect(() => {
     setSnapshot(getFunnelSnapshot());
     setReturnStats(readReturnStats());
+    setQueryInsights(getQueryInsightsSnapshot());
   }, []);
 
   const landingCount = snapshot.counts.landing || 1;
@@ -108,6 +111,41 @@ export function FunnelDashboard() {
         <Card className="p-5">
           <p className="text-xs uppercase tracking-wide text-cyan-300">24h Return</p>
           <p className="mt-2 text-xl font-black text-white">{formatPercent(returnRate)}</p>
+        </Card>
+      </div>
+
+      <div className="mt-6 grid gap-4 md:grid-cols-2">
+        <Card className="p-5">
+          <h2 className="text-lg font-black text-white">Top Query Tokens (7d)</h2>
+          <p className="mt-1 text-xs text-slate-400">
+            Events: {queryInsights.dailyEvents} today / {queryInsights.weeklyEvents} this week / {queryInsights.totalEvents} total
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {queryInsights.topKeywords.length === 0 ? (
+              <span className="text-xs text-slate-500">No query data yet.</span>
+            ) : (
+              queryInsights.topKeywords.map((entry) => (
+                <span key={`kw-${entry.value}`} className="rounded-full border border-cyan-300/25 bg-cyan-300/10 px-2.5 py-1 text-xs text-cyan-100">
+                  {entry.value} ({entry.count})
+                </span>
+              ))
+            )}
+          </div>
+        </Card>
+
+        <Card className="p-5">
+          <h2 className="text-lg font-black text-white">Top Styles (7d)</h2>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {queryInsights.topStyles.length === 0 ? (
+              <span className="text-xs text-slate-500">No style data yet.</span>
+            ) : (
+              queryInsights.topStyles.map((entry) => (
+                <span key={`style-${entry.value}`} className="rounded-full border border-white/15 bg-white/5 px-2.5 py-1 text-xs text-slate-200">
+                  {entry.value} ({entry.count})
+                </span>
+              ))
+            )}
+          </div>
         </Card>
       </div>
     </section>

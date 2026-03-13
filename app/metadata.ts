@@ -1,8 +1,8 @@
 export const siteConfig = {
   name: "NameLaunchpad",
   url: "https://namelaunchpad.com",
-  defaultTitle: "NameLaunchpad - Username & Gamer Tag Generator",
-  description: "Generate cool usernames for gaming, social media and streaming.",
+  defaultTitle: "NameLaunchpad 2026 - Username & Gamer Tag Generator",
+  description: "Generate usernames in seconds and check availability for gaming, social media, and streaming.",
   googleSiteVerification: process.env.GOOGLE_SITE_VERIFICATION ?? "",
 } as const;
 
