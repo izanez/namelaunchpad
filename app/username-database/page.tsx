@@ -53,7 +53,30 @@ export default function UsernameDatabasePage() {
           },
         ])}
       />
-      <UsernameDatabaseBrowser />
+      <UsernameDatabaseBrowser
+        featuredLinks={[
+          {
+            title: "Rare Usernames",
+            href: "/username-database/rare-usernames",
+            description: "Open the fixed rare-name filter page for cleaner and more premium usernames.",
+          },
+          {
+            title: "Short Usernames",
+            href: "/username-database/short-usernames",
+            description: "Browse the compact-name database page focused on short handles and OG-style names.",
+          },
+          {
+            title: "Anime Usernames",
+            href: "/username-database/anime-usernames",
+            description: "Jump into anime-focused username results and related naming pages.",
+          },
+          {
+            title: "Gaming Usernames",
+            href: "/username-database/gaming-usernames",
+            description: "Explore broader gaming-first usernames without unrelated social results.",
+          },
+        ]}
+      />
       <section className="mx-auto mt-8 w-full max-w-6xl px-4 pb-6 md:px-6">
         <SmartInternalLinks sections={internalLinkSections} />
       </section>

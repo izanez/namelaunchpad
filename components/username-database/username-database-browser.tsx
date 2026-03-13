@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import Link from "next/link";
 
 type UsernameDatabaseCategory = "gaming" | "social" | "fantasy" | "anime" | "short" | "rare" | "clan" | "duo" | "edgy" | "cute";
 type UsernameDatabaseStyle = "cool" | "aesthetic" | "dark" | "funny" | "fantasy" | "hacker" | "anime" | "streamer";
@@ -31,6 +32,17 @@ type UsernameDatabaseResponse = {
     rarities: UsernameRarity[];
     lengths: UsernameLengthBucket[];
   };
+};
+
+type BrowserBreadcrumbItem = {
+  label: string;
+  href?: string;
+};
+
+type FeaturedLink = {
+  title: string;
+  href: string;
+  description: string;
 };
 
 const PAGE_SIZE = 60;
@@ -107,12 +119,34 @@ function ToggleGroup<T extends string>({
   );
 }
 
-export function UsernameDatabaseBrowser() {
-  const [query, setQuery] = useState("");
-  const [selectedCategories, setSelectedCategories] = useState<UsernameDatabaseCategory[]>([]);
-  const [selectedStyles, setSelectedStyles] = useState<UsernameDatabaseStyle[]>([]);
-  const [selectedRarities, setSelectedRarities] = useState<UsernameRarity[]>([]);
-  const [selectedLengths, setSelectedLengths] = useState<UsernameLengthBucket[]>([]);
+export function UsernameDatabaseBrowser({
+  title = "Username Database",
+  intro,
+  breadcrumbs = [{ label: "Home", href: "/" }, { label: "Username Database" }],
+  heroEyebrow = "Database",
+  initialQuery = "",
+  initialCategories = [],
+  initialStyles = [],
+  initialRarities = [],
+  initialLengths = [],
+  featuredLinks = [],
+}: {
+  title?: string;
+  intro?: string;
+  breadcrumbs?: BrowserBreadcrumbItem[];
+  heroEyebrow?: string;
+  initialQuery?: string;
+  initialCategories?: UsernameDatabaseCategory[];
+  initialStyles?: UsernameDatabaseStyle[];
+  initialRarities?: UsernameRarity[];
+  initialLengths?: UsernameLengthBucket[];
+  featuredLinks?: FeaturedLink[];
+}) {
+  const [query, setQuery] = useState(initialQuery);
+  const [selectedCategories, setSelectedCategories] = useState<UsernameDatabaseCategory[]>(initialCategories);
+  const [selectedStyles, setSelectedStyles] = useState<UsernameDatabaseStyle[]>(initialStyles);
+  const [selectedRarities, setSelectedRarities] = useState<UsernameRarity[]>(initialRarities);
+  const [selectedLengths, setSelectedLengths] = useState<UsernameLengthBucket[]>(initialLengths);
   const [items, setItems] = useState<UsernameRecord[]>([]);
   const [total, setTotal] = useState(0);
   const [databaseTotal, setDatabaseTotal] = useState(0);
@@ -182,11 +216,11 @@ export function UsernameDatabaseBrowser() {
   };
 
   const clearFilters = () => {
-    setQuery("");
-    setSelectedCategories([]);
-    setSelectedStyles([]);
-    setSelectedRarities([]);
-    setSelectedLengths([]);
+    setQuery(initialQuery);
+    setSelectedCategories(initialCategories);
+    setSelectedStyles(initialStyles);
+    setSelectedRarities(initialRarities);
+    setSelectedLengths(initialLengths);
   };
 
   const onCopy = async (name: string) => {
@@ -200,6 +234,10 @@ export function UsernameDatabaseBrowser() {
     [selectedCategories.length, selectedLengths.length, selectedRarities.length, selectedStyles.length]
   );
 
+  const heroDescription =
+    intro ??
+    `Search more than ${databaseTotal.toLocaleString("en-US")} programmatically generated usernames across style, category, rarity, and length filters.`;
+
   const facetValues = facets ?? {
     total: 0,
     categories: Object.keys(categoryLabels) as UsernameDatabaseCategory[],
@@ -210,19 +248,31 @@ export function UsernameDatabaseBrowser() {
 
   return (
     <section className="mx-auto w-full max-w-6xl animate-fadeUp px-4 py-10 md:px-6">
-      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Username Database" }]} />
+      <Breadcrumbs items={breadcrumbs} />
 
       <Card className="overflow-hidden p-0">
         <div className="bg-gradient-to-r from-cyan-500/18 via-blue-500/14 to-purple-500/18 p-6 md:p-8">
-          <p className="text-sm font-semibold uppercase tracking-[0.22em] text-cyan-200">Database</p>
-          <h1 className="mt-3 text-3xl font-black text-white md:text-4xl">Username Database</h1>
-          <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">
-            Search more than {databaseTotal.toLocaleString("en-US")} programmatically generated usernames across style,
-            category, rarity, and length filters.
-          </p>
+          <p className="text-sm font-semibold uppercase tracking-[0.22em] text-cyan-200">{heroEyebrow}</p>
+          <h1 className="mt-3 text-3xl font-black text-white md:text-4xl">{title}</h1>
+          <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">{heroDescription}</p>
         </div>
 
         <div className="p-6 md:p-8">
+          {featuredLinks.length > 0 ? (
+            <div className="mb-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+              {featuredLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="rounded-3xl border border-white/10 bg-white/5 p-5 transition hover:border-cyan-300/30"
+                >
+                  <h2 className="text-base font-semibold text-white">{link.title}</h2>
+                  <p className="mt-3 text-sm leading-7 text-slate-300">{link.description}</p>
+                </Link>
+              ))}
+            </div>
+          ) : null}
+
           <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto]">
             <input
               value={query}

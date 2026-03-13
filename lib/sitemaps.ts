@@ -1,10 +1,10 @@
 import { absoluteUrl } from "@/app/metadata";
 import { blogArticleSlugs } from "@/lib/blog-articles";
 import { blogCategorySlugs } from "@/lib/blog-hub";
+import { usernameDatabasePageSlugs } from "@/lib/username-database-pages";
 import { generatorCategories, generatorDatabase, generatorSlugs } from "@/lib/generators";
 import { programmaticSeoSlugs } from "@/lib/programmatic-seo-pages";
 import { usernameListingSlugs } from "@/lib/username-listing-pages";
-import type { UsernameDatabaseCategory, UsernameDatabaseStyle, UsernameLengthBucket, UsernameRarity } from "@/lib/username-database";
 
 export type SitemapEntry = {
   url: string;
@@ -27,10 +27,6 @@ const directGeneratorPageSlugs = new Set([
   "og-username-finder",
 ]);
 
-const databaseCategories: UsernameDatabaseCategory[] = ["gaming", "social", "fantasy", "anime", "short", "rare", "clan", "duo", "edgy", "cute"];
-const databaseStyles: UsernameDatabaseStyle[] = ["cool", "aesthetic", "dark", "funny", "fantasy", "hacker", "anime", "streamer"];
-const databaseRarities: UsernameRarity[] = ["common", "rare", "epic", "legendary"];
-const databaseLengths: UsernameLengthBucket[] = ["short", "medium", "long"];
 const now = new Date().toISOString();
 
 function makeEntries(paths: string[], changeFrequency: SitemapEntry["changeFrequency"], priority: number) {
@@ -89,19 +85,7 @@ export function getCategorySitemapEntries(): SitemapEntry[] {
 }
 
 export function getDatabaseSitemapEntries(): SitemapEntry[] {
-  const queryPaths = [
-    ...databaseCategories.map((category) => `/username-database?categories=${category}`),
-    ...databaseStyles.map((style) => `/username-database?styles=${style}`),
-    ...databaseRarities.map((rarity) => `/username-database?rarities=${rarity}`),
-    ...databaseLengths.map((length) => `/username-database?lengths=${length}`),
-    "/username-database?categories=anime&styles=anime",
-    "/username-database?categories=rare&rarities=legendary",
-    "/username-database?categories=short&lengths=short",
-    "/username-database?categories=gaming&styles=cool",
-    "/username-database?categories=social&styles=streamer",
-  ];
-
-  return makeEntries(queryPaths, "weekly", 0.65);
+  return makeEntries(usernameDatabasePageSlugs.map((slug) => `/username-database/${slug}`), "weekly", 0.68);
 }
 
 export function getSitemapIndexEntries() {

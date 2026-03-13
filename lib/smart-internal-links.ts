@@ -1,6 +1,7 @@
 import { blogCategorySummaries, blogArticleSummaries } from "@/lib/blog-hub";
 import { generatorCategories, generatorDatabase, type GeneratorDirectoryEntry } from "@/lib/generators";
 import { programmaticSeoPages } from "@/lib/programmatic-seo-pages";
+import { usernameDatabasePages } from "@/lib/username-database-pages";
 import { usernameListingPages } from "@/lib/username-listing-pages";
 
 type LinkKind = "generator" | "article" | "listing" | "category" | "database";
@@ -100,6 +101,22 @@ const listingCandidates: Candidate[] = usernameListingPages.map((page) => ({
   tokens: uniq([...tokenize(page.slug), ...tokenize(page.title), ...page.generator.keywords.flatMap(tokenize)]),
 }));
 
+const databasePageCandidates: Candidate[] = usernameDatabasePages.map((page) => ({
+  href: `/username-database/${page.slug}`,
+  label: page.title,
+  description: page.description,
+  kind: "database",
+  tokens: uniq([
+    ...tokenize(page.slug),
+    ...tokenize(page.title),
+    ...page.keywords.flatMap(tokenize),
+    ...(page.categories ?? []).flatMap(tokenize),
+    ...(page.styles ?? []).flatMap(tokenize),
+    ...(page.rarities ?? []).flatMap(tokenize),
+    ...(page.lengths ?? []).flatMap(tokenize),
+  ]),
+}));
+
 const generatorCategoryCandidates: Candidate[] = generatorCategories.map((category) => ({
   href: `/category/${category.slug}`,
   label: `${category.title} Generators`,
@@ -121,6 +138,7 @@ const allCandidates: Candidate[] = [
   ...blogCandidates,
   ...seoPageCandidates,
   ...listingCandidates,
+  ...databasePageCandidates,
   ...generatorCategoryCandidates,
   ...articleCategoryCandidates,
   ...databaseTargets,
