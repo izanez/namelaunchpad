@@ -191,15 +191,15 @@ const ResultCard = memo(function ResultCard({
   onToggleFavorite,
 }: ResultCardProps) {
   return (
-    <Card className="relative p-4">
+    <Card className="relative h-full p-4 md:p-5">
       <button
         type="button"
         onClick={() => onGenerateSimilar(name)}
-        className="break-words text-left text-sm font-semibold text-slate-100 transition hover:text-cyan-200"
+        className="break-words text-left text-base font-bold leading-tight text-slate-100 transition hover:text-cyan-200"
       >
         {name}
       </button>
-      <div className="mt-3 space-y-1">
+      <div className="mt-3 space-y-1.5">
         {platforms.map((platform) => {
           const status = availability?.[platform] ?? "Unavailable";
           const statusClass =
@@ -209,56 +209,56 @@ const ResultCard = memo(function ResultCard({
                 ? "border-amber-300/35 bg-amber-400/10 text-amber-200"
                 : "border-rose-300/30 bg-rose-500/10 text-rose-200";
           return (
-            <div key={`${name}-${platform}`} className="flex items-center justify-between text-xs">
-              <span className="text-slate-400">{platform}</span>
-              <span className={`rounded-full border px-2 py-0.5 ${statusClass}`}>{status}</span>
+            <div key={`${name}-${platform}`} className="flex items-center justify-between text-[11px]">
+              <span className="font-medium text-slate-400">{platform}</span>
+              <span className={`rounded-full border px-2.5 py-1 font-semibold leading-none ${statusClass}`}>{status}</span>
             </div>
           );
         })}
       </div>
-      <div className="mt-3 grid grid-cols-3 gap-2">
-        <Button variant="ghost" className="px-2 py-2 text-xs" onClick={() => onCopy(name)}>
+      <div className="mt-4 grid grid-cols-3 gap-2">
+        <Button variant="ghost" className="h-9 px-2 py-0 text-xs font-semibold" onClick={() => onCopy(name)}>
           Copy
         </Button>
-        <Button variant="ghost" className="px-2 py-2 text-xs" onClick={() => onToggleFavorite(name)}>
+        <Button variant="ghost" className="h-9 px-2 py-0 text-xs font-semibold" onClick={() => onToggleFavorite(name)}>
           {favorite ? "Saved" : "Save"}
         </Button>
         <Button
           variant="ghost"
-          className="px-2 py-2 text-xs"
+          className="h-9 px-2 py-0 text-xs font-semibold"
           onClick={() => onOpenShare(isShareOpen ? null : name)}
         >
           Share
         </Button>
       </div>
       {isShareOpen ? (
-        <div className="absolute right-4 top-[calc(100%-0.5rem)] z-20 w-44 rounded-xl2 border border-white/15 bg-slate-950/95 p-2 shadow-neon backdrop-blur-xl">
+        <div className="absolute right-4 top-[calc(100%-0.25rem)] z-20 w-44 rounded-xl2 border border-white/15 bg-slate-950/95 p-2 shadow-neon backdrop-blur-xl">
           <div className="grid gap-1">
             <button
               type="button"
               onClick={() => onShareAction("copy-link", name)}
-              className="rounded-lg px-3 py-2 text-left text-xs text-slate-200 transition hover:bg-white/8 hover:text-cyan-200"
+              className="rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-200 transition hover:bg-white/8 hover:text-cyan-200"
             >
               Copy link
             </button>
             <button
               type="button"
               onClick={() => onShareAction("twitter", name)}
-              className="rounded-lg px-3 py-2 text-left text-xs text-slate-200 transition hover:bg-white/8 hover:text-cyan-200"
+              className="rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-200 transition hover:bg-white/8 hover:text-cyan-200"
             >
               Twitter
             </button>
             <button
               type="button"
               onClick={() => onShareAction("reddit", name)}
-              className="rounded-lg px-3 py-2 text-left text-xs text-slate-200 transition hover:bg-white/8 hover:text-cyan-200"
+              className="rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-200 transition hover:bg-white/8 hover:text-cyan-200"
             >
               Reddit
             </button>
             <button
               type="button"
               onClick={() => onShareAction("discord", name)}
-              className="rounded-lg px-3 py-2 text-left text-xs text-slate-200 transition hover:bg-white/8 hover:text-cyan-200"
+              className="rounded-lg px-3 py-2 text-left text-xs font-medium text-slate-200 transition hover:bg-white/8 hover:text-cyan-200"
             >
               Discord
             </button>
@@ -1125,14 +1125,14 @@ export function UsernameEngine({
               </span>
             </div>
 
-            <div className="mt-4 rounded-xl2 border border-cyan-300/25 bg-cyan-400/10 p-4">
+            <div className="mt-4 rounded-xl2 border border-cyan-300/25 bg-cyan-400/10 p-4 md:p-5">
               <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                 <div>
-                  <p className="text-sm font-semibold text-cyan-100">{nextStepCard.title}</p>
-                  <p className="mt-1 text-xs text-slate-300">{nextStepCard.description}</p>
+                  <p className="text-sm font-bold text-cyan-100">{nextStepCard.title}</p>
+                  <p className="mt-1 text-sm leading-6 text-slate-300">{nextStepCard.description}</p>
                 </div>
                 <Link href={nextStepCard.href}>
-                  <Button variant="ghost" className="px-3 py-2 text-xs">
+                  <Button variant="ghost" className="h-10 px-4 py-0 text-xs font-semibold">
                     {nextStepCard.cta}
                   </Button>
                 </Link>
@@ -1143,7 +1143,7 @@ export function UsernameEngine({
               <LoadingGrid count={8} detailed />
             ) : (
               <>
-                <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                   {topResults.map((name) => (
                     <ResultCard
                       key={name}
@@ -1162,7 +1162,7 @@ export function UsernameEngine({
 
                 <AdSlot slot="between-results" className="mt-6" />
 
-                <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                   {bottomResults.map((name) => (
                     <ResultCard
                       key={name}
@@ -1500,19 +1500,19 @@ export function UsernameEngine({
         </div>
       ) : null}
 
-      <div className="fixed bottom-3 left-1/2 z-40 w-[calc(100%-1.5rem)] max-w-3xl -translate-x-1/2 rounded-2xl border border-white/15 bg-slate-950/92 p-2 shadow-neon backdrop-blur-xl md:hidden">
+      <div className="fixed bottom-3 left-1/2 z-40 w-[calc(100%-1.5rem)] max-w-3xl -translate-x-1/2 rounded-2xl border border-white/15 bg-slate-950/92 p-2.5 shadow-neon backdrop-blur-xl md:hidden">
         <div className="grid grid-cols-3 gap-2">
           <Button
             onClick={generate}
             disabled={isGenerating}
-            className={`px-3 py-2 text-xs ${guidedStep === "generated" ? "ring-2 ring-cyan-300/60" : ""}`}
+            className={`h-10 px-3 py-0 text-xs font-semibold ${guidedStep === "generated" ? "ring-2 ring-cyan-300/60" : ""}`}
           >
             {isGenerating ? "Generating..." : "1. Generate"}
           </Button>
           <Link href="#results" className="block">
             <Button
               variant="ghost"
-              className={`w-full px-3 py-2 text-xs ${guidedStep === "copied" ? "ring-2 ring-cyan-300/60" : ""}`}
+              className={`h-10 w-full px-3 py-0 text-xs font-semibold ${guidedStep === "copied" ? "ring-2 ring-cyan-300/60" : ""}`}
             >
               2. Copy
             </Button>
@@ -1521,7 +1521,7 @@ export function UsernameEngine({
             variant="ghost"
             onClick={checkAvailability}
             disabled={isCheckingAvailability || results.length === 0}
-            className={`px-3 py-2 text-xs ${guidedStep === "checked" ? "ring-2 ring-cyan-300/60" : ""}`}
+            className={`h-10 px-3 py-0 text-xs font-semibold ${guidedStep === "checked" ? "ring-2 ring-cyan-300/60" : ""}`}
           >
             {isCheckingAvailability ? "Checking..." : "3. Check"}
           </Button>
