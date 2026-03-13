@@ -216,16 +216,16 @@ const ResultCard = memo(function ResultCard({
           );
         })}
       </div>
-      <div className="mt-3 flex flex-col gap-2 sm:flex-row">
-        <Button variant="ghost" className="px-3 py-2 text-xs" onClick={() => onCopy(name)}>
-          Copy Username
+      <div className="mt-3 grid grid-cols-3 gap-2">
+        <Button variant="ghost" className="px-2 py-2 text-xs" onClick={() => onCopy(name)}>
+          Copy
         </Button>
-        <Button variant="ghost" className="px-3 py-2 text-xs" onClick={() => onToggleFavorite(name)}>
-          {favorite ? "Favorited" : "Favorite"}
+        <Button variant="ghost" className="px-2 py-2 text-xs" onClick={() => onToggleFavorite(name)}>
+          {favorite ? "Saved" : "Save"}
         </Button>
         <Button
           variant="ghost"
-          className="px-3 py-2 text-xs"
+          className="px-2 py-2 text-xs"
           onClick={() => onOpenShare(isShareOpen ? null : name)}
         >
           Share
@@ -945,7 +945,7 @@ export function UsernameEngine({
   );
 
   return (
-    <section className="generator-shell mx-auto w-full max-w-6xl animate-fadeUp px-4 py-10 md:px-6">
+    <section className="generator-shell mx-auto w-full max-w-6xl animate-fadeUp px-4 pb-28 pt-10 md:px-6 md:pb-10">
       <AdSlot slot="top-banner" className="mb-7" />
 
       <div className="grid gap-7 xl:grid-cols-[minmax(0,1fr)_300px]">
@@ -1500,7 +1500,7 @@ export function UsernameEngine({
         </div>
       ) : null}
 
-      <div className="fixed bottom-3 left-1/2 z-40 w-[calc(100%-1.5rem)] max-w-3xl -translate-x-1/2 rounded-2xl border border-white/15 bg-slate-950/92 p-2 shadow-neon backdrop-blur-xl">
+      <div className="fixed bottom-3 left-1/2 z-40 w-[calc(100%-1.5rem)] max-w-3xl -translate-x-1/2 rounded-2xl border border-white/15 bg-slate-950/92 p-2 shadow-neon backdrop-blur-xl md:hidden">
         <div className="grid grid-cols-3 gap-2">
           <Button
             onClick={generate}
