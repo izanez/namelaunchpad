@@ -54,6 +54,11 @@ export function Footer() {
           <ul className="mt-2 space-y-1 text-sm text-slate-400">
             <li><Link href="/privacy-terms" className="hover:text-cyan-300">Privacy / Terms</Link></li>
             <li><Link href="/about" className="hover:text-cyan-300">About</Link></li>
+            <li>
+              <a href="mailto:whatduhaben@gmail.com" className="hover:text-cyan-300">
+                Contact: whatduhaben@gmail.com
+              </a>
+            </li>
           </ul>
         </div>
       </div>

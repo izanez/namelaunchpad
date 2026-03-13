@@ -23,8 +23,13 @@ export default function AboutPage() {
           Whether you need a new identity for Fortnite, Roblox, RPG adventures, or your next clan, our tools help you
           discover names that are unique, memorable, and ready for your profile.
         </p>
+        <p className="mt-4 text-sm text-slate-300">
+          Contact:{" "}
+          <a href="mailto:whatduhaben@gmail.com" className="font-semibold text-cyan-300 hover:text-cyan-200">
+            whatduhaben@gmail.com
+          </a>
+        </p>
       </Card>
     </section>
   );
 }
-
