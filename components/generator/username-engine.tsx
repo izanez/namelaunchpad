@@ -277,9 +277,9 @@ const MassResultCard = memo(function MassResultCard({
   onCopy: (value: string) => void;
 }) {
   return (
-    <Card className="p-3">
-      <p className="break-words text-sm font-semibold text-slate-100">{name}</p>
-      <Button variant="ghost" className="mt-3 w-full px-3 py-2 text-xs" onClick={() => onCopy(name)}>
+    <Card className="p-4">
+      <p className="break-words text-sm font-semibold leading-5 text-slate-100">{name}</p>
+      <Button variant="ghost" className="mt-3 h-10 w-full px-3 py-0 text-xs font-semibold" onClick={() => onCopy(name)}>
         Copy Username
       </Button>
     </Card>
@@ -1311,7 +1311,7 @@ export function UsernameEngine({
               ))}
             </div>
 
-            <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-4 grid gap-2 sm:grid-cols-2">
               <Button onClick={runLengthFinder} disabled={isLengthFinding} className="sm:min-w-52">
                 {isLengthFinding ? "Finding..." : "Find Usernames"}
               </Button>
@@ -1341,15 +1341,15 @@ export function UsernameEngine({
             )}
           </Card>
 
-          <Card className="p-6">
-            <div className="flex items-center justify-between gap-3">
+          <Card className="p-5 md:p-6">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <h2 className="text-xl font-bold text-white">Mass Username Generator</h2>
-                <p className="mt-2 text-sm text-slate-400">
+                <h2 className="text-xl font-black text-white md:text-2xl">Mass Username Generator</h2>
+                <p className="mt-1.5 text-sm leading-6 text-slate-400">
                   Generate 100 usernames at once with a focused style, target length, and theme.
                 </p>
               </div>
-              <span className="rounded-full border border-cyan-300/25 bg-cyan-400/10 px-3 py-1 text-xs font-semibold text-cyan-200">
+              <span className="w-fit rounded-full border border-cyan-300/25 bg-cyan-400/10 px-3 py-1 text-xs font-semibold text-cyan-200">
                 100 names
               </span>
             </div>
@@ -1394,7 +1394,7 @@ export function UsernameEngine({
                     key={`mass-${option.value}`}
                     type="button"
                     onClick={() => setMassLengthFilter(option.value)}
-                    className={`rounded-xl border px-3 py-2 text-left transition ${
+                    className={`rounded-xl border px-3 py-2.5 text-left transition ${
                       massLengthFilter === option.value
                         ? "border-cyan-300/60 bg-cyan-300/12 text-cyan-100"
                         : "border-white/10 bg-white/5 text-slate-300 hover:border-cyan-300/35 hover:text-white"
@@ -1407,21 +1407,21 @@ export function UsernameEngine({
               </div>
             </div>
 
-            <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-              <Button onClick={generateMassUsernames} disabled={isMassGenerating} className="sm:min-w-52">
+            <div className="mt-4 grid gap-2 sm:grid-cols-2">
+              <Button onClick={generateMassUsernames} disabled={isMassGenerating} className="h-11 w-full px-4 py-0 text-sm font-semibold">
                 {isMassGenerating ? "Generating 100..." : "Generate 100 Usernames"}
               </Button>
               <Button
                 variant="ghost"
                 onClick={generateMassUsernames}
                 disabled={isMassGenerating}
-                className="sm:min-w-52"
+                className="h-11 w-full px-4 py-0 text-sm font-semibold"
               >
                 {isMassGenerating ? "Refreshing..." : "Regenerate Batch"}
               </Button>
             </div>
 
-            <div className="mt-4 flex items-center justify-between text-xs text-slate-400">
+            <div className="mt-3 flex flex-col gap-1 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
               <span>
                 Theme: {massTheme} • Length: {activeMassLengthRange.label} ({activeMassLengthRange.description})
               </span>
@@ -1433,7 +1433,7 @@ export function UsernameEngine({
                 <LoadingGrid count={12} />
               </div>
             ) : (
-              <div className="mt-5 max-h-[40rem] overflow-y-auto rounded-[28px] border border-white/10 bg-slate-950/35 p-3 content-auto">
+              <div className="mt-4 max-h-[40rem] overflow-y-auto rounded-[24px] border border-white/10 bg-slate-950/35 p-3 content-auto">
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                   {massResults.map((name) => (
                     <MassResultCard key={`mass-${name}`} name={name} onCopy={onCopy} />
