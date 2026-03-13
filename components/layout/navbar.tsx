@@ -4,6 +4,8 @@ import { Logo } from "@/components/layout/logo";
 const links = [
   { href: "/explore-generators", label: "Explore" },
   { href: "/blog", label: "Blog" },
+  { href: "/daily-top", label: "Daily" },
+  { href: "/compare", label: "Compare" },
   { href: "/guides", label: "Guides" },
   { href: "/articles", label: "Articles" },
   { href: "/all-generators", label: "Generators" },

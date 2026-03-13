@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start --port 3029",
     "lint": "next lint",
-    "verify": "npm run lint && npm run build"
+    "verify": "npm run lint && npm run build",
+    "release:gate": "node scripts/release-gate.mjs",
+    "release:check": "node scripts/release-check.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.0",

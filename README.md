@@ -40,10 +40,10 @@ npm run start
 Before every push/deploy run:
 
 ```bash
-npm run verify
+npm run release:check
 ```
 
-This runs lint + production build and catches most regressions early.
+This runs lint + production build, then a release gate for canonical, robots/sitemap reference, icon/manifest prerequisites, and noindex traps.
 
 ## Environment variables
 

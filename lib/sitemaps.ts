@@ -6,6 +6,8 @@ import { generatorCategories, generatorDatabase, generatorSlugs } from "@/lib/ge
 import { programmaticSeoSlugs } from "@/lib/programmatic-seo-pages";
 import { getAllUsernameDatabaseRecords } from "@/lib/username-database";
 import { usernameListingSlugs } from "@/lib/username-listing-pages";
+import { intentClusterSlugs } from "@/lib/intent-clusters";
+import { comparisonIntentSlugs } from "@/lib/comparison-intents";
 
 export type SitemapEntry = {
   url: string;
@@ -55,6 +57,13 @@ export function getCoreSitemapEntries(): SitemapEntry[] {
     "/blog",
     "/guides",
     "/articles",
+    "/collections",
+    "/community",
+    "/compare",
+    "/daily-top",
+    "/assets",
+    "/funnel",
+    "/best-clan-names-2026",
   ], "weekly", 0.8);
 }
 
@@ -71,6 +80,8 @@ export function getArticleSitemapEntries(): SitemapEntry[] {
   return makeEntries([
     ...blogArticleSlugs.map((slug) => `/blog/${slug}`),
     ...programmaticSeoSlugs.map((slug) => `/${slug}`),
+    ...comparisonIntentSlugs.map((slug) => `/compare/${slug}`),
+    ...intentClusterSlugs.map((slug) => `/collections/${slug}`),
   ], "weekly", 0.75);
 }
 
