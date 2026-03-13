@@ -18,12 +18,12 @@ export default function ImpressumPage() {
           Angaben gemaess Paragraph 5 TMG.
         </p>
         <div className="rounded-xl2 border border-white/10 bg-white/5 p-4">
-          <p className="text-sm text-slate-200">NameLaunchpad</p>
+          <p className="text-sm text-slate-200">Olgica Damjanovic</p>
+          <p className="mt-1 text-sm text-slate-300">Dunavska ulica 3</p>
+          <p className="mt-1 text-sm text-slate-300">21101 Novi Sad</p>
+          <p className="mt-1 text-sm text-slate-300">Serbia</p>
           <p className="mt-1 text-sm text-slate-300">Kontakt: whatduhaben@gmail.com</p>
         </div>
-        <p className="text-sm leading-7 text-slate-400">
-          Hinweis: Bitte ergaenze bei Bedarf deine vollstaendigen Pflichtangaben (Name/Firma, ladungsfaehige Anschrift, Vertretungsberechtigte), falls diese fuer deinen Standort erforderlich sind.
-        </p>
       </Card>
     </section>
   );
