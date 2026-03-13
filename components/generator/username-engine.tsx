@@ -174,11 +174,13 @@ type ResultCardProps = {
   favorite: boolean;
   availability?: AvailabilityRecord;
   isShareOpen: boolean;
+  isSelectedForCheck: boolean;
   onCopy: (value: string) => void;
   onOpenShare: (value: string | null) => void;
   onShareAction: (platform: "copy-link" | "twitter" | "discord" | "reddit" | "download-card", value: string) => void;
   onGenerateSimilar: (value: string) => void;
   onToggleFavorite: (value: string) => void;
+  onSelectForCheck: (value: string) => void;
 };
 
 const ResultCard = memo(function ResultCard({
@@ -186,11 +188,13 @@ const ResultCard = memo(function ResultCard({
   favorite,
   availability,
   isShareOpen,
+  isSelectedForCheck,
   onCopy,
   onOpenShare,
   onShareAction,
   onGenerateSimilar,
   onToggleFavorite,
+  onSelectForCheck,
 }: ResultCardProps) {
   return (
     <Card className="relative h-full p-4 md:p-5">
@@ -201,6 +205,14 @@ const ResultCard = memo(function ResultCard({
       >
         {name}
       </button>
+      <div className="mt-2 flex items-center justify-between">
+        <span className={`text-[11px] font-semibold ${isSelectedForCheck ? "text-cyan-200" : "text-slate-500"}`}>
+          {isSelectedForCheck ? "Selected for check" : "Not selected"}
+        </span>
+        <Button variant="ghost" className="h-7 px-2 py-0 text-[11px] font-semibold" onClick={() => onSelectForCheck(name)}>
+          {isSelectedForCheck ? "Selected" : "Select"}
+        </Button>
+      </div>
       <div className="mt-3 space-y-1.5">
         {platforms.map((platform) => {
           const status = availability?.[platform] ?? "Unavailable";
@@ -368,6 +380,7 @@ export function UsernameEngine({
   const [isMassGenerating, setIsMassGenerating] = useState(false);
   const [guidedStep, setGuidedStep] = useState<GuidedStep>("idle");
   const [lastCopiedName, setLastCopiedName] = useState<string | null>(null);
+  const [selectedAvailabilityName, setSelectedAvailabilityName] = useState<string | null>(null);
   const storageKey = useMemo(() => "namelaunchpad:favorites:username-engine", []);
   const collectionsKey = useMemo(() => "namelaunchpad:favorites:collections", []);
   const recentGeneratedKey = useMemo(() => "namelaunchpad:recent-generated", []);
@@ -428,6 +441,7 @@ export function UsernameEngine({
       percent: Math.round((completed / 4) * 100),
     };
   }, [favorites.length, guidedStep, lastAvailabilityCheckedAt, lastCopiedName]);
+  const currentAvailabilityTarget = selectedAvailabilityName ?? lastCopiedName;
 
   const generateBatch = useCallback(
     (existingNames: string[] = [], amount = 20) => {
@@ -726,11 +740,28 @@ export function UsernameEngine({
     return () => window.clearInterval(interval);
   }, [results]);
 
-  const checkAvailability = useCallback(() => {
-    if (results.length === 0) return;
+  useEffect(() => {
+    if (results.length === 0) {
+      setSelectedAvailabilityName(null);
+      return;
+    }
+
+    setSelectedAvailabilityName((current) => {
+      if (current && results.includes(current)) return current;
+      return results[0] ?? null;
+    });
+  }, [results]);
+
+  const checkAvailability = useCallback((targetName?: string) => {
+    const usernameToCheck = targetName ?? selectedAvailabilityName ?? lastCopiedName;
+    if (!usernameToCheck) {
+      setToast("Select one username first.");
+      window.setTimeout(() => setToast(null), 1800);
+      return;
+    }
 
     setIsCheckingAvailability(true);
-    setAvailabilityNotice("Checking availability. Results are estimated from public profile responses.");
+    setAvailabilityNotice(`Checking availability for ${usernameToCheck}. Estimated from public profile responses.`);
 
     void fetch("/api/check-username-availability", {
       method: "POST",
@@ -738,7 +769,7 @@ export function UsernameEngine({
         "content-type": "application/json",
       },
       body: JSON.stringify({
-        usernames: results.slice(0, 20),
+        usernames: [usernameToCheck],
       }),
     })
       .then(async (response) => {
@@ -758,8 +789,8 @@ export function UsernameEngine({
           setLastAvailabilityCheckedAt(Date.now());
           trackFunnelEvent("availability");
           setGuidedStep("checked");
-          setAvailabilityNotice("Availability updated. Estimated status only.");
-          setToast("Availability updated.");
+          setAvailabilityNotice(`${usernameToCheck}: availability updated (estimated).`);
+          setToast(`Availability checked for ${usernameToCheck}.`);
           window.setTimeout(() => setToast(null), 1800);
         }
       })
@@ -771,13 +802,14 @@ export function UsernameEngine({
       .finally(() => {
         setIsCheckingAvailability(false);
       });
-  }, [results]);
+  }, [lastCopiedName, selectedAvailabilityName]);
 
   const onCopy = useCallback(async (value: string) => {
     try {
       await navigator.clipboard.writeText(value);
       setGuidedStep("copied");
       setLastCopiedName(value);
+      setSelectedAvailabilityName(value);
       trackFunnelEvent("copy");
       setRecentCopied((current) => Array.from(new Set([value, ...current])).slice(0, 12));
       const similar = generateSimilarUsernames({
@@ -792,7 +824,7 @@ export function UsernameEngine({
       setToast("Username copied.");
       if (autoCheckAfterCopy) {
         window.setTimeout(() => {
-          void checkAvailability();
+          void checkAvailability(value);
         }, 300);
       }
       window.setTimeout(() => setToast(null), 1800);
@@ -930,6 +962,12 @@ export function UsernameEngine({
       }
       return next;
     });
+  }, []);
+
+  const onSelectForAvailability = useCallback((value: string) => {
+    setSelectedAvailabilityName(value);
+    setToast(`${value} selected for availability check.`);
+    window.setTimeout(() => setToast(null), 1400);
   }, []);
 
   const onShareList = useCallback(async () => {
@@ -1270,11 +1308,11 @@ export function UsernameEngine({
               <div className="flex flex-col gap-3 md:flex-row">
                 <Button
                   variant="ghost"
-                  onClick={checkAvailability}
-                  disabled={isGenerating || isCheckingAvailability}
+                  onClick={() => checkAvailability()}
+                  disabled={isGenerating || isCheckingAvailability || !currentAvailabilityTarget}
                   className="w-full md:w-auto"
                 >
-                  {isCheckingAvailability ? "Checking..." : "Check Availability"}
+                  {isCheckingAvailability ? "Checking..." : "Check Selected Availability"}
                 </Button>
                 <Button onClick={generateMore} disabled={isGenerating} className="w-full md:w-auto">
                   {isGenerating ? "Generating More..." : "Generate More"}
@@ -1291,6 +1329,9 @@ export function UsernameEngine({
               </label>
               <p className="mt-2 text-xs text-slate-400">
                 Availability is estimated from public profile responses and can change quickly.
+              </p>
+              <p className="mt-1 text-xs text-slate-300">
+                Selected: {currentAvailabilityTarget ?? "None"}
               </p>
               {lastAvailabilityCheckedAt ? (
                 <p className="mt-1 text-xs text-slate-300">
@@ -1340,11 +1381,13 @@ export function UsernameEngine({
                       favorite={favorites.includes(name)}
                       availability={availability[name]}
                       isShareOpen={activeShareName === name}
+                      isSelectedForCheck={selectedAvailabilityName === name}
                       onCopy={onCopy}
                       onOpenShare={setActiveShareName}
                       onShareAction={onShareAction}
                       onGenerateSimilar={onGenerateSimilar}
                       onToggleFavorite={onToggleFavorite}
+                      onSelectForCheck={onSelectForAvailability}
                     />
                   ))}
                 </div>
@@ -1357,11 +1400,13 @@ export function UsernameEngine({
                       favorite={favorites.includes(name)}
                       availability={availability[name]}
                       isShareOpen={activeShareName === name}
+                      isSelectedForCheck={selectedAvailabilityName === name}
                       onCopy={onCopy}
                       onOpenShare={setActiveShareName}
                       onShareAction={onShareAction}
                       onGenerateSimilar={onGenerateSimilar}
                       onToggleFavorite={onToggleFavorite}
+                      onSelectForCheck={onSelectForAvailability}
                     />
                   ))}
                 </div>
@@ -1739,8 +1784,8 @@ export function UsernameEngine({
           </Link>
           <Button
             variant="ghost"
-            onClick={checkAvailability}
-            disabled={isCheckingAvailability || results.length === 0}
+            onClick={() => checkAvailability()}
+            disabled={isCheckingAvailability || !currentAvailabilityTarget}
             className={`h-10 px-3 py-0 text-xs font-semibold ${guidedStep === "checked" ? "ring-2 ring-cyan-300/60" : ""}`}
           >
             {isCheckingAvailability ? "Checking..." : "3. Check"}
