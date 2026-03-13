@@ -27,6 +27,7 @@ async function checkRequiredFiles() {
     "app/robots.ts",
     "app/sitemap.xml/route.ts",
     "app/health/page.tsx",
+    "public/ads.txt",
     "public/icon-192.png",
     "public/icon-512.png",
     "public/apple-icon.png",

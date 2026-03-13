@@ -20,6 +20,7 @@ const initialChecks: HealthCheck[] = [
   { label: "Manifest", path: "/manifest.webmanifest", expectedStatuses: [200], status: "checking" },
   { label: "Robots", path: "/robots.txt", expectedStatuses: [200], status: "checking" },
   { label: "Sitemap", path: "/sitemap.xml", expectedStatuses: [200], status: "checking" },
+  { label: "Ads.txt", path: "/ads.txt", expectedStatuses: [200], status: "checking" },
   { label: "Icon 192", path: "/icon-192.png", expectedStatuses: [200], status: "checking" },
   { label: "Icon 512", path: "/icon-512.png", expectedStatuses: [200], status: "checking" },
   { label: "Apple Icon", path: "/apple-icon.png", expectedStatuses: [200], status: "checking" },
@@ -90,7 +91,7 @@ export function HealthClient() {
       <Card className="p-6 md:p-8">
         <h1 className="text-3xl font-black text-white md:text-4xl">Site Health</h1>
         <p className="mt-3 text-sm text-slate-300">
-          Quick operational checks for icons, manifest, robots, sitemap, and AdSense tag presence.
+          Quick operational checks for ads.txt, icons, manifest, robots, sitemap, and AdSense tag presence.
         </p>
         <div className="mt-5 flex flex-wrap gap-3 text-xs">
           <span className="rounded-full border border-emerald-300/30 bg-emerald-400/15 px-3 py-1 text-emerald-100">
