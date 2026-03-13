@@ -2,6 +2,7 @@
 
 import { memo, startTransition, useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { AdSlot } from "@/components/ads/ad-slot";
 import { LoadingGrid } from "@/components/generator/loading-grid";
 import { LiveCounter } from "@/components/generator/live-counter";
@@ -103,6 +104,7 @@ function parseKeywords(input: string) {
 type Platform = keyof AvailabilityRecord;
 
 const platforms: Platform[] = ["Twitch", "TikTok", "Instagram"];
+type GuidedStep = "idle" | "generated" | "copied" | "checked";
 
 const trendingSeeds = [
   "ShadowNova",
@@ -323,6 +325,8 @@ export function UsernameEngine({
   const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
   const [isLengthFinding, setIsLengthFinding] = useState(false);
   const [isMassGenerating, setIsMassGenerating] = useState(false);
+  const [guidedStep, setGuidedStep] = useState<GuidedStep>("idle");
+  const [lastCopiedName, setLastCopiedName] = useState<string | null>(null);
   const storageKey = useMemo(() => "namelaunchpad:favorites:username-engine", []);
 
   const topResults = useMemo(() => results.slice(0, 8), [results]);
@@ -408,6 +412,7 @@ export function UsernameEngine({
       trackGlobalGenerationEvent({ generatorSlug: generatorKey, amount: names.length, usernames: names });
       trackGeneratedUsernames(names);
       trackRecentGeneratedUsernames(names);
+      setGuidedStep("generated");
     },
     [generatorKey, results]
   );
@@ -553,6 +558,7 @@ export function UsernameEngine({
             ...current,
             ...data.availability,
           }));
+          setGuidedStep("checked");
           setToast("Availability updated.");
           window.setTimeout(() => setToast(null), 1800);
         }
@@ -569,12 +575,52 @@ export function UsernameEngine({
   const onCopy = useCallback(async (value: string) => {
     try {
       await navigator.clipboard.writeText(value);
+      setGuidedStep("copied");
+      setLastCopiedName(value);
       setToast("Username copied.");
       window.setTimeout(() => setToast(null), 1800);
     } catch {
       setToast(null);
     }
   }, []);
+
+  const nextStepCard = useMemo(() => {
+    if (guidedStep === "generated") {
+      return {
+        title: "Next step: copy your favorite",
+        description: "You generated fresh names. Copy one result to continue the flow.",
+        cta: "Jump to Results",
+        href: "#results",
+      };
+    }
+
+    if (guidedStep === "copied") {
+      return {
+        title: "Next step: check availability",
+        description: lastCopiedName
+          ? `${lastCopiedName} is copied. Check availability to avoid conflicts before you publish.`
+          : "You copied a username. Check availability before you publish.",
+        cta: "Check Availability",
+        href: "#availability",
+      };
+    }
+
+    if (guidedStep === "checked") {
+      return {
+        title: "Next step: generate similar",
+        description: "Availability is updated. Generate similar options to compare and keep the strongest one.",
+        cta: "Generate More",
+        href: "#generator",
+      };
+    }
+
+    return {
+      title: "Start flow",
+      description: "Generate names first, then copy one and check availability.",
+      cta: "Start Generating",
+      href: "#generator",
+    };
+  }, [guidedStep, lastCopiedName]);
 
   const onShareAction = useCallback(async (platform: "copy-link" | "twitter" | "discord" | "reddit", value: string) => {
     const shareLink = createShareLink(value);
@@ -831,6 +877,20 @@ export function UsernameEngine({
               <span>
                 Category: {selectedCategory.label} | Style: {effectiveStyle} | Length: {effectiveLengthRange.label} ({effectiveLengthRange.description})
               </span>
+            </div>
+
+            <div className="mt-4 rounded-xl2 border border-cyan-300/25 bg-cyan-400/10 p-4">
+              <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <p className="text-sm font-semibold text-cyan-100">{nextStepCard.title}</p>
+                  <p className="mt-1 text-xs text-slate-300">{nextStepCard.description}</p>
+                </div>
+                <Link href={nextStepCard.href}>
+                  <Button variant="ghost" className="px-3 py-2 text-xs">
+                    {nextStepCard.cta}
+                  </Button>
+                </Link>
+              </div>
             </div>
 
             {isGenerating ? (
@@ -1172,6 +1232,34 @@ export function UsernameEngine({
           {toast}
         </div>
       ) : null}
+
+      <div className="fixed bottom-3 left-1/2 z-40 w-[calc(100%-1.5rem)] max-w-3xl -translate-x-1/2 rounded-2xl border border-white/15 bg-slate-950/92 p-2 shadow-neon backdrop-blur-xl">
+        <div className="grid grid-cols-3 gap-2">
+          <Button
+            onClick={generate}
+            disabled={isGenerating}
+            className={`px-3 py-2 text-xs ${guidedStep === "generated" ? "ring-2 ring-cyan-300/60" : ""}`}
+          >
+            {isGenerating ? "Generating..." : "1. Generate"}
+          </Button>
+          <Link href="#results" className="block">
+            <Button
+              variant="ghost"
+              className={`w-full px-3 py-2 text-xs ${guidedStep === "copied" ? "ring-2 ring-cyan-300/60" : ""}`}
+            >
+              2. Copy
+            </Button>
+          </Link>
+          <Button
+            variant="ghost"
+            onClick={checkAvailability}
+            disabled={isCheckingAvailability || results.length === 0}
+            className={`px-3 py-2 text-xs ${guidedStep === "checked" ? "ring-2 ring-cyan-300/60" : ""}`}
+          >
+            {isCheckingAvailability ? "Checking..." : "3. Check"}
+          </Button>
+        </div>
+      </div>
     </section>
   );
 }
