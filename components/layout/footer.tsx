@@ -53,6 +53,8 @@ export function Footer() {
           <h4 className="text-sm font-semibold uppercase tracking-wide text-slate-200">Legal</h4>
           <ul className="mt-2 space-y-1 text-sm text-slate-400">
             <li><Link href="/privacy-terms" className="hover:text-cyan-300">Privacy / Terms</Link></li>
+            <li><Link href="/impressum" className="hover:text-cyan-300">Impressum</Link></li>
+            <li><Link href="/contact" className="hover:text-cyan-300">Contact</Link></li>
             <li><Link href="/about" className="hover:text-cyan-300">About</Link></li>
             <li>
               <a href="mailto:whatduhaben@gmail.com" className="hover:text-cyan-300">

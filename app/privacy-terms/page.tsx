@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Card } from "@/components/ui/card";
 
 export const metadata: Metadata = {
@@ -19,6 +20,10 @@ export default function PrivacyTermsPage() {
             NameLaunchpad does not require account registration. Favorite names are stored locally in your browser and
             are not transmitted to a backend service.
           </p>
+          <p className="mt-3 text-slate-300">
+            This website uses Google AdSense. For users in the EWR, UK, and Switzerland, consent is managed via a CMP
+            in Google AdSense according to applicable policy requirements.
+          </p>
         </div>
         <div>
           <h2 className="text-2xl font-bold text-white">Terms of Use</h2>
@@ -27,8 +32,27 @@ export default function PrivacyTermsPage() {
             their chosen names comply with game and community guidelines.
           </p>
         </div>
+        <div>
+          <h2 className="text-2xl font-bold text-white">Legal & Contact</h2>
+          <p className="mt-3 text-slate-300">
+            Contact:{" "}
+            <a href="mailto:whatduhaben@gmail.com" className="font-semibold text-cyan-300 hover:text-cyan-200">
+              whatduhaben@gmail.com
+            </a>
+          </p>
+          <p className="mt-2 text-sm text-slate-400">
+            Additional pages:{" "}
+            <Link href="/impressum" className="text-cyan-300 hover:text-cyan-200">
+              Impressum
+            </Link>{" "}
+            and{" "}
+            <Link href="/contact" className="text-cyan-300 hover:text-cyan-200">
+              Contact
+            </Link>
+            .
+          </p>
+        </div>
       </Card>
     </section>
   );
 }
-

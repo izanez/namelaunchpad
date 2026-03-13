@@ -46,6 +46,8 @@ export function getCoreSitemapEntries(): SitemapEntry[] {
   return makeEntries([
     "/",
     "/about",
+    "/contact",
+    "/impressum",
     "/privacy-terms",
     "/search",
     "/stats",
