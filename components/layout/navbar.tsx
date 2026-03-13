@@ -2,21 +2,12 @@ import Link from "next/link";
 import { Logo } from "@/components/layout/logo";
 
 const links = [
+  { href: "/username-generator", label: "Generator" },
   { href: "/explore-generators", label: "Explore" },
-  { href: "/blog", label: "Blog" },
   { href: "/daily-top", label: "Daily" },
-  { href: "/compare", label: "Compare" },
-  { href: "/intent", label: "Intent" },
-  { href: "/guides", label: "Guides" },
-  { href: "/articles", label: "Articles" },
-  { href: "/all-generators", label: "Generators" },
+  { href: "/all-generators", label: "All Generators" },
+  { href: "/blog", label: "Blog" },
   { href: "/username-database", label: "Database" },
-  { href: "/gamer-tag-generator", label: "Gamertags" },
-  { href: "/username-generator", label: "Username" },
-  { href: "/roblox-username-generator", label: "Roblox" },
-  { href: "/fortnite-name-generator", label: "Fortnite" },
-  { href: "/fantasy-name-generator", label: "Fantasy" },
-  { href: "/clan-name-generator", label: "Clan" },
 ];
 
 export function Navbar() {
