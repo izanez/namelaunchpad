@@ -326,7 +326,9 @@ export function UsernameDatabaseBrowser({
               <Card key={item.slug} className="p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="text-base font-semibold text-white">{item.name}</p>
+                    <Link href={`/usernames/${item.slug}`} className="text-base font-semibold text-white transition hover:text-cyan-200">
+                      {item.name}
+                    </Link>
                     <p className="mt-1 text-xs text-slate-400">/{item.slug}</p>
                   </div>
                   <span className="rounded-full border border-cyan-300/30 bg-cyan-300/10 px-2 py-0.5 text-[11px] font-semibold text-cyan-100">

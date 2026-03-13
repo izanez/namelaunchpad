@@ -4,6 +4,7 @@ import { blogCategorySlugs } from "@/lib/blog-hub";
 import { usernameDatabasePageSlugs } from "@/lib/username-database-pages";
 import { generatorCategories, generatorDatabase, generatorSlugs } from "@/lib/generators";
 import { programmaticSeoSlugs } from "@/lib/programmatic-seo-pages";
+import { getAllUsernameDatabaseRecords } from "@/lib/username-database";
 import { usernameListingSlugs } from "@/lib/username-listing-pages";
 
 export type SitemapEntry = {
@@ -74,7 +75,11 @@ export function getArticleSitemapEntries(): SitemapEntry[] {
 }
 
 export function getUsernameSitemapEntries(): SitemapEntry[] {
-  return makeEntries(usernameListingSlugs.map((slug) => `/${slug}`), "weekly", 0.75);
+  const detailPaths = getAllUsernameDatabaseRecords()
+    .slice(0, 10000)
+    .map((record) => `/usernames/${record.slug}`);
+
+  return makeEntries([...usernameListingSlugs.map((slug) => `/${slug}`), ...detailPaths], "weekly", 0.75);
 }
 
 export function getCategorySitemapEntries(): SitemapEntry[] {

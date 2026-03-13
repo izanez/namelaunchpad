@@ -322,6 +322,37 @@ export function getAllUsernameDatabaseRecords(): UsernameRecord[] {
   return getDatabaseCache().records.map(({ searchable, lengthBucket, ...record }) => record);
 }
 
+export function getUsernameRecordBySlug(slug: string): UsernameRecord | null {
+  const record = getDatabaseCache().records.find((entry) => entry.slug === slug);
+  if (!record) return null;
+  const { searchable, lengthBucket, ...publicRecord } = record;
+  return publicRecord;
+}
+
+export function getRelatedUsernameRecords(record: UsernameRecord, limit = 24): UsernameRecord[] {
+  const cache = getDatabaseCache();
+
+  return cache.records
+    .filter((candidate) => candidate.slug !== record.slug)
+    .map((candidate) => {
+      let score = 0;
+      if (candidate.category === record.category) score += 4;
+      if (candidate.style === record.style) score += 3;
+      if (candidate.rarity === record.rarity) score += 2;
+      if (Math.abs(candidate.length - record.length) <= 1) score += 2;
+      score += candidate.tags.filter((tag) => record.tags.includes(tag)).length;
+
+      return { candidate, score };
+    })
+    .filter((entry) => entry.score > 0)
+    .sort((left, right) => right.score - left.score || left.candidate.name.localeCompare(right.candidate.name))
+    .slice(0, limit)
+    .map(({ candidate }) => {
+      const { searchable, lengthBucket, ...publicRecord } = candidate;
+      return publicRecord;
+    });
+}
+
 export function queryUsernameDatabase({
   q,
   categories: selectedCategories = [],
