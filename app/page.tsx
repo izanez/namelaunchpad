@@ -312,6 +312,27 @@ export default function HomePage() {
           </div>
         </section>
 
+        <section className="content-auto mt-8 grid gap-3 md:grid-cols-2">
+          <Card className="p-5">
+            <h2 className="text-xl font-bold text-white">Intent Collections</h2>
+            <p className="mt-2 text-sm text-slate-300">
+              Explore differentiated SEO clusters like short Valorant names and aesthetic TikTok usernames.
+            </p>
+            <Link href="/collections" className="mt-4 inline-block text-sm font-semibold text-cyan-300 hover:text-cyan-200">
+              Open Collections {"->"}
+            </Link>
+          </Card>
+          <Card className="p-5">
+            <h2 className="text-xl font-bold text-white">Community Picks</h2>
+            <p className="mt-2 text-sm text-slate-300">
+              Upvote names, track weekly leaderboard momentum, and discover name of the week.
+            </p>
+            <Link href="/community" className="mt-4 inline-block text-sm font-semibold text-cyan-300 hover:text-cyan-200">
+              Join Community {"->"}
+            </Link>
+          </Card>
+        </section>
+
         <GeneratorSearch />
         <DailyUsernameChallenge />
         <DailyPopularGenerators />

@@ -21,6 +21,7 @@ import { trackRecentGeneratedUsernames } from "@/lib/recent-generated-usernames"
 import { trackGeneratedUsernames } from "@/lib/trending-usernames";
 import { buildUnverifiedAvailability, type AvailabilityRecord } from "@/lib/username-availability";
 import { trackFunnelEvent } from "@/lib/funnel-analytics";
+import { createShareHash } from "@/lib/share-output";
 
 const styleOptions: UsernameStyle[] = [
   "cool",
@@ -837,6 +838,27 @@ export function UsernameEngine({
     });
   }, []);
 
+  const onShareList = useCallback(async () => {
+    if (results.length === 0) return;
+    const hash = createShareHash({
+      n: results.slice(0, 20),
+      s: effectiveStyle,
+      c: category,
+      k: parseKeywords(keywordsInput),
+      t: Date.now(),
+    });
+
+    const url = typeof window === "undefined" ? `/u/${hash}` : `${window.location.origin}/u/${hash}`;
+
+    try {
+      await navigator.clipboard.writeText(url);
+      setToast("Share page link copied.");
+    } catch {
+      setToast("Could not copy share page link.");
+    }
+    window.setTimeout(() => setToast(null), 1800);
+  }, [category, effectiveStyle, keywordsInput, results]);
+
   const onDeleteFavorite = useCallback((value: string) => {
     setFavorites((current) => current.filter((item) => item !== value));
     setFavoriteCollections((collections) => {
@@ -1120,9 +1142,14 @@ export function UsernameEngine({
 
             <div id="results" className="mt-6 flex items-center justify-between text-xs text-slate-400">
               <span>Output: {results.length} usernames</span>
-              <span>
-                Category: {selectedCategory.label} | Style: {effectiveStyle} | Length: {effectiveLengthRange.label} ({effectiveLengthRange.description})
-              </span>
+              <div className="flex items-center gap-3">
+                <span>
+                  Category: {selectedCategory.label} | Style: {effectiveStyle} | Length: {effectiveLengthRange.label} ({effectiveLengthRange.description})
+                </span>
+                <Button variant="ghost" className="h-8 px-3 py-0 text-xs" onClick={onShareList}>
+                  Share this list
+                </Button>
+              </div>
             </div>
 
             <div className="mt-4 rounded-xl2 border border-cyan-300/25 bg-cyan-400/10 p-4 md:p-5">
